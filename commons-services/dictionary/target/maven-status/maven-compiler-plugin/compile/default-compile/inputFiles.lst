@@ -1,0 +1,10 @@
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/services/DistrictService.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/controller/DictionaryController.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/repositories/DistrictRepository.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/model/Category.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/Application.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/model/District.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/services/DictionaryService.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/SwaggerConfig.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/model/Word.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/dictionary/src/main/java/io/github/cooperlyt/mis/service/dictionary/repositories/DictionaryRepository.java

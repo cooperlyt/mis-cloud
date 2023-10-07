@@ -1,0 +1,167 @@
+server:
+  port: 18001
+
+spring:
+  application:
+    name: dictionary
+  profiles:
+    active: local
+  cache:
+    cache-names: district
+    type: CAFFEINE
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+  cloud:
+    consul:
+      ribbon:
+        enabled: false
+      config:
+        enabled: true
+        format: yaml
+        prefixes: config
+        profile-separator: ':'
+        data-key: data
+      discovery:
+        serviceName: ${spring.application.name}
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 服务停止时取消注册
+        deregister: true
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30s
+        # 健康检查的路径
+        health-check-path: /actuator/info
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/house-sale
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  r2dbc:
+    url: r2dbc:mariadb://database:3306/building?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+  jpa:
+    show-sql: "true"
+  sql:
+    init:
+      mode: never
+
+#开启actuator管理api
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+uid:
+  timeBits: 30             # 时间位, 默认:30
+  workerBits: 17           # 机器位, 默认:16
+  seqBits: 6               # 序列号, 默认:7
+  epochStr: "2019-09-01"   # 初始时间, 默认:"2019-02-20"
+  enableBackward: true    # 是否容忍时钟回拨, 默认:true
+  maxBackwardSeconds: 1    # 时钟回拨最长容忍时间（秒）, 默认:1
+  CachedUidGenerator: # CachedUidGenerator相关参数
+    boostPower: 3          # RingBuffer size扩容参数, 可提高UID生成的吞吐量, 默认:3
+    paddingFactor: 50      # 指定何时向RingBuffer中填充UID, 取值为百分比(0, 100), 默认为50
+    #scheduleInterval: 60    # 默认:不配置此项, 即不实用Schedule线程. 如需使用, 请指定Schedule线程时间间隔, 单位:秒
+
+
+logging:
+  level:
+    cc.coopersoft: DEBUG
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+---
+
+server:
+  port: 80
+
+spring:
+  config:
+    activate:
+      on-profile: local
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://127.0.0.1:8080/auth/realms/house-sale/protocol/openid-connect/certs
+  cloud:
+    service-registry:
+      auto-registration:
+        enabled: false
+    discovery:
+      enabled: false
+    consul:
+      #      host: 192.168.1.21
+      #      port: 8500
+      enabled: false
+      config:
+        enabled: false
+        watch:
+          enabled: false
+      discovery:
+        enabled: false
+      ribbon:
+        enabled: false
+      retry:
+        enabled: false
+    config:
+      enabled: false
+  r2dbc:
+    url: r2dbc:mariadb://127.0.0.1:3306/building?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 5257mq
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
+
+---
+
+spring:
+  cache:
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+  config:
+    activate:
+      on-profile: prod
+    import: optional:consul:${spring.cloud.consul.host}:${spring.cloud.consul.port}
+  jpa:
+    show-sql: "false"
+  r2dbc:
+    url: r2dbc:mariadb://database:3306/building?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    pool:
+      initial-size: 13
+      ## 连接池数量 = ((核心数 * 2) + 有效磁盘数)
+      max-size: 15
+
+
+logging:
+  level:
+    cc.coopersoft: WARN
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

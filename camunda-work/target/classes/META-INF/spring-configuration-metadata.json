@@ -1,0 +1,151 @@
+{
+  "groups": [
+    {
+      "name": "plugin.identity.keycloak",
+      "type": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "rest.security",
+      "type": "io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "plugin.identity.keycloak.administrator-group-name",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.administrator-user-id",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.authorization-check-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.cache-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.cache-expiration-timeout-min",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.charset",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.client-id",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.client-secret",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.disable-s-s-l-certificate-validation",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.keycloak-admin-url",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.keycloak-issuer-url",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.login-cache-enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.login-cache-expiration-timeout-min",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.login-cache-size",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.max-cache-size",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.max-http-connections",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.max-result-size",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.proxy-password",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.proxy-uri",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.proxy-user",
+      "type": "java.lang.String",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.use-email-as-camunda-user-id",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.use-group-path-as-camunda-group-id",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "plugin.identity.keycloak.use-username-as-camunda-user-id",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.plugin.KeycloakIdentityProvider"
+    },
+    {
+      "name": "rest.security.enabled",
+      "type": "java.lang.Boolean",
+      "description": "rest.security.enabled:  Rest Security is enabled by default. Switch off by setting this flag to {@code false}. -- GETTER -- @return the enabled",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "rest.security.provider",
+      "type": "java.lang.String",
+      "description": "rest.security.provider:  The name of the spring.security.oauth2.client.provider to use -- GETTER -- @return the provider",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties"
+    },
+    {
+      "name": "rest.security.required-audience",
+      "type": "java.lang.String",
+      "description": "rest.security.required-audience:  Required Audience. -- GETTER -- @return the requiredAudience",
+      "sourceType": "io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties"
+    }
+  ],
+  "hints": []
+}

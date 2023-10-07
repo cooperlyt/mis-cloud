@@ -1,0 +1,17 @@
+io/github/cooperlyt/mis/work/camunda/delegate/BeanInjectionHelper.class
+io/github/cooperlyt/mis/work/camunda/CamundaSecurityConfig.class
+io/github/cooperlyt/mis/work/camunda/sso/KeycloakAuthenticationProvider.class
+io/github/cooperlyt/mis/work/camunda/delegate/WorkValidDelegate.class
+io/github/cooperlyt/mis/work/camunda/mq/CreateListener.class
+io/github/cooperlyt/mis/work/camunda/rest/AudienceValidator.class
+io/github/cooperlyt/mis/work/camunda/Application.class
+io/github/cooperlyt/mis/work/camunda/rest/RestApiSecurityConfigurationProperties.class
+META-INF/spring-configuration-metadata.json
+io/github/cooperlyt/mis/work/camunda/plugin/KeycloakIdentityProvider.class
+io/github/cooperlyt/mis/work/camunda/Constants.class
+io/github/cooperlyt/mis/work/camunda/listener/CompleteListener.class
+io/github/cooperlyt/mis/work/camunda/delegate/WorkRejectDelegate.class
+io/github/cooperlyt/mis/work/camunda/listener/CamundaListener.class
+io/github/cooperlyt/mis/work/camunda/rest/KeycloakAuthenticationFilter.class
+io/github/cooperlyt/mis/work/camunda/mq/ProcessChangeService.class
+io/github/cooperlyt/mis/work/camunda/sso/KeycloakLogoutHandler.class

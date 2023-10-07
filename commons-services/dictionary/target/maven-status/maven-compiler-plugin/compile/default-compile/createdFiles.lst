@@ -1,0 +1,15 @@
+io/github/cooperlyt/mis/service/dictionary/repositories/DistrictRepository.class
+io/github/cooperlyt/mis/service/dictionary/services/DictionaryService.class
+io/github/cooperlyt/mis/service/dictionary/model/Word$FakePK.class
+io/github/cooperlyt/mis/service/dictionary/SwaggerConfig.class
+io/github/cooperlyt/mis/service/dictionary/model/District.class
+io/github/cooperlyt/mis/service/dictionary/model/Word.class
+io/github/cooperlyt/mis/service/dictionary/model/Category$CategoryBuilder.class
+io/github/cooperlyt/mis/service/dictionary/services/DistrictService.class
+io/github/cooperlyt/mis/service/dictionary/model/Category.class
+io/github/cooperlyt/mis/service/dictionary/Application$ErrorDefine.class
+io/github/cooperlyt/mis/service/dictionary/controller/DictionaryController.class
+io/github/cooperlyt/mis/service/dictionary/repositories/DictionaryRepository.class
+io/github/cooperlyt/mis/service/dictionary/services/DictionaryService$WordGroup.class
+io/github/cooperlyt/mis/service/dictionary/model/Category$CategoryBuilderImpl.class
+io/github/cooperlyt/mis/service/dictionary/Application.class

@@ -10,16 +10,12 @@
     <version>2.1.8-snapshot</version>
     <modules>
         <module>commons-cloud</module>
-
-        <!--        <module>common-services</module>-->
-
-<!--        <module>mis-construction</module>-->
-<!--        <module>common-mis-api</module>-->
-<!--        <module>camunda-work</module>-->
-<!--        <module>common-mis</module>-->
+        <module>camunda-work</module>
         <module>commons-elasticsearch-utils</module>
         <module>commons-work-api</module>
         <module>commons-mis</module>
+        <module>commons-services</module>
+        <module>commons-utils</module>
     </modules>
 
     <repositories>
@@ -51,8 +47,6 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
-        <id.generator.version>1.2.2</id.generator.version>
-        <cloud.common.version>2.5.1</cloud.common.version>
         <elasticsearch.version>8.9.0</elasticsearch.version>
 <!--        <caffeine.version>3.1.8</caffeine.version>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -67,6 +61,8 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -74,6 +70,8 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
@@ -99,6 +97,24 @@
                 <artifactId>elasticsearch-java</artifactId>
                 <version>8.9.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>io.github.cooperlyt</groupId>
+                <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
+                <version>1.2.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>2.5.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>23.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -109,17 +125,6 @@
             <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--        </dependency>-->
-
-
-<!--        <dependency>-->
-<!--            <groupId>com.github.ben-manes.caffeine</groupId>-->
-<!--            <artifactId>caffeine</artifactId>-->
-<!--        </dependency>-->
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -127,23 +132,7 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-test</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>io.projectreactor</groupId>-->
-<!--            <artifactId>reactor-test</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-test</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
 
     </dependencies>
 

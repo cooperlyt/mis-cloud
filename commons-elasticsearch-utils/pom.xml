@@ -9,7 +9,7 @@
         <version>2.1.8-snapshot</version>
     </parent>
 
-    <artifactId>commons-elasticsearch-utils</artifactId>
+    <artifactId>commons-elasticsearch-spring-boot-starter</artifactId>
     <packaging>jar</packaging>
 
     <properties>
