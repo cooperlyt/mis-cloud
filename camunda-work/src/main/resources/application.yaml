@@ -3,7 +3,7 @@ logging:
     com.netflix: DEBUG
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
-    cc.coopersoft: DEBUG
+    io.github.cooperlyt: DEBUG
 
 # # http://127.0.0.1:19005/camunda/app/welcome/default/
 server:
@@ -29,7 +29,7 @@ camunda.bpm:
 #  webapp:
 #    index-redirect-enabled: true
   authorization:
-    enabled: false
+    enabled: true
   generic-properties:
     properties:
       enableExpressionsInAdhocQueries: true
@@ -144,7 +144,7 @@ spring:
     applicationPath: /engine-rest
   security:
     oauth2:
-      resourceserver:
+      resource-server:
         jwt:
           issuer-uri: ${keycloak.url.auth}/realms/${keycloak.realms}
           jwk-set-uri: ${keycloak.url.token}/realms/${keycloak.realms}/protocol/openid-connect/certs

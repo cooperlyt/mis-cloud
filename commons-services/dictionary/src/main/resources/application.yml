@@ -78,7 +78,7 @@ uid:
 
 logging:
   level:
-    cc.coopersoft: DEBUG
+    io.github.cooperlyt: DEBUG
 
 springdoc:
   api-docs:

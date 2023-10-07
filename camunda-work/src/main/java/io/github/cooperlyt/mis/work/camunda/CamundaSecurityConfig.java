@@ -4,7 +4,9 @@ import io.github.cooperlyt.mis.work.camunda.rest.AudienceValidator;
 import io.github.cooperlyt.mis.work.camunda.rest.KeycloakAuthenticationFilter;
 import io.github.cooperlyt.mis.work.camunda.rest.RestApiSecurityConfigurationProperties;
 import io.github.cooperlyt.mis.work.camunda.sso.KeycloakLogoutHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
+import org.camunda.bpm.spring.boot.starter.property.CamundaBpmProperties;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -26,23 +28,21 @@ import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.ForwardedHeaderFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 /**
  * Optional Security Configuration for Camunda REST Api.
  */
+@Slf4j
 @Configuration
 @EnableWebSecurity
-@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
+//@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 public class CamundaSecurityConfig {
 
 //  @Bean
@@ -81,8 +81,8 @@ public class CamundaSecurityConfig {
     //configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
     configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
 //    configuration.setAllowCredentials(true);
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    configuration.setExposedHeaders(Arrays.asList("*"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setExposedHeaders(List.of("*"));
     //configuration.addExposedHeader("Location");
     //configuration.setMaxAge(3600L);
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -122,7 +122,11 @@ public class CamundaSecurityConfig {
 
   private final ApplicationContext applicationContext;
 
-  public CamundaSecurityConfig(ApplicationContext applicationContext, OAuth2AuthorizedClientService clientService, IdentityService identityService, RestApiSecurityConfigurationProperties configProps, KeycloakLogoutHandler keycloakLogoutHandler) {
+  public CamundaSecurityConfig(ApplicationContext applicationContext,
+                               OAuth2AuthorizedClientService clientService,
+                               IdentityService identityService,
+                               RestApiSecurityConfigurationProperties configProps,
+                               KeycloakLogoutHandler keycloakLogoutHandler) {
     this.applicationContext = applicationContext;
     this.clientService = clientService;
     this.identityService = identityService;
@@ -137,9 +141,9 @@ public class CamundaSecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-//    String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
-//        "spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
-//
+    String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
+        "spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
+
 //    http.cors().configurationSource(corsConfigurationSource()).and()
 //        .csrf().ignoringAntMatchers("/api/**", "/engine-rest/**");
 //
@@ -173,19 +177,18 @@ public class CamundaSecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf
             .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
-        .securityMatcher("/**")
+
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(
-                antMatcher("/engine-rest/**"),
-                antMatcher("/app/**"),
-                antMatcher("/api/**"),
-                antMatcher("/lib/**"))
+            .requestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**"))
+            .authenticated())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)))
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(antMatcher("/app/**"),antMatcher("/api/**"), antMatcher("/lib/**"))
             .authenticated()
-            .anyRequest()
-            .permitAll())
+            .anyRequest().permitAll())
+        .oauth2Login(Customizer.withDefaults())
         .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))
             .logoutSuccessHandler(keycloakLogoutHandler))
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
         .build();
 
   }
