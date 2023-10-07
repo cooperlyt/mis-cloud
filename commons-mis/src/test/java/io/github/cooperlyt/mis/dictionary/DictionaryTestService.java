@@ -16,12 +16,12 @@ import java.util.List;
 @Service
 public class DictionaryTestService {
 
-  private final WorkCreateService workCreateService;
-
-  public DictionaryTestService(WorkCreateService workCreateService) {
-    this.workCreateService = workCreateService;
-  }
-
+//  private final WorkCreateService workCreateService;
+//
+//  public DictionaryTestService(WorkCreateService workCreateService) {
+//    this.workCreateService = workCreateService;
+//  }
+//
 
   @Data
   public static class TestProvide {
