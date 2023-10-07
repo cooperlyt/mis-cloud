@@ -1,0 +1,10 @@
+# Project exclude paths
+/dictionary/target/
+/hsr-gateway/target/
+/hsr-house-contract/target/
+/hsr-house-source/target/
+/docker/arm64/dev/data/mysql/
+/docker/arm64/dev/data/rocketmq/logs/
+/docker/arm64/dev/data/rocketmq/store/
+/.idea/
+*.iml
