@@ -1,15 +1,13 @@
 package io.github.cooperlyt.mis.dictionary;
 
-import cc.coopersoft.common.cloud.TestApplication;
-import cc.coopersoft.construction.data.building.provide.BuildConstructInfoProvide;
-import cc.coopersoft.construction.data.building.provide.BuildLocationInfoProvide;
-import cc.coopersoft.construction.data.building.provide.BuildProvide;
+
+import io.github.cooperlyt.mis.TestApplication;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,27 +29,27 @@ public class DictionaryFillAspectTest {
   @Autowired
   private DictionaryRemoteService dictionaryRemoteService;
 
-  @Test
-  public void test3Aspect() {
-
-    BuildConstructInfoProvide buildConstructInfoProvide = new BuildConstructInfoProvide();
-    buildConstructInfoProvide.setBuildOrder("44");
-    buildConstructInfoProvide.setStructureKey(66);
-    buildConstructInfoProvide.setType(BuildConstructInfoProvide.Type.BUNGALOW);
-    buildConstructInfoProvide.setFloorCount(1);
-    buildConstructInfoProvide.setFloorDown(1);
-
-    BuildLocationInfoProvide buildLocationInfoProvide = new BuildLocationInfoProvide();
-    buildLocationInfoProvide.setBuildNumber("55");
-
-    BuildProvide buildProvide = new BuildProvide();
-    buildProvide.setConstructInfo(buildConstructInfoProvide);
-    buildProvide.setLocationInfo(buildLocationInfoProvide);
-
-
-    testService.testBuild(buildProvide)
-        .subscribe(i -> System.out.println("finally test result:" + i));
-  }
+//  @Test
+//  public void test3Aspect() {
+//
+//    BuildConstructInfoProvide buildConstructInfoProvide = new BuildConstructInfoProvide();
+//    buildConstructInfoProvide.setBuildOrder("44");
+//    buildConstructInfoProvide.setStructureKey(66);
+//    buildConstructInfoProvide.setType(BuildConstructInfoProvide.Type.BUNGALOW);
+//    buildConstructInfoProvide.setFloorCount(1);
+//    buildConstructInfoProvide.setFloorDown(1);
+//
+//    BuildLocationInfoProvide buildLocationInfoProvide = new BuildLocationInfoProvide();
+//    buildLocationInfoProvide.setBuildNumber("55");
+//
+//    BuildProvide buildProvide = new BuildProvide();
+//    buildProvide.setConstructInfo(buildConstructInfoProvide);
+//    buildProvide.setLocationInfo(buildLocationInfoProvide);
+//
+//
+//    testService.testBuild(buildProvide)
+//        .subscribe(i -> System.out.println("finally test result:" + i));
+//  }
 
   @Test
   public void testAspect() {

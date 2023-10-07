@@ -1,6 +1,7 @@
 package io.github.cooperlyt.mis;
 
-import cc.coopersoft.common.cloud.dictionary.DictionaryRemoteService;
+
+import io.github.cooperlyt.mis.dictionary.DictionaryRemoteService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

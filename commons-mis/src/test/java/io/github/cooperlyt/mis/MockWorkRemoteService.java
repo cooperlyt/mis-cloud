@@ -1,8 +1,10 @@
 package io.github.cooperlyt.mis;
 
-import cc.coopersoft.common.cloud.work.WorkRemoteService;
-import cc.coopersoft.construction.data.work.WorkDefine;
-import cc.coopersoft.construction.data.work.WorkDefineForCreate;
+
+
+import io.github.cooperlyt.mis.work.WorkRemoteService;
+import io.github.cooperlyt.mis.work.data.WorkDefine;
+import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

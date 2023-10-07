@@ -1,8 +1,7 @@
 package io.github.cooperlyt.mis.dictionary;
 
 
-import cc.coopersoft.common.cloud.work.WorkCreateService;
-import cc.coopersoft.construction.data.building.provide.BuildProvide;
+import io.github.cooperlyt.mis.dictionary.fill.Dictionary;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -60,11 +59,11 @@ public class DictionaryTestService {
     return Mono.empty();
   }
 
-  @RequestMapping(value = "/test", method = {RequestMethod.POST})
-  public Mono<BuildProvide> testBuild(@RequestBody BuildProvide p2){
-
-    return workCreateService.createWork("func.test", "func.test", 1, 1).thenReturn(p2);
-  }
+//  @RequestMapping(value = "/test", method = {RequestMethod.POST})
+//  public Mono<BuildProvide> testBuild(@RequestBody BuildProvide p2){
+//
+//    return workCreateService.createWork("func.test", "func.test", 1, 1).thenReturn(p2);
+//  }
 
   @RequestMapping(value = "/test", method = {RequestMethod.POST})
   public Mono<TestProvide> test(String p1,@RequestBody TestProvide p2, long p3){
