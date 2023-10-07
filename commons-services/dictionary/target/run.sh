@@ -17,4 +17,5 @@ java -Djava.security.egd=file:/dev/./urandom -Dserver.port=$SERVER_PORT   \
      -Dspring.r2dbc.url=$DB_URL \
      -Dspring.r2dbc.username=$DB_USERNAME \
      -Dspring.r2dbc.password=$DB_PWD \
+     -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=$JWT_ISS \
      -jar /usr/local/app/dictionary.jar

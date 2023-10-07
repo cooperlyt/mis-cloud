@@ -9,7 +9,7 @@
         <version>2.1.8-snapshot</version>
     </parent>
 
-    <artifactId>camunda-work-serivce</artifactId>
+    <artifactId>camunda-work-service</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -137,7 +137,7 @@
                             <outputDirectory>target</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../docker</directory>
+                                    <directory>../docker/build-template</directory>
                                     <filtering>true</filtering>
                                 </resource>
 

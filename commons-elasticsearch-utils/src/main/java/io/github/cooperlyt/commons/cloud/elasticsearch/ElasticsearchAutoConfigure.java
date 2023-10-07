@@ -36,11 +36,13 @@ public class ElasticsearchAutoConfigure {
   }
 
   @Bean
+  @ConditionalOnMissingBean
   RestClientTransport restClientTransport(RestClient restClient, ObjectProvider<RestClientOptions> restClientOptions) {
     return new RestClientTransport(restClient, new JacksonJsonpMapper(), restClientOptions.getIfAvailable());
   }
 
   @Bean
+  @ConditionalOnMissingBean
   public ElasticsearchAsyncClient elasticsearchAsyncClient(ElasticsearchProperties properties) {
     RestClient restClient = RestClient.builder(getESHttpHosts(properties.hosts, properties.scheme)).setRequestConfigCallback(requestConfigBuilder -> {
       //设置连接超时时间
