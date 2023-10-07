@@ -1,4 +1,3 @@
-io/github/cooperlyt/mis/service/work/controller/DeveloperJoint.class
 io/github/cooperlyt/mis/service/work/controller/WorkManage.class
 io/github/cooperlyt/mis/service/work/model/WorkDefineModel.class
 io/github/cooperlyt/mis/service/work/model/WorkAttachmentModel$WorkAttachmentModelBuilderImpl.class
@@ -8,6 +7,7 @@ io/github/cooperlyt/mis/service/work/model/WorkAttachmentDefineModel$WorkAttachm
 io/github/cooperlyt/mis/service/work/model/WorkAttachmentModel.class
 io/github/cooperlyt/mis/service/work/ResourceServerConfiguration.class
 io/github/cooperlyt/mis/service/work/model/WorkFileModel$WorkFileModelBuilder.class
+io/github/cooperlyt/mis/service/work/controller/ExternalJoint.class
 io/github/cooperlyt/mis/service/work/model/WorkAttachmentDefineModel.class
 io/github/cooperlyt/mis/service/work/services/WorkService.class
 io/github/cooperlyt/mis/service/work/controller/WorkInternal.class

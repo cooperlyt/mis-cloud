@@ -2,7 +2,6 @@
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/model/WorkAttachmentModel.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/repositories/WorkFileRepository.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/repositories/WorkAttachmentDefineRepository.java
-/Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/controller/DeveloperJoint.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/model/WorkFileModel.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/model/WorkDefineModel.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/repositories/WorkDefineRepository.java
@@ -11,6 +10,7 @@
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/Application.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/model/WorkAttachmentDefineModel.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/ResourceServerConfiguration.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/controller/ExternalJoint.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/services/WorkChangeListener.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/repositories/WorkAttachmentRepository.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-services/work/src/main/java/io/github/cooperlyt/mis/service/work/controller/WorkInternal.java

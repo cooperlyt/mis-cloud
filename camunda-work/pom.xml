@@ -137,7 +137,7 @@
                             <outputDirectory>target</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/docker</directory>
+                                    <directory>../docker</directory>
                                     <filtering>true</filtering>
                                 </resource>
 

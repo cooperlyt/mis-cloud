@@ -1,3 +1,4 @@
 io.github.cooperlyt.mis.AuthRemoteServiceAutoConfigure
 io.github.cooperlyt.mis.dictionary.DictionaryAutoConfigure
 io.github.cooperlyt.mis.work.WorkCreateAutoConfigure
+io.github.cooperlyt.mis.LoadBalancedAutoConfigure
