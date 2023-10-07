@@ -170,6 +170,7 @@ public class CamundaSecurityConfig {
 
 
     return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf
             .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
         .securityMatcher("/**")
