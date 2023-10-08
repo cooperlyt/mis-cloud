@@ -8,3 +8,9 @@
 /docker/arm64/dev/data/rocketmq/store/
 /.idea/
 *.iml
+/commons-work-api/target/
+/commons-services/dictionary/target/
+/commons-utils/target/
+/commons-elasticsearch-utils/target/
+/commons-cloud/target/
+/camunda-work/target/

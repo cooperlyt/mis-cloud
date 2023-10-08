@@ -126,7 +126,6 @@ uid:
 
 logging:
   level:
-    cc.coopersoft: DEBUG
     org.springframework.r2dbc: DEBUG
     io.github.cooperlyt: DEBUG
 

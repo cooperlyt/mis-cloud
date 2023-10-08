@@ -26,6 +26,7 @@ io/github/cooperlyt/mis/work/data/WorkOperator.class
 io/github/cooperlyt/mis/work/message/WorkChangeMessage$WorkChangeMessageBuilderImpl.class
 io/github/cooperlyt/mis/work/data/WorkFileImpl.class
 io/github/cooperlyt/mis/work/message/StatusChangeMessage.class
+io/github/cooperlyt/mis/work/data/WorkInstance.class
 io/github/cooperlyt/mis/work/data/WorkAttachmentBase$WorkAttachmentBaseBuilder.class
 io/github/cooperlyt/mis/work/data/HistoryWork$Category.class
 io/github/cooperlyt/mis/work/data/WorkAttachmentBase$WorkAttachmentBaseBuilderImpl.class

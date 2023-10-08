@@ -8,6 +8,7 @@
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/HistoryWork.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/WorkFileInfo.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/message/WorkStatus.java
+/Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/WorkInstance.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/WorkAttachment.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/WorkDefineForProcess.java
 /Users/cooper/IdeaProjects/mis-cloud/commons-work-api/src/main/java/io/github/cooperlyt/mis/work/data/WorkAttachmentInfo.java

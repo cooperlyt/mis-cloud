@@ -1,9 +1,7 @@
 package io.github.cooperlyt.mis.work.impl;
 
 import io.github.cooperlyt.mis.work.create.WorkPrepareCreateHandler;
-import io.github.cooperlyt.mis.work.data.WorkAction;
-import io.github.cooperlyt.mis.work.data.WorkDefine;
-import io.github.cooperlyt.mis.work.data.WorkOperatorDetails;
+import io.github.cooperlyt.mis.work.data.*;
 import io.github.cooperlyt.mis.work.impl.model.WorkModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkOperatorModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkTaskModel;
@@ -15,8 +13,6 @@ import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
 import org.springframework.messaging.Message;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-
-import io.github.cooperlyt.mis.work.data.WorkOperator;
 
 import java.util.Comparator;
 import java.util.List;
@@ -43,6 +39,13 @@ public class WorkPersistableService implements WorkPrepareCreateHandler {
   public Mono<List<WorkAction>> workActions(long workId){
     return workOperatorRepository.workActions(workId).collectList()
         .map(list -> list.stream().sorted(Comparator.comparing(WorkOperator::getWorkTime).reversed()).collect(Collectors.toList()))
+        .cache();
+  }
+
+  public Mono<WorkInfo> workInfo(long workId){
+    return workRepository.findById(workId)
+        .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
+        .cast(WorkInfo.class)
         .cache();
   }
 
