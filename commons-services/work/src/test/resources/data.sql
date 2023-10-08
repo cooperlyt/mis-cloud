@@ -32,17 +32,17 @@ INSERT INTO work_define(define_id,work_name,type,enabled,version,process) VALUES
 
     ("process_project_license","预销售许可证业务","business",true,0,true),
 
-    ("func.limit.create","建立预警","action",true,0,true),
-    ("func.limit.cancel","预警撤消","action",true,0,true),
-    ("func.limit.mortgage.create","抵押预警","business",true,0,true),
-    ("func.limit.mortgage.cancel","抵押预警撤消","business",true,0,true),
-    ("func.limit.seizure.create","查封预警","business",true,0,true),
-    ("func.limit.seizure.cancel","查封预警撤消","business",true,0,true),
+    ("func.limit.create","建立预警","action",true,0,false),
+    ("func.limit.cancel","预警撤消","action",true,0,false),
+    ("func.limit.mortgage.create","抵押预警","business",true,0,false),
+    ("func.limit.mortgage.cancel","抵押预警撤消","business",true,0,false),
+    ("func.limit.seizure.create","查封预警","business",true,0,false),
+    ("func.limit.seizure.cancel","查封预警撤消","business",true,0,false),
 
-    ("process_sale_contract_new","商品房合同备案","business",true,0,true),
-    ("process_sale_contract_new_cancel","商品房合同备案撤消","business",true,0,true),
-    ("process_sale_contract_old","存量房合同备案","business",true,0,true),
-    ("process_sale_contract_old_cancel","存量房合同备案撤消","business",true,0,true);
+    ("process_sale_contract_new","商品房合同备案","business",true,0,false),
+    ("process_sale_contract_new_cancel","商品房合同备案撤消","business",true,0,false),
+    ("process_sale_contract_old","存量房合同备案","business",true,0,false),
+    ("process_sale_contract_old_cancel","存量房合同备案撤消","business",true,0,false);
 
 INSERT INTO attachment_define(id,define_id,name,must,version,description) VALUES
     (1,"process_project_license","营业执照",true,0,"营业执照说明"),
