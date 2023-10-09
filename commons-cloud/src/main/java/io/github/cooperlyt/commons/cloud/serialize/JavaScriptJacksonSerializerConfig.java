@@ -17,27 +17,49 @@ import java.time.format.DateTimeFormatter;
 @Configuration
 public class JavaScriptJacksonSerializerConfig {
 
+  /**
+   * yyyy-MM-dd'T'HH:mm:ss.SSS'Z'  Z means UTC
+   *
+   * yyyy-MM-dd'T'HH:mm:ss.SSSXXX XXX means UTC+8 for china
+   *
+   */
 
-  @Value("${spring.jackson.date-format:yyyy-MM-dd'T'HH:mm:ss.SSS'Z'}")
-  private String pattern;
+  @Value("${spring.jackson.date-time-format:yyyy-MM-dd'T'HH:mm:ss.SSSXXX}")
+  private String dateTimePattern;
+
+  @Value("${spring.jackson.date-format:yyyy-MM-dd'T'00:00:00:000XXX}")
+  private String datePattern;
 
   @Bean
-  @ConditionalOnProperty(prefix = "spring.jackson", name = "date-format" )
+  @ConditionalOnProperty(prefix = "spring.jackson", name = "date-time-format" )
   public Jackson2ObjectMapperBuilderCustomizer jackson2OLocalDateTimeMapperBuilder() {
 
     return builder -> {
 
       // formatter
-      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'00:00:00:000'Z'");
-      DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofPattern(pattern);
+      DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofPattern(dateTimePattern);
 
       // deserializers
-      builder.deserializers(new LocalDateDeserializer(dateFormatter));
       builder.deserializers(new LocalDateTimeDeserializer(dateTimeFormatter));
 
       // serializers
-      builder.serializers(new LocalDateSerializer(dateFormatter));
       builder.serializers(new LocalDateTimeSerializer(dateTimeFormatter));
+    };
+  }
+
+  @Bean
+  @ConditionalOnProperty(prefix = "spring.jackson", name = "date-format" )
+  public Jackson2ObjectMapperBuilderCustomizer jackson2OLocalDateMapperBuilder(){
+    return builder -> {
+
+      // formatter
+      DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(datePattern);
+
+      // deserializers
+      builder.deserializers(new LocalDateDeserializer(dateFormatter));
+
+      // serializers
+      builder.serializers(new LocalDateSerializer(dateFormatter));
     };
   }
 

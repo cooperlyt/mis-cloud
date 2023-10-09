@@ -6,6 +6,9 @@ spring:
     name: dictionary
   profiles:
     active: local
+  jackson:
+    dateFormat: yyyy-MM-dd'T'00:00:00:000XXX
+    dateTimeFormat: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
   cache:
     cache-names: district
     type: CAFFEINE
