@@ -24,7 +24,7 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
 
   private final WebClient webClient;
 
-  @Value("${internal.work.serverName}")
+  @Value("${mis.internal.work.serverName}")
   private String serverName;
 
   private final StreamBridge streamBridge;

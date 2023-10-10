@@ -1,6 +1,12 @@
 server:
   port: 19007
 
+mis:
+  jackson:
+    date:
+      enable: true
+      local-time-zone: Asia/Shanghai
+
 spring:
   application:
     name: work
@@ -8,7 +14,7 @@ spring:
     active: local
   jackson:
     time-zone: UTC
-    dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+    dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
 #    longToString: true
   security:
     oauth2:

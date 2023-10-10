@@ -29,7 +29,7 @@ public class DictionaryRemoteServiceImpl extends RemoteResponseService implement
     this.webClient = webClient;
   }
 
-  @Value("${internal.dictionary.serverName}")
+  @Value("${mis.internal.dictionary.serverName}")
   private String serverName;
 
   private Mono<String> getRemoteDistrictAddress(int id){

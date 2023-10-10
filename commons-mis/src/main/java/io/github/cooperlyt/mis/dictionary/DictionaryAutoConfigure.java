@@ -19,7 +19,7 @@ public class DictionaryAutoConfigure {
   @Bean
   @Lazy
   @ConditionalOnMissingBean
-  @ConditionalOnProperty("internal.dictionary.serverName")
+  @ConditionalOnProperty("mis.internal.dictionary.serverName")
   public DictionaryRemoteService dictionaryRemoteService(WebClient.Builder builder){
     return new DictionaryRemoteServiceImpl(builder.build());
   }

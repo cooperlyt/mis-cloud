@@ -24,7 +24,7 @@ public class WorkCreateAutoConfigure {
   @Bean
   @Lazy
   @ConditionalOnMissingBean
-  @ConditionalOnProperty("internal.work.serverName")
+  @ConditionalOnProperty("mis.internal.work.serverName")
   public WorkRemoteService workRemoteService(WebClient.Builder builder, StreamBridge streamBridge){
     return new WorkRemoteServiceImpl(builder.build(),streamBridge);
   }
@@ -32,7 +32,7 @@ public class WorkCreateAutoConfigure {
   @Bean
   @ConditionalOnMissingBean
   @ConditionalOnBean(WorkRemoteService.class)
-  @ConditionalOnProperty(prefix = "internal.work.operator",name = "create")
+  @ConditionalOnProperty(prefix = "mis.internal.work.operator",name = "create")
   public WorkCreateAspect workCreateAspect(WorkRemoteService workRemoteService,
                                            WorkPrepareCreateHandler workPrepareCreateHandler){
     return new WorkCreateAspect(workRemoteService,workPrepareCreateHandler);
@@ -40,7 +40,7 @@ public class WorkCreateAutoConfigure {
 
   @Bean
   @ConditionalOnMissingBean
-  @ConditionalOnProperty(prefix = "internal.work.operator",name = "persistable")
+  @ConditionalOnProperty(prefix = "mis.internal.work.operator",name = "persistable")
   public WorkPersistableService workOperatorService(WorkOperatorRepository workOperatorRepository,
                                                     WorkTaskRepository workTaskRepository,
                                                     WorkRepository workRepository){

@@ -1,6 +1,12 @@
 server:
   port: 18001
 
+mis:
+  jackson:
+    date:
+      enable: true
+      local-time-zone: Asia/Shanghai
+
 spring:
   application:
     name: dictionary
@@ -8,7 +14,7 @@ spring:
     active: local
   jackson:
     time-zone: UTC
-    dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+    dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
   cache:
     cache-names: district
     type: CAFFEINE
