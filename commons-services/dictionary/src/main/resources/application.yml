@@ -3,7 +3,7 @@ server:
 
 mis:
   jackson:
-    date:
+    zoned-date:
       enable: true
       local-time-zone: Asia/Shanghai
 

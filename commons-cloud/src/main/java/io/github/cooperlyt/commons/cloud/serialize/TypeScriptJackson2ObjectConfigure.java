@@ -31,11 +31,11 @@ import java.time.format.DateTimeFormatter;
 public class TypeScriptJackson2ObjectConfigure {
 
 
-  @Value("${mis.jackson.date.local-time-zone}")
+  @Value("${mis.jackson.zoned-date.local-time-zone}")
   private String timeZone;
 
   @Bean
-  @ConditionalOnProperty(prefix = "mis.jackson.date", name = "enable")
+  @ConditionalOnProperty(prefix = "mis.jackson.zoned-date", name = "enable")
   public Jackson2ObjectMapperBuilderCustomizer jackson2LocalDateTimeMapperBuilder() {
 
     return builder -> {
