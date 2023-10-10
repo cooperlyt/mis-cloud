@@ -1,4 +1,4 @@
-package cc.coopersoft.common;
+package io.github.cooperlyt.commons.cloud.serialize.test;
 
 
 import io.github.cooperlyt.commons.cloud.serialize.JsonRawDeserializer;
@@ -14,6 +14,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -203,4 +205,10 @@ public class JsonRawDeserializerTest {
             throw new RuntimeException(e);
         }
     }
+
+    private LocalDateTime convert(LocalDateTime value){
+        return value.atZone(ZoneId.systemDefault())
+            .withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
+    }
+
 }
