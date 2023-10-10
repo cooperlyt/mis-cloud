@@ -16,17 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-/**
- *
- * LocalDateTime 类型很坑， 没有时区信息，不能转成 yyyy-MM-dd'T'HH:mm:ss.SSSXXX  在使用时需要根据时区转换
 
- *  LocalDate 更坑，因为没有时间， 连转换都不可能。时区信息直接丢失
-
- * yyyy-MM-dd'T'HH:mm:ss.SSS'Z'  Z means UTC
-
- * yyyy-MM-dd'T'HH:mm:ss.SSSXXX XXX means UTC+8 for china
- *
- */
 @Configuration
 public class TypeScriptJackson2ObjectConfigure {
 
@@ -34,6 +24,17 @@ public class TypeScriptJackson2ObjectConfigure {
   @Value("${mis.jackson.zoned-date.local-time-zone}")
   private String timeZone;
 
+  /**
+   *
+   * LocalDateTime 类型很坑， 没有时区信息，不能转成 yyyy-MM-dd'T'HH:mm:ss.SSSXXX  在使用时需要根据时区转换
+
+   *  LocalDate 更坑，因为没有时间， 连转换都不可能。时区信息直接丢失
+
+   * yyyy-MM-dd'T'HH:mm:ss.SSS'Z'  Z means UTC
+
+   * yyyy-MM-dd'T'HH:mm:ss.SSSXXX XXX means UTC+8 for china
+   *
+   */
   @Bean
   @ConditionalOnProperty(prefix = "mis.jackson.zoned-date", name = "enable")
   public Jackson2ObjectMapperBuilderCustomizer jackson2LocalDateTimeMapperBuilder() {
@@ -56,15 +57,16 @@ public class TypeScriptJackson2ObjectConfigure {
 
       builder.modulesToInstall(javaTimeModule);
 
-      //builder.serializerByType(PageImpl.class,new JsonPageSerializer());
 
-      // serializers
-      builder.serializerByType(BigInteger.class, ToStringSerializer.instance);
-      builder.serializerByType(Long.class, ToStringSerializer.instance);
-      builder.serializerByType(Long.TYPE, ToStringSerializer.instance);
     };
   }
 
+  /**
+   * 使用此配置后，spring 返回一个Long 类型时 会带引号， 导致前端js无法解析成 number , 字符串也会被解析成 %20XXX%20
+
+   * 为了解决前端js对于long类型的精度丢失问题
+   * @return register
+   */
   @Bean
   @ConditionalOnProperty(prefix = "mis.jackson.long", name = "to-string")
   public Jackson2ObjectMapperBuilderCustomizer jackson2LongMapperBuilder() {

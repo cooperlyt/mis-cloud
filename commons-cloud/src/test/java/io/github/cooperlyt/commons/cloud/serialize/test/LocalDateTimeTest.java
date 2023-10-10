@@ -91,7 +91,7 @@ public class LocalDateTimeTest {
 
 
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+      //objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
       objectMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
 
       objectMapper.registerModule(javaTimeModule);
@@ -109,16 +109,48 @@ public class LocalDateTimeTest {
       assert testDateTime11.getZonedDateTime().equals(testDateTime11.getLocalDateTime());
       System.out.println("deserializer test-------------------------------------------------");
 
-      String testStr = "{\"zonedDateTime\":\"2023-10-10T18:59:17.856412+08:00\"," +
-                        "\"localDateTime\":\"2023-10-10T18:59:17.856412+08:00\"}";
+
+
+      String testStr = "{\"zonedDateTime\":\"2023-08-02T16:00:00.000Z\"," +
+          "\"localDateTime\":\"2023-08-02T16:00:00.000Z\"}";
+
+
       System.out.println(testStr);
 
       TestDateTime testDateTime1 = objectMapper.readValue(testStr,TestDateTime.class);
 
-      System.out.println(testDateTime1.getZonedDateTime());
+      System.out.println(testDateTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime());
       System.out.println(testDateTime1.getLocalDateTime());
 
-      assert testDateTime1.getZonedDateTime().toLocalDateTime().equals(testDateTime1.getLocalDateTime());
+      assert testDateTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime().equals(testDateTime1.getLocalDateTime());
+
+
+      System.out.println("deserializer UTC test-------------------------------------------------");
+
+      String testUTCStr =       "{\"zonedDateTime\":\"2023-08-02T16:00:00.000+08:00\"," +
+          "\"localDateTime\":\"2023-08-02T16:00:00.000+08:00\"}";
+      System.out.println(testUTCStr);
+
+      TestDateTime testUTCDateTime1 = objectMapper.readValue(testUTCStr,TestDateTime.class);
+
+      System.out.println(testUTCDateTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime());
+      System.out.println(testUTCDateTime1.getLocalDateTime());
+
+      assert testUTCDateTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime().equals(testUTCDateTime1.getLocalDateTime());
+
+
+      System.out.println("deserializer UTC test-------------------------------------------------");
+
+      String testTimestamp =       "{\"zonedDateTime\":\"1696954607.968220000\"," +
+          "\"localDateTime\":\"1696954607.968220000\"}";
+      System.out.println(testTimestamp);
+
+      TestDateTime testTimestampTime1 = objectMapper.readValue(testTimestamp,TestDateTime.class);
+
+      System.out.println(testTimestampTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime());
+      System.out.println(testTimestampTime1.getLocalDateTime());
+
+      assert testTimestampTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime().equals(testTimestampTime1.getLocalDateTime());
 
 
     } catch (JsonProcessingException e) {
@@ -127,5 +159,7 @@ public class LocalDateTimeTest {
 
     //objectMapper.readValue("{\"date\":\"2020-01-01T00:00:00.000Z\",\"localDateTime\":\"2020-01-01T00:00:00.000\",\"localDate\":\"2020-01-01\",\"localTime\":\"00:00:00.000\"}",TestDateTime.class);
   }
+
+
 
 }

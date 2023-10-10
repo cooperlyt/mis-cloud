@@ -44,12 +44,19 @@ public class ZonedLocalDateTimeDeserializer extends InstantDeserializer<LocalDat
   public ZonedLocalDateTimeDeserializer(DateTimeFormatter formatter, String targetZoneId){
     this(formatter, ZoneId.of(targetZoneId));
   }
+
+  /**
+   *  replaceZeroOffsetAsZ , 如果没有偏移 为 ‘Z’ 即 UTC时区
+   *
+   * @param formatter
+   * @param targetZoneId
+   */
   public ZonedLocalDateTimeDeserializer(DateTimeFormatter formatter, ZoneId targetZoneId) {
     super(LocalDateTime.class, formatter,
-        dt -> ZonedDateTime.from(dt).withZoneSameInstant(targetZoneId).toLocalDateTime(),
+        a -> ZonedDateTime.from(a).withZoneSameInstant(targetZoneId).toLocalDateTime(),
         a -> ZonedDateTime.ofInstant(Instant.ofEpochMilli(a.value), a.zoneId).withZoneSameInstant(targetZoneId).toLocalDateTime(),
         a -> ZonedDateTime.ofInstant(Instant.ofEpochSecond(a.integer, a.fraction), a.zoneId).withZoneSameInstant(targetZoneId).toLocalDateTime(),
-        (a,b) -> a.atZone(targetZoneId).withZoneSameInstant(b).toLocalDateTime(),
+        (a,b) -> a, // 忽略时区转换， 因为 参数 b 为 jsonParser 时区信息, 此处， 不进行转换， 因为 目标时区应为 targetZoneId， jackson  把 目标 时区和 原始时区 用一个参数设置
         false
         );
     this.targetZoneId = targetZoneId;
