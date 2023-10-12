@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.service.dictionary;
 
-import io.github.cooperlyt.commons.cloud.keycloak.ReactiveKeycloakAuthenticationConverter;
+import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakAuthenticationConverter;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

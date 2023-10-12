@@ -1,9 +1,11 @@
 package io.github.cooperlyt.commons.cloud.serialize;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 
 @Configuration
+@ConditionalOnClass(ObjectMapper.class)
 public class TypeScriptJackson2ObjectConfigure {
 
 
@@ -36,6 +39,7 @@ public class TypeScriptJackson2ObjectConfigure {
    *
    */
   @Bean
+  @ConditionalOnClass(JavaTimeModule.class)
   @ConditionalOnProperty(prefix = "mis.jackson.zoned-date", name = "enable")
   public Jackson2ObjectMapperBuilderCustomizer jackson2LocalDateTimeMapperBuilder() {
 

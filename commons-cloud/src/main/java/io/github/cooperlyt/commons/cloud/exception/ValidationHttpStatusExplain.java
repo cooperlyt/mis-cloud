@@ -7,7 +7,7 @@ import java.util.Map;
 @Getter
 public class ValidationHttpStatusExplain extends HttpStatusExplain{
 
-  private Map<String,String> fields;
+  private final Map<String,String> fields;
   public ValidationHttpStatusExplain(Map<String,String> fields, String path) {
     super(path);
     this.fields = fields;

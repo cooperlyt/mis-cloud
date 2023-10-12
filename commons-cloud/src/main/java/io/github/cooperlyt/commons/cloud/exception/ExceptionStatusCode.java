@@ -22,11 +22,6 @@ public interface ExceptionStatusCode extends DefineStatusCode {
     return new ResponseDefineException(this, cause, args);
   }
 
-  default ResponseDefineException exception(String reason, String... args){
-
-    return new ResponseDefineException(this, reason, args);
-  }
-
   default ResponseDefineException exception(String reason, Throwable cause){
     return new ResponseDefineException(this, reason, cause);
   }

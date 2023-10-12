@@ -15,13 +15,14 @@ import org.springframework.web.server.ResponseStatusException;
  * @since 3.0
  * @see DefaultResponseErrorHandler
  */
+@Getter
 public class ResponseDefineException extends ResponseStatusException {
 
-  @Getter
-  private DefineStatusCode defineStatusCode;
+  private final DefineStatusCode defineStatusCode;
 
-  @Getter
   private String[] args = new String[0];
+
+
 
   public ResponseDefineException(HttpStatus httpStatus, DefineStatusCode statusCode){
     super(httpStatus);

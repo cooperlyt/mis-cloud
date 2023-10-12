@@ -1,4 +1,4 @@
-package io.github.cooperlyt.commons.cloud.keycloak;
+package io.github.cooperlyt.commons.cloud.keycloak.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

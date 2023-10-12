@@ -1,4 +1,4 @@
-package io.github.cooperlyt.commons.cloud.keycloak;
+package io.github.cooperlyt.commons.cloud.keycloak.auth;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
