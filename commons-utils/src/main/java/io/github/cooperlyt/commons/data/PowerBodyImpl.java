@@ -14,14 +14,17 @@ import lombok.experimental.SuperBuilder;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class PowerBodyModel implements PowerBody,java.io.Serializable {
+public class PowerBodyImpl implements PowerBody,java.io.Serializable {
+
+
+  @NotNull
+  private IdentityType idType;
 
   @NotBlank
   @Size(max = 128)
   private String name;
-  @NotNull
-  private IdentityType idType;
+
+
   @NotBlank
   @Size(max = 64)
   private String idNumber;

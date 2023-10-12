@@ -1,5 +1,8 @@
 package io.github.cooperlyt.commons.data;
 
+import lombok.Getter;
+
+@Getter
 public enum IdentityType {
   RESIDENT_ID(false,true),//居民身份证
   RESIDENT(false, true), //户口簿
@@ -18,14 +21,6 @@ public enum IdentityType {
   private final boolean corp;
 
   private final boolean resident;
-
-  public boolean isResident() {
-    return resident;
-  }
-
-  public boolean isCorp() {
-    return this.corp;
-  }
 
   IdentityType(boolean corp, boolean resident) {
     this.corp = corp;
