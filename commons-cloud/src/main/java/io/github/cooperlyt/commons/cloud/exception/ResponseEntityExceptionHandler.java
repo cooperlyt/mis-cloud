@@ -2,6 +2,8 @@ package io.github.cooperlyt.commons.cloud.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +14,7 @@ import java.util.Map;
 @Slf4j
 public class ResponseEntityExceptionHandler {
 
-  protected ValidationHttpStatusExplain validationExceptionHandler(Exception e, String path)  {
+  protected ResponseEntity<ValidationHttpStatusExplain> validationExceptionHandler(Exception e, String path)  {
     Map<String, String> resultMap = new HashMap<>();
     if (e instanceof MethodArgumentNotValidException) {
       BindingResult bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
@@ -23,7 +25,7 @@ public class ResponseEntityExceptionHandler {
       );
     }
     log.warn("Valid exception:" +  resultMap, e);
-    return new ValidationHttpStatusExplain(resultMap,path);
+    return new ResponseEntity<>(new ValidationHttpStatusExplain(resultMap,path) , HttpStatus.BAD_REQUEST);
   }
 
 
