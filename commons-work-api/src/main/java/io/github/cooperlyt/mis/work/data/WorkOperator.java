@@ -1,47 +1,14 @@
 package io.github.cooperlyt.mis.work.data;
 
+public interface WorkOperator {
+  String getUserId();
 
-import io.github.cooperlyt.mis.work.message.WorkMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+  String getUserName();
 
-import java.time.LocalDateTime;
+  String getOrgName();
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@SuperBuilder
-public class WorkOperator extends WorkMessage {
+  Long getCorpInfoId();
 
-  public WorkOperator(WorkOperator operator) {
-    super(operator.getWorkId(), operator.getEmpId(), operator.getEmpName());
-    this.type = operator.getType();
-    this.orgId = operator.getOrgId();
-    this.orgName = operator.getOrgName();
-    this.workTime = operator.getWorkTime();
-  }
+  Long getEmployeeInfoId();
 
-  public WorkOperator(long workId, String empId, String empName,
-                      OperatorType type, Long orgId, String orgName) {
-    super(workId, empId, empName);
-    this.type = type;
-    this.orgId = orgId;
-    this.orgName = orgName;
-  }
-
-  public enum OperatorType{
-    CREATE,
-    TASK,
-
-    APPLY,
-  }
-
-  private OperatorType type;
-  private Long orgId;
-  private String orgName;
-  private LocalDateTime workTime;
 }

@@ -1,5 +1,6 @@
 package io.github.cooperlyt.mis.work.impl.model;
 
+import io.github.cooperlyt.mis.work.data.WorkAction;
 import io.github.cooperlyt.mis.work.data.WorkOperator;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,17 +16,18 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WorkOperatorModel extends WorkOperator implements Persistable<String> {
+public class WorkActionModel extends WorkAction implements Persistable<String> {
 
-  public WorkOperatorModel(WorkOperator operator, String id) {
-    super(operator);
+  @Builder(builderMethodName = "operatorBuilder", builderClassName = "OperatorBuilder")
+  public WorkActionModel(WorkOperator operator, long workId, ActionType type, String id) {
+    super(operator, workId, type);
     this.id = id;
   }
 
-  @Builder(builderMethodName = "operatorBuilder")
-  public WorkOperatorModel(long workId, String empId, String empName,
-                           OperatorType type, Long orgId, String orgName, String id) {
-    super(workId, empId, empName, type, orgId, orgName);
+  @Builder(builderMethodName = "actionBuilder", builderClassName = "ActionBuilder")
+  public WorkActionModel(long workId, String userId, String userName, ActionType type,
+                         Long corpInfoId, Long employeeInfoId, String orgName, String id) {
+    super(workId, userId, userName, type, corpInfoId, employeeInfoId, orgName);
     this.id = id;
   }
 

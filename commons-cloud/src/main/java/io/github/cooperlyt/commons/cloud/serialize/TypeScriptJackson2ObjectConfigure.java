@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageImpl;
@@ -19,13 +21,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 
-@Configuration
+@AutoConfiguration
 @ConditionalOnClass(ObjectMapper.class)
+@EnableConfigurationProperties(TypeScriptJacksonProperties.class)
 public class TypeScriptJackson2ObjectConfigure {
 
-
-  @Value("${mis.jackson.zoned-date.local-time-zone}")
-  private String timeZone;
 
   /**
    *
@@ -41,10 +41,11 @@ public class TypeScriptJackson2ObjectConfigure {
   @Bean
   @ConditionalOnClass(JavaTimeModule.class)
   @ConditionalOnProperty(prefix = "mis.jackson.zoned-date", name = "enable")
-  public Jackson2ObjectMapperBuilderCustomizer jackson2LocalDateTimeMapperBuilder() {
+  public Jackson2ObjectMapperBuilderCustomizer jackson2LocalDateTimeMapperBuilder(TypeScriptJacksonProperties properties) {
 
     return builder -> {
 
+      String timeZone = properties.getZonedDate().getLocalTimeZone();
 
       ZoneId zoneId = StringUtils.hasText(timeZone) ? ZoneId.of(timeZone) : ZoneId.systemDefault();
 
@@ -72,7 +73,7 @@ public class TypeScriptJackson2ObjectConfigure {
    * @return register
    */
   @Bean
-  @ConditionalOnProperty(prefix = "mis.jackson.long", name = "to-string")
+  @ConditionalOnProperty(prefix = "mis.jackson.long-type", name = "to-string")
   public Jackson2ObjectMapperBuilderCustomizer jackson2LongMapperBuilder() {
 
     return builder -> {

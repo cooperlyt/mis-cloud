@@ -15,6 +15,7 @@
     <modules>
         <module>dictionary</module>
         <module>work</module>
+        <module>unified-social-credit</module>
     </modules>
 
     <properties>

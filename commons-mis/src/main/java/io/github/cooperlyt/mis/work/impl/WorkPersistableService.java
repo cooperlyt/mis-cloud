@@ -1,9 +1,9 @@
 package io.github.cooperlyt.mis.work.impl;
 
-import io.github.cooperlyt.mis.work.create.WorkPrepareCreateHandler;
+import io.github.cooperlyt.mis.work.create.WorkOperatorPersistableHandler;
 import io.github.cooperlyt.mis.work.data.*;
 import io.github.cooperlyt.mis.work.impl.model.WorkModel;
-import io.github.cooperlyt.mis.work.impl.model.WorkOperatorModel;
+import io.github.cooperlyt.mis.work.impl.model.WorkActionModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkTaskModel;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
@@ -18,9 +18,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.github.cooperlyt.mis.ErrorDefine.WORK_NOT_EXISTS;
+import static io.github.cooperlyt.mis.work.Constant.ErrorDefine.WORK_NOT_EXISTS;
 
-public class WorkPersistableService implements WorkPrepareCreateHandler {
+public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   private final WorkOperatorRepository workOperatorRepository;
 
@@ -36,9 +36,9 @@ public class WorkPersistableService implements WorkPrepareCreateHandler {
     this.workRepository = workRepository;
   }
 
-  public Mono<List<WorkAction>> workActions(long workId){
+  public Mono<List<WorkTask>> workTasks(long workId){
     return workOperatorRepository.workActions(workId).collectList()
-        .map(list -> list.stream().sorted(Comparator.comparing(WorkOperator::getWorkTime).reversed()).collect(Collectors.toList()))
+        .map(list -> list.stream().sorted(Comparator.comparing(WorkAction::getWorkTime).reversed()).collect(Collectors.toList()))
         .cache();
   }
 
@@ -47,28 +47,6 @@ public class WorkPersistableService implements WorkPrepareCreateHandler {
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
         .cast(WorkInfo.class)
         .cache();
-  }
-
-  @Override
-  public Mono<Void> prepareCreate(WorkDefine define, long workId, String operatorId, String operatorName) {
-    return workRepository.save(WorkModel.builder()
-        .define(define).workId(workId)
-        .status(define.isProcess() ? WorkStatus.RUNNING : WorkStatus.COMPLETED)
-        .build())
-        .flatMap(work -> workOperatorRepository.save(WorkOperatorModel.operatorBuilder()
-            .id(String.valueOf(work.getWorkId()))
-            .workId(work.getWorkId())
-            .type(WorkOperatorDetails.OperatorType.CREATE)
-            .empId(operatorId)
-            .empName(operatorName)
-            .build()))
-        .then();
-  }
-
-  @Override
-  public Mono<Void> prepareCreate(WorkDefine define, long workId, long orgId, long employeeId) {
-    //TODO search corp and employee
-    return Mono.empty();
   }
 
   @Transactional
@@ -84,12 +62,12 @@ public class WorkPersistableService implements WorkPrepareCreateHandler {
   public Mono<Void> workChange(Message<WorkChangeMessage> msg){
     WorkChangeMessage message = msg.getPayload();
     return
-        workOperatorRepository.save(WorkOperatorModel.operatorBuilder()
+        workOperatorRepository.save(WorkActionModel.actionBuilder()
                 .id(message.getTaskId())
                 .workId(message.getWorkId())
-                .type(WorkOperatorDetails.OperatorType.TASK)
-                .empId(message.getEmpId())
-                .empName(message.getEmpName())
+                .type(WorkAction.ActionType.TASK)
+                .userId(message.getUserId())
+                .userName(message.getUserName())
                 .build())
             .flatMap(operator -> workTaskRepository.save(WorkTaskModel.builder()
                 .id(operator.getId())
@@ -98,5 +76,21 @@ public class WorkPersistableService implements WorkPrepareCreateHandler {
                 .pass(message.isPass())
                 .build())
             ).then();
+  }
+
+  @Override
+  public Mono<Void> persist(WorkDefine define, long workId,
+                            WorkAction.ActionType type, WorkOperator operator) {
+    return workRepository.save(WorkModel.builder()
+            .define(define).workId(workId)
+            .status(define.isProcess() ? WorkStatus.RUNNING : WorkStatus.COMPLETED)
+            .build())
+        .flatMap(work -> workOperatorRepository.save(WorkActionModel.operatorBuilder()
+            .id(String.valueOf(work.getWorkId()))
+            .workId(work.getWorkId())
+            .type(type)
+            .operator(operator)
+            .build()))
+        .then();
   }
 }

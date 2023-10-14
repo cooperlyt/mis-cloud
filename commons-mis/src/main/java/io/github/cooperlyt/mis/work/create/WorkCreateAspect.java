@@ -3,9 +3,12 @@ package io.github.cooperlyt.mis.work.create;
 
 import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakSecurityContextHolder;
 
-import io.github.cooperlyt.mis.ErrorDefine;
+import io.github.cooperlyt.mis.work.Constant;
 import io.github.cooperlyt.mis.work.WorkRemoteService;
+import io.github.cooperlyt.mis.work.data.WorkAction;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
+import io.github.cooperlyt.mis.work.data.WorkOperator;
+import io.github.cooperlyt.mis.work.impl.WorkOperatorSample;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +19,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
@@ -35,6 +39,10 @@ import java.util.Optional;
 public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
   private ApplicationContext applicationContext;
+
+  @Value("${mis.organization:}")
+  private String organization;
+
   @Override
   public void setApplicationContext(@NotNull ApplicationContext applicationContext) throws BeansException {
     this.applicationContext = applicationContext;
@@ -48,23 +56,19 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
   private static class PrepareWorkDefine{
 
     @Builder
-    public PrepareWorkDefine(Long orgId, Long empId,
+    public PrepareWorkDefine(WorkOperator operator,
                              WorkDefine define, Long workId,
                              String binding, boolean optional,
                              WorkCreate.OperatorWay operatorWay) {
-      this.orgId = orgId;
-      this.empId = empId;
       this.define = define;
       this.originalWorkId = workId;
       this.binding = binding;
       this.optional = optional;
       this.operatorWay = operatorWay;
+      this.operator = operator;
     }
 
-    private final Long orgId;
-
-    @Getter
-    private final Long empId;
+    private final WorkOperator operator;
 
     @Getter
     private final WorkDefine define;
@@ -96,26 +100,25 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
       return define.getDefineId();
     }
 
-    public Optional<Long> getOrgId(){
-      return Optional.ofNullable(orgId);
+    public Optional<WorkOperator> getOperator(){
+      return Optional.ofNullable(operator);
     }
 
   }
   private final WorkRemoteService workRemoteService;
 
-  private final WorkPrepareCreateHandler workPrepareCreateHandler;
+  private final WorkOperatorPersistableHandler workPrepareCreateHandler;
 
 
   public WorkCreateAspect(WorkRemoteService workRemoteService,
-                          WorkPrepareCreateHandler workPrepareCreateHandler) {
+                          WorkOperatorPersistableHandler workPrepareCreateHandler) {
     this.workRemoteService = workRemoteService;
     this.workPrepareCreateHandler = workPrepareCreateHandler;
   }
 
   private Class<?> getActuallyResultType(Type monoType){
-    if (!(monoType instanceof ParameterizedType))
+    if (!(monoType instanceof ParameterizedType parameterizedType))
       return null;
-    ParameterizedType parameterizedType = (ParameterizedType) monoType;
     Type[] typeArguments = parameterizedType.getActualTypeArguments();
     assert typeArguments.length == 1;
     return (Class<?>) typeArguments[0];
@@ -154,42 +157,26 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
     Optional<Long> workId = Optional.empty();
     Optional<Long> orgId = Optional.empty();
-    Optional<Long> empId = Optional.empty();
-    if (!workCreate.resultIsWorkId())
-      for (int i = 0; i < parameters.length; i++) {
-        Parameter parameter = parameters[i];
-        Object paramValue = args[i];
-        if (parameter.isAnnotationPresent(WorkIdParam.class)){
-          if (paramValue == null){
-            throw new IllegalArgumentException("work id param can not be null");
-          }
-          if (parameter.getType().isPrimitive() || Number.class.isAssignableFrom(parameter.getType()))
-            workId = Optional.of(((Number) paramValue).longValue());
-          else
-            throw new IllegalArgumentException("work id param type must be number or string");
-        }
-        if (parameter.isAnnotationPresent(OrgIdParam.class)){
-          if (paramValue == null){
-            throw new IllegalArgumentException("org id param can not be null");
-          }
-          if (parameter.getType().isPrimitive() || Number.class.isAssignableFrom(parameter.getType()))
-            orgId = Optional.of(((Number) paramValue).longValue());
-          else
-            throw new IllegalArgumentException("org id param type must be number or number");
-        }
-        if (parameter.isAnnotationPresent(EmployeeIdParam.class)){
-          if (paramValue == null){
-            throw new IllegalArgumentException("employee id param can not be null");
-          }
-          if (parameter.getType().isPrimitive() || Number.class.isAssignableFrom(parameter.getType()))
-            empId = Optional.of(((Number) paramValue).longValue());
-          else
-            throw new IllegalArgumentException("operator id param type must be string");
-        }
-      }
+    Optional<WorkOperator> operator = Optional.empty();
 
-    if ((orgId.isPresent() && empId.isEmpty()) || (orgId.isEmpty() && empId.isPresent())){
-      throw new IllegalArgumentException("org id and employee id must be present or absent at the same time");
+    for (int i = 0; i < parameters.length; i++) {
+      Parameter parameter = parameters[i];
+      Object paramValue = args[i];
+      if (parameter.isAnnotationPresent(WorkIdParam.class)){
+        if (paramValue == null){
+          throw new IllegalArgumentException("work id param can not be null");
+        }
+        if (parameter.getType().isPrimitive() || Number.class.isAssignableFrom(parameter.getType()))
+          workId = Optional.of(((Number) paramValue).longValue());
+        else
+          throw new IllegalArgumentException("work id param type must be number or string");
+      }
+      if (WorkOperator.class.isAssignableFrom(parameter.getType())){
+        if (paramValue == null){
+          throw new IllegalArgumentException("work operator param can not be null");
+        }
+        operator = Optional.of((WorkOperator) paramValue);
+      }
     }
 
     String binding = workCreate.binding();
@@ -208,7 +195,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     return Mono.just(PrepareWorkDefine.builder()
             .optional(workCreate.optional()).operatorWay(workCreate.operatorWay())
             .binding(binding).workId(workId.orElse(null))
-            .orgId(orgId.orElse(null)).empId(empId.orElse(null)))
+            .operator(operator.orElse(null)))
         .flatMap(builder -> Mono.justOrEmpty(builder.workId)
             .flatMap(id -> workRemoteService.define(workCreate.defineId())
                 .map(builder::define)
@@ -218,18 +205,18 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
                     .map(pc -> builder.workId(pc.getWorkId()).define(pc))
             )
         )
-        .switchIfEmpty(Mono.error(ErrorDefine.WORK_DEFINE_NOT_FOUND.exception()))
+        .switchIfEmpty(Mono.error(Constant.ErrorDefine.WORK_DEFINE_NOT_FOUND.exception()))
         .map(PrepareWorkDefine.PrepareWorkDefineBuilder::build)
         .filter(PrepareWorkDefine::isEnabled)
-        .switchIfEmpty(Mono.error(ErrorDefine.WORK_IS_DISABLED.exception()))
+        .switchIfEmpty(Mono.error(Constant.ErrorDefine.WORK_IS_DISABLED.exception()))
         .flatMap(define ->  {
           log.info("work prepare complete , ready to create work : {}", joinPoint.getSignature().getName());
           try {
             Mono<?> result = Mono.just(define.operatorWay)
                 .filter(WorkCreate.OperatorWay.FIRST::equals)
-                .flatMap(way -> Mono.justOrEmpty(define.getOrgId())
-                    .flatMap(oid -> workPrepareCreateHandler.prepareCreate(define.getDefine(),define.getWorkId().orElseThrow(),oid,define.getEmpId()))
-                    .switchIfEmpty(prepareCreateForCurrentUser(define.getDefine(),define.getWorkId().orElseThrow()).then())
+                .flatMap(way -> Mono.justOrEmpty(define.getOperator())
+                    .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),define.getWorkId().orElseThrow(),op))
+                    .switchIfEmpty(persistContextOperator(define.getDefine(),define.getWorkId().orElseThrow()))
                 )
                 .then(((Mono<?>) joinPoint.proceed(args)))
                 .filter(r -> !define.isOptional() || !(r instanceof Boolean)  || ((Boolean) r))
@@ -237,7 +224,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
                 .switchIfEmpty(define.isOptional() ? Mono.empty() : Mono.defer(() -> createWork(define, null, define.binding).then(Mono.empty())));
 
             if (define.getWorkId().isPresent() && !workCreate.resultIsWorkId()){
-              result = result.contextWrite(ctx -> ctx.put("workId",define.getWorkId().get()));
+              result = result.contextWrite(ctx -> ctx.put(Constant.WORK_ID_PARAM,define.getWorkId().get()));
             }
 
             if (workCreate.transactionalRequired()){
@@ -253,11 +240,21 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
   }
 
+  private Mono<Void> persistEmployeeWorkOperator(WorkDefine define, long workId, WorkOperator operator){
+    return workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.APPLY, operator);
+  }
 
-  private Mono<Long> prepareCreateForCurrentUser(WorkDefine define,long workId){
+  private Mono<Void> persistContextOperator(WorkDefine define, long workId){
+    return contextOperator()
+        .flatMap(op -> workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.CREATE,op));
+  }
+
+  private Mono<WorkOperator> contextOperator(){
     return ReactiveKeycloakSecurityContextHolder.getContext()
-        .flatMap(context -> workPrepareCreateHandler.prepareCreate(define,workId,context.getUserInfo().getId(),context.getUserInfo().getName()))
-        .then(Mono.just(workId));
+        .map(context -> WorkOperatorSample.builder()
+            .userInfo(context.getUserInfo())
+            .orgName(organization)
+            .build());
   }
 
   @SuppressWarnings("unchecked")
@@ -274,9 +271,9 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     });
     Mono<Long> prepare = Mono.just(define.operatorWay)
         .filter(WorkCreate.OperatorWay.LAST::equals)
-        .flatMap(way -> Mono.justOrEmpty(define.getOrgId())
-            .flatMap(oid -> workPrepareCreateHandler.prepareCreate(define.getDefine(),workId,oid,define.getEmpId()).thenReturn(workId))
-            .switchIfEmpty(prepareCreateForCurrentUser(define.getDefine(),workId))
+        .flatMap(way -> Mono.justOrEmpty(define.getOperator())
+            .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),workId,op).thenReturn(workId))
+            .switchIfEmpty(persistContextOperator(define.define,workId).thenReturn(workId))
         )
         .defaultIfEmpty(workId);
 

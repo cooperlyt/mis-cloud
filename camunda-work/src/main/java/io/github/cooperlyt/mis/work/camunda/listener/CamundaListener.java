@@ -82,8 +82,8 @@ public class CamundaListener {
               .message((String) taskService.getVariable(taskEvent.getId(),"message"))
               .pass(pass)
               .workId(Long.parseLong(taskEvent.getCaseInstanceId()))
-              .empId(taskEvent.getAssignee())
-              .empName(user.getFirstName() + user.getLastName())
+              .userId(taskEvent.getAssignee())
+              .userName(user.getFirstName() + user.getLastName())
               .taskName(task.getName())
               .taskId(taskEvent.getId())
               .build(),

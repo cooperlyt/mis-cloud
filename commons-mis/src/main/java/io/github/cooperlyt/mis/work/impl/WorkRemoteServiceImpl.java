@@ -1,8 +1,8 @@
 package io.github.cooperlyt.mis.work.impl;
 
 import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakSecurityContextHolder;
-import io.github.cooperlyt.mis.ErrorDefine;
 import io.github.cooperlyt.mis.RemoteResponseService;
+import io.github.cooperlyt.mis.work.Constant;
 import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
@@ -151,7 +151,7 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
         )
         .filter(ifSend -> ifSend)
         .map(ifSend -> workId)
-        .switchIfEmpty(Mono.error(ErrorDefine.MESSAGE_SEND_FAIL.exception()));
+        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
   }
 
 

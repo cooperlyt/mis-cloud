@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.dictionary.fill;
 
-import io.github.cooperlyt.mis.ErrorDefine;
 import io.github.cooperlyt.mis.dictionary.DictionaryRemoteService;
+import io.github.cooperlyt.mis.work.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -97,7 +97,7 @@ public class DictionaryFillAspect {
           case BLANK -> Mono.just("");
           case KEY -> Mono.just(key.toString());
           default ->
-              Mono.error(ErrorDefine.DICTIONARY_VALUE_INVALID.exception(new String[]{category, key.toString()}));
+              Mono.error(Constant.ErrorDefine.DICTIONARY_VALUE_INVALID.exception(new String[]{category, key.toString()}));
         }));
   }
 
@@ -135,7 +135,7 @@ public class DictionaryFillAspect {
             if (dictionary.optional()){
               return Mono.empty();
             }else{
-              return Mono.error(ErrorDefine.DICTIONARY_FIELD_REQUIRED.exception(new String[]{field.getName()}));
+              return Mono.error(Constant.ErrorDefine.DICTIONARY_FIELD_REQUIRED.exception(new String[]{field.getName()}));
             }
           }
            return getDictionaryLabel(dictionary.category(), key.intValue(), dictionary.notFoundAction())
@@ -186,7 +186,7 @@ public class DictionaryFillAspect {
             if (dictionary.optional()){
               return Mono.empty();
             }else{
-              return Mono.error(ErrorDefine.DICTIONARY_FIELD_REQUIRED.exception(new String[]{method.getName()}));
+              return Mono.error(Constant.ErrorDefine.DICTIONARY_FIELD_REQUIRED.exception(new String[]{method.getName()}));
             }
           }
 

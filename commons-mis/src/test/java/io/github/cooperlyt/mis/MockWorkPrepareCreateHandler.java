@@ -1,22 +1,19 @@
 package io.github.cooperlyt.mis;
 
-import io.github.cooperlyt.mis.work.create.WorkPrepareCreateHandler;
+import io.github.cooperlyt.mis.work.create.WorkOperatorPersistableHandler;
+import io.github.cooperlyt.mis.work.data.WorkAction;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
+import io.github.cooperlyt.mis.work.data.WorkOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
-public class MockWorkPrepareCreateHandler implements WorkPrepareCreateHandler {
-  @Override
-  public Mono<Void> prepareCreate(WorkDefine define, long workId, String operatorId, String operatorName) {
-    System.out.println("1===================================> prepareCreate");
-    return Mono.empty();
-  }
+public class MockWorkPrepareCreateHandler implements WorkOperatorPersistableHandler {
 
   @Override
-  public Mono<Void> prepareCreate(WorkDefine define,long workId, long orgId, long employeeId) {
+  public Mono<Void> persist(WorkDefine define, long workId, WorkAction.ActionType type, WorkOperator operator) {
     System.out.println("2===================================> prepareCreate");
     return Mono.empty();
   }

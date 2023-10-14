@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.work;
 
 import io.github.cooperlyt.mis.work.create.WorkCreateAspect;
-import io.github.cooperlyt.mis.work.create.WorkPrepareCreateHandler;
+import io.github.cooperlyt.mis.work.create.WorkOperatorPersistableHandler;
 import io.github.cooperlyt.mis.work.impl.WorkRemoteServiceImpl;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
@@ -34,7 +34,7 @@ public class WorkCreateAutoConfigure {
   @ConditionalOnBean(WorkRemoteService.class)
   @ConditionalOnProperty(prefix = "mis.internal.work.operator",name = "create")
   public WorkCreateAspect workCreateAspect(WorkRemoteService workRemoteService,
-                                           WorkPrepareCreateHandler workPrepareCreateHandler){
+                                           WorkOperatorPersistableHandler workPrepareCreateHandler){
     return new WorkCreateAspect(workRemoteService,workPrepareCreateHandler);
   }
 
