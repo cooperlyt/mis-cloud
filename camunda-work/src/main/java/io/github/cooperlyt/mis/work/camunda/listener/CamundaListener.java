@@ -99,6 +99,7 @@ public class CamundaListener {
 //        });
   }
 
+  //TODO 两件事 1. 如果终止业务时，并不存在UserTask, 2, 取 jwt 中的用户信息 发送 workChangeMessage
   @Order(2)
   @EventListener(condition="#taskEvent.eventName=='delete'")
   public void onTaskDeleteEvent(TaskEvent taskEvent){
