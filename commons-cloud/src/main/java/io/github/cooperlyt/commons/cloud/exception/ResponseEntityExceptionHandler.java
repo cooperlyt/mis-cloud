@@ -28,7 +28,6 @@ public class ResponseEntityExceptionHandler {
     return new ResponseEntity<>(new ValidationHttpStatusExplain(resultMap,path) , HttpStatus.BAD_REQUEST);
   }
 
-
   protected ResponseEntity<HttpStatusExplain> defineExceptionHandler(ResponseDefineException ex, String path) {
     log.warn("define exception:" + ex.getDefineStatusCode(), ex);
     return new ResponseEntity<>(new HttpStatusExplain(ex.getDefineStatusCode(),ex.getArgs(),path),ex.getStatusCode());

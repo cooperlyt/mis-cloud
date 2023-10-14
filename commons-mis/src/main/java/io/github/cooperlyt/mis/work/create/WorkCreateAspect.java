@@ -156,7 +156,6 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     Parameter[] parameters = methodSignature.getMethod().getParameters();
 
     Optional<Long> workId = Optional.empty();
-    Optional<Long> orgId = Optional.empty();
     Optional<WorkOperator> operator = Optional.empty();
 
     for (int i = 0; i < parameters.length; i++) {

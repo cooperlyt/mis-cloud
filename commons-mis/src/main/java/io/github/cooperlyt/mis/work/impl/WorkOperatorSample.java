@@ -14,7 +14,7 @@ public class WorkOperatorSample implements WorkOperator {
   @Builder
   public WorkOperatorSample(ReactiveKeycloakSecurityContextHolder.UserInfo userInfo,
                             String orgName, Long corpInfoId, Long employeeInfoId){
-    this.userId = userInfo.getId();
+    this.userId = userInfo.getUsername();
     this.userName = userInfo.getName();
     this.orgName = orgName;
     this.corpInfoId = corpInfoId;

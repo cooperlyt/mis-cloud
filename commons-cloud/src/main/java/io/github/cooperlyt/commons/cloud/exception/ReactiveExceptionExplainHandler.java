@@ -7,23 +7,23 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.net.BindException;
 
 @Slf4j
 @Configuration
-@ControllerAdvice
+@RestControllerAdvice
 @ConditionalOnWebApplication
 @ConditionalOnClass(org.springframework.web.reactive.config.WebFluxConfigurer.class)
-@ConditionalOnMissingBean(annotation = ControllerAdvice.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ReactiveExceptionExplainHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({ResponseDefineException.class})
