@@ -1,17 +1,14 @@
 package io.github.cooperlyt.commons.utils;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class MonoUtils {
 
   public static Mono<String> justOrHasText(String optional) {
-    if (StringUtils.hasText(optional)) {
+    if (StringUtils.isNotBlank(optional)) {
       return Mono.just(optional);
     }
     return Mono.empty();
