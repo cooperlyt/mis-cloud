@@ -16,4 +16,8 @@ public abstract class KeycloakSecurityContext {
     return origin.getAuthentication().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
   }
 
+  public boolean isAuthenticated(){
+    return origin.getAuthentication().isAuthenticated();
+  }
+
 }
