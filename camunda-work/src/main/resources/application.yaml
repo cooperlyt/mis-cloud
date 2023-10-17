@@ -234,7 +234,9 @@ spring:
     activate:
       on-profile: dev
 
-
+camunda.bpm:
+  database:
+    schema-update: false
 ---
 
 spring:
