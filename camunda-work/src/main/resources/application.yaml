@@ -13,7 +13,13 @@ server:
 management:
   health.probes.enabled: true
   endpoints:
-    web.exposure.include: env,health,info,metrics
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
 
 camunda.bpm:
   eventing:
@@ -43,13 +49,13 @@ camunda.bpm:
   webapp.application-path:
 
 keycloak:
-  realms: ${KEYCLOAK_REALMS:house-sale}
-  url.auth: ${KEYCLOAK_URL_AUTH:https://192.168.1.21:8443}
-  url.token: ${KEYCLOAK_URL_TOKEN:https://192.168.1.21:8443}
-  url.plugin: ${KEYCLOAK_URL_TOKEN:https://192.168.1.21:8443}
+  realms: ${KEYCLOAK_REALM:house-sale}
+  url.auth: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
+#  ${KEYCLOAK_URL_AUTH:https://192.168.1.21:8443}
+  url.token: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
+  url.plugin: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
   client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
   client.secret: ${KEYCLOAK_CLIENT_SECRET:7Osuidv7klOGg80FruUrm6bDFvg4SnQr}
-
 
 plugin.identity.keycloak:
   keycloakIssuerUrl: ${keycloak.url.plugin}/realms/${keycloak.realms}
@@ -78,34 +84,33 @@ spring:
         enabled: true
         caffeine:
           spec: initialCapacity=500,expireAfterWrite=5s
-#    consul:
-#      ribbon:
-#        enabled: false
-#      config:
-#        enabled: true
-#        format: yaml
-#        prefixes: config
-#        profile-separator: ':'
-#        data-key: data
-#      discovery:
-#        serviceName: ${spring.application.name}
-#        # 启用服务发现
-#        enabled: true
-#        # 启用服务注册
-#        register: true
-#        # 服务停止时取消注册
-#        deregister: true
-#
-#        # 表示注册时使用IP而不是hostname
-#        prefer-ip-address: true
-#        # 执行监控检查的频率
-#        health-check-interval: 30s
-#        # 设置健康检查失败多长时间后，取消注册
-#        health-check-critical-timeout: 30s
-#        # 健康检查的路径
-#        health-check-path: /actuator/info
-#        # 服务注册标识，格式为：应用名称+服务器IP+端口
-#        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+    consul:
+      ribbon:
+        enabled: false
+      config:
+        enabled: false
+        format: yaml
+        prefixes: config
+        profile-separator: ':'
+        data-key: data
+      discovery:
+        serviceName: ${spring.application.name}
+        # 启用服务发现
+        enabled: true
+        # 启用服务注册
+        register: true
+        # 服务停止时取消注册
+        deregister: true
+        # 表示注册时使用IP而不是hostname
+        prefer-ip-address: true
+        # 执行监控检查的频率
+        health-check-interval: 30s
+        # 设置健康检查失败多长时间后，取消注册
+        health-check-critical-timeout: 30s
+        # 健康检查的路径
+        health-check-path: ${server.servlet.context-path}/actuator/info
+        # 服务注册标识，格式为：应用名称+服务器IP+端口
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
     function:
       definition: processCreateChannel
     stream:
@@ -126,7 +131,7 @@ spring:
 
       rocketmq:
         binder:
-          nameServer: namesrv:9876
+          nameServer: ${MQ_ADDR:namesrv:9876}
         bindings:
           processCreateChannel-in-0:
             consumer:
@@ -172,10 +177,11 @@ spring:
   datasource:
     testWhileIdle: "true"
     validationQuery: "SELECT 1"
-    url: "jdbc:mariadb://192.168.1.21:3306/camunda?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&nullDatabaseMeansCurrent=true&nullCatalogMeansCurrent=true"
-    username: "root"
-    password: "5257mq"
+    url: ${DB_URL:jdbc:mariadb://192.168.1.21:3306/camunda?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&nullDatabaseMeansCurrent=true&nullCatalogMeansCurrent=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PWD:5257mq}
     driver-class-name: "org.mariadb.jdbc.Driver"
+
 #  jpa:
 #    database: "MYSQL"
 #    show-sql: "false"
@@ -245,4 +251,4 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
     org.springframework.security: WARN
-    cc.coopersoft: INFO
+    io.github.cooperlyt: INFO

@@ -72,19 +72,19 @@
                         <configuration>
                             <outputDirectory>target</outputDirectory>
                             <resources>
-                                <resource>
-                                    <directory>${basedir}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>run.sh</include>
-                                    </includes>
-                                </resource>
+<!--                                <resource>-->
+<!--                                    <directory>${basedir}</directory>-->
+<!--                                    <filtering>true</filtering>-->
+<!--                                    <includes>-->
+<!--                                        <include>run.sh</include>-->
+<!--                                    </includes>-->
+<!--                                </resource>-->
                                 <resource>
                                     <directory>../../docker/build-template</directory>
                                     <filtering>true</filtering>
-                                    <excludes>
-                                        <exclude>run.sh</exclude>
-                                    </excludes>
+<!--                                    <excludes>-->
+<!--                                        <exclude>run.sh</exclude>-->
+<!--                                    </excludes>-->
                                 </resource>
 
                             </resources>

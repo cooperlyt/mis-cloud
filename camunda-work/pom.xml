@@ -39,6 +39,16 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-config</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter</artifactId>
             <version>${camunda.version}</version>
@@ -136,19 +146,19 @@
                         <configuration>
                             <outputDirectory>target</outputDirectory>
                             <resources>
-                                <resource>
-                                    <directory>${basedir}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>run.sh</include>
-                                    </includes>
-                                </resource>
+<!--                                <resource>-->
+<!--                                    <directory>${basedir}</directory>-->
+<!--                                    <filtering>true</filtering>-->
+<!--                                    <includes>-->
+<!--                                        <include>run.sh</include>-->
+<!--                                    </includes>-->
+<!--                                </resource>-->
                                 <resource>
                                     <directory>../docker/build-template</directory>
                                     <filtering>true</filtering>
-                                    <excludes>
-                                        <exclude>run.sh</exclude>
-                                    </excludes>
+<!--                                    <excludes>-->
+<!--                                        <exclude>run.sh</exclude>-->
+<!--                                    </excludes>-->
                                 </resource>
                             </resources>
                         </configuration>

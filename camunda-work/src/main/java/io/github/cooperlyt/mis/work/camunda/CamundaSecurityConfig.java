@@ -45,6 +45,19 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 //@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
 public class CamundaSecurityConfig {
 
+  private static final String[] AUTH_LIST = {
+      // -- swagger ui
+      "/swagger-ui.html",
+      "/swagger-ui/*",
+      "/swagger-resources/**",
+      "/v2/api-docs",
+      "/v3/api-docs",
+      "/webjars/**",
+      "/actuator/**",
+      "/public/**",
+      "/internal/**"
+  };
+
 //  @Bean
 //  public FilterRegistrationBean processCorsFilter() {
 //    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -177,7 +190,6 @@ public class CamundaSecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf
             .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
-
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**"))
             .authenticated())
@@ -191,6 +203,12 @@ public class CamundaSecurityConfig {
             .logoutSuccessHandler(keycloakLogoutHandler))
         .build();
 
+  }
+
+  @Bean
+  public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception{
+    return http.securityMatcher(AUTH_LIST)
+        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()).build();
   }
 
   /**

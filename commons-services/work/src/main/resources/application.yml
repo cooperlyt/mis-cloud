@@ -20,7 +20,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://192.168.1.21:8443/realms/house-sale
+          issuer-uri: ${JWT_ISS:http://keycloak:8080/realms/house-sale}
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   cache:
     cache-names: work,define
@@ -85,7 +85,7 @@ spring:
       rocketmq:
         # 对应 RocketMQBinderConfigurationProperties 类
         binder:
-          name-server: namesrv:9876
+          name-server: ${MQ_ADDR:namesrv:9876}
         # RocketMQ 自定义 Binding 配置项， 对应 RocketMQBindingProperties Map
         bindings:
           workCreateChannel-in-0:
@@ -101,7 +101,9 @@ spring:
               enabled: true
 
   r2dbc:
-    url: r2dbc:mariadb://database:3306/business?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    url: ${DB_URL:r2dbc:mariadb://database:3306/work?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PWD:5257mq}
   jpa:
     show-sql: "true"
   sql:
