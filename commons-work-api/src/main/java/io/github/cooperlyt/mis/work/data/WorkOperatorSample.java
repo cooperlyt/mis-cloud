@@ -1,8 +1,5 @@
-package io.github.cooperlyt.mis.work.impl;
+package io.github.cooperlyt.mis.work.data;
 
-import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakSecurityContextHolder;
-import io.github.cooperlyt.mis.work.data.WorkAction;
-import io.github.cooperlyt.mis.work.data.WorkOperator;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +9,10 @@ import lombok.NoArgsConstructor;
 public class WorkOperatorSample implements WorkOperator {
 
   @Builder
-  public WorkOperatorSample(ReactiveKeycloakSecurityContextHolder.UserInfo userInfo,
+  public WorkOperatorSample(String userId, String userName,
                             String orgName, Long corpInfoId, Long employeeInfoId){
-    this.userId = userInfo.getUsername();
-    this.userName = userInfo.getName();
+    this.userId = userId;
+    this.userName = userName;
     this.orgName = orgName;
     this.corpInfoId = corpInfoId;
     this.employeeInfoId = employeeInfoId;

@@ -1,6 +1,7 @@
 package io.github.cooperlyt.mis.work.create;
 
 
+import io.github.cooperlyt.commons.cloud.keycloak.auth.KeycloakSecurityContext;
 import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakSecurityContextHolder;
 
 import io.github.cooperlyt.mis.work.Constant;
@@ -8,7 +9,7 @@ import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkAction;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkOperator;
-import io.github.cooperlyt.mis.work.impl.WorkOperatorSample;
+import io.github.cooperlyt.mis.work.data.WorkOperatorSample;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.reactive.TransactionalOperator;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Parameter;
@@ -250,8 +253,12 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
   private Mono<WorkOperator> contextOperator(){
     return ReactiveKeycloakSecurityContextHolder.getContext()
-        .map(context -> WorkOperatorSample.builder()
-            .userInfo(context.getUserInfo())
+        .filter(KeycloakSecurityContext::isAuthenticated)
+        .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
+        .map(ReactiveKeycloakSecurityContextHolder.KeycloakUserSecurityContext::getUserInfo)
+        .map(user -> WorkOperatorSample.builder()
+            .userId(user.getId())
+            .userName(user.getUsername())
             .orgName(organization)
             .build());
   }
