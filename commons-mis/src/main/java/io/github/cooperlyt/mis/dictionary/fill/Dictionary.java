@@ -12,6 +12,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface Dictionary {
 
+  static final String DISTRICT_CATEGORY = "_district";
+
   enum NotFoundAction{
     EXCEPTION,
     NULL,

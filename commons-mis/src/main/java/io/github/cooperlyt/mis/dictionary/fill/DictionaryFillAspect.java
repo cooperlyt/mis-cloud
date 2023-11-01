@@ -89,16 +89,45 @@ public class DictionaryFillAspect {
     return result;
   }
 
+  private Mono<String> getDictionaryLabel(String category, Number key){
+    if (Dictionary.DISTRICT_CATEGORY.equals(category)){
+      return dictionaryRemoteService.districtAddress(key.intValue());
+    }
+    return dictionaryRemoteService.dictionaryLabel(category, key.intValue());
+  }
+
   private Mono<String> getDictionaryLabel(String category, Number key, Dictionary.NotFoundAction notFoundAction){
     //return Mono.just("test");
-    return dictionaryRemoteService.dictionaryLabel(category, key.intValue())
+
+    return getDictionaryLabel(category, key)
         .switchIfEmpty(Mono.defer(() -> switch (notFoundAction) {
           case NULL -> Mono.empty();
           case BLANK -> Mono.just("");
           case KEY -> Mono.just(key.toString());
           default ->
-              Mono.error(Constant.ErrorDefine.DICTIONARY_VALUE_INVALID.exception(new String[]{category, key.toString()}));
+              Mono.error(Constant.ErrorDefine.DICTIONARY_VALUE_INVALID.exception(category, key.toString()));
         }));
+
+//    if (Dictionary.DISTRICT_CATEGORY.equals(category)){
+//      return dictionaryRemoteService.districtAddress(key.intValue())
+//          .switchIfEmpty(Mono.defer(() -> switch (notFoundAction) {
+//            case NULL -> Mono.empty();
+//            case BLANK -> Mono.just("");
+//            case KEY -> Mono.just(key.toString());
+//            default ->
+//                Mono.error(Constant.ErrorDefine.DICTIONARY_VALUE_INVALID.exception(category, key.toString()));
+//          }));
+//    }
+//
+//
+//    return dictionaryRemoteService.dictionaryLabel(category, key.intValue())
+//        .switchIfEmpty(Mono.defer(() -> switch (notFoundAction) {
+//          case NULL -> Mono.empty();
+//          case BLANK -> Mono.just("");
+//          case KEY -> Mono.just(key.toString());
+//          default ->
+//              Mono.error(Constant.ErrorDefine.DICTIONARY_VALUE_INVALID.exception(category, key.toString()));
+//        }));
   }
 
   private void assignValue(Class<?> targetClass, Object target,
