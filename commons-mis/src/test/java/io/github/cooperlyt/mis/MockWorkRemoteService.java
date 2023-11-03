@@ -36,5 +36,10 @@ public class MockWorkRemoteService implements WorkRemoteService {
         .doOnNext(id -> System.out.println("--------------> send work message " + id + " with binding :" + bindingName));
   }
 
+  @Override
+  public Mono<Long> applyWorkId() {
+    return Mono.just(1l);
+  }
+
 
 }

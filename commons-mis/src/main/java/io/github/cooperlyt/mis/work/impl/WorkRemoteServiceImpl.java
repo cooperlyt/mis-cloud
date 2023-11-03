@@ -54,6 +54,16 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
         .exchangeToMono(response -> sourceResponse(WorkDefine.class, response));
   }
 
+  @Override
+  public Mono<Long> applyWorkId() {
+    return webClient
+        .get()
+        .uri("http://" + serverName + "/internal/id")
+        .accept(MediaType.APPLICATION_JSON)
+        .exchangeToMono(response -> sourceResponse(Long.class, response));
+  }
+
+
 //  @Override
 //  @Transactional
 //  public Mono<Long> runWork(String bindingName, String defineId, long orgId, long workId, Function<WorkDefine, Mono<Map<String,Object>>> dataProcess) {
@@ -153,8 +163,6 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
         .map(ifSend -> workId)
         .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
   }
-
-
 
 
 

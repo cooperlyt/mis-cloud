@@ -257,8 +257,8 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
         .map(ReactiveKeycloakSecurityContextHolder.KeycloakUserSecurityContext::getUserInfo)
         .map(user -> WorkOperatorSample.builder()
-            .userId(user.getId())
-            .userName(user.getUsername())
+            .userId(user.getUsername())
+            .name(user.getName())
             .orgName(organization)
             .build());
   }

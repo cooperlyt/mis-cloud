@@ -35,4 +35,6 @@ public interface WorkRemoteService {
   Mono<Long> sendWorkMessage(String bindingName, String defineId,
                              long workId, Map<String,Object> processData);
 
+  Mono<Long> applyWorkId();
+
 }

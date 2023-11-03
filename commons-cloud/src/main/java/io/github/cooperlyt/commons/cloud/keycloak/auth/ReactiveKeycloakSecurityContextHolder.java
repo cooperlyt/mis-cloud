@@ -13,6 +13,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 public class ReactiveKeycloakSecurityContextHolder {
 
     public interface JwtUserConverter<T extends UserInfo> {
@@ -43,7 +45,8 @@ public class ReactiveKeycloakSecurityContextHolder {
         private String lastName;
 
         public String getName(){
-            return (StringUtils.hasText(firstName) ? firstName : "") + (StringUtils.hasText(lastName) ? lastName : "");
+            return Optional.ofNullable(lastName).filter(StringUtils::hasText).orElse("") +
+                Optional.ofNullable(firstName).filter(StringUtils::hasText).orElse("");
         }
     }
 

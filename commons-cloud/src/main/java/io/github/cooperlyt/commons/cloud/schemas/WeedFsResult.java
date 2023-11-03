@@ -15,4 +15,6 @@ public class WeedFsResult {
 
     private String mime;
 
+    private String sha256;
+
 }

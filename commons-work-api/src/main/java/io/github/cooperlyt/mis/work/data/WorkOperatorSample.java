@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 public class WorkOperatorSample implements WorkOperator {
 
   @Builder
-  public WorkOperatorSample(String userId, String userName,
+  public WorkOperatorSample(String userId, String name,
                             String orgName, Long corpInfoId, Long employeeInfoId){
     this.userId = userId;
-    this.userName = userName;
+    this.userName = name;
     this.orgName = orgName;
     this.corpInfoId = corpInfoId;
     this.employeeInfoId = employeeInfoId;

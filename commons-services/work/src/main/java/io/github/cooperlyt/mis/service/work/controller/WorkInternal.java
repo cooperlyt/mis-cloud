@@ -1,5 +1,6 @@
 package io.github.cooperlyt.mis.service.work.controller;
 
+import io.github.cooperlyt.cloud.uid.UidGenerator;
 import io.github.cooperlyt.mis.service.work.services.WorkService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
@@ -8,11 +9,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -22,6 +21,9 @@ import reactor.core.publisher.Mono;
 public class WorkInternal {
 
   private final WorkService workService;
+
+  @Resource
+  private UidGenerator defaultUidGenerator;
 
   public WorkInternal(WorkService workService) {
     this.workService = workService;
@@ -39,6 +41,11 @@ public class WorkInternal {
   @RequestMapping(value = "define/{defineId}" ,method = RequestMethod.GET)
   public Mono<WorkDefine> workDefine(@PathVariable("defineId") String defineId){
     return workService.workDefine(defineId);
+  }
+
+  @GetMapping("id")
+  public Mono<Long> applyWorkId(){
+    return defaultUidGenerator.getUID();
   }
 
 }
