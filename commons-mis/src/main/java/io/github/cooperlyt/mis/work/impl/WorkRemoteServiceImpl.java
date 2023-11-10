@@ -151,14 +151,13 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
   @Override
   public Mono<Long> sendWorkMessage(String bindingName, String defineId,
                              long workId, Map<String,Object> processData){
-    return ReactiveKeycloakSecurityContextHolder.getContext()
-        .map(context ->
-            sendMessage(bindingName, defineId, WorkCreateType.RUNNING, String.valueOf(workId) ,
-                WorkCreateMessage.builder()
-                    .workId(workId)
-                    .data(processData)
-                    .build())
-        )
+
+
+    return Mono.fromCallable(() -> sendMessage(bindingName, defineId, WorkCreateType.RUNNING, String.valueOf(workId) ,
+            WorkCreateMessage.builder()
+                .workId(workId)
+                .data(processData)
+                .build()))
         .filter(ifSend -> ifSend)
         .map(ifSend -> workId)
         .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));

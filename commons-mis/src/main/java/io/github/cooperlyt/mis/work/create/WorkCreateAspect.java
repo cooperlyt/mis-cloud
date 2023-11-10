@@ -43,7 +43,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
   private ApplicationContext applicationContext;
 
-  @Value("${mis.organization:}")
+  @Value("${mis.localization.organization:}")
   private String organization;
 
   @Override

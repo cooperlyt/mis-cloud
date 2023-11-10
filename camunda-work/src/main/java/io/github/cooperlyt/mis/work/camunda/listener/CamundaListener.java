@@ -83,7 +83,7 @@ public class CamundaListener {
               .pass(pass)
               .workId(Long.parseLong(taskEvent.getCaseInstanceId()))
               .userId(taskEvent.getAssignee())
-              .userName(user.getFirstName() + user.getLastName())
+              .userName(Optional.ofNullable(user.getLastName()).orElse("")  + Optional.ofNullable(user.getFirstName()).orElse(""))
               .taskName(task.getName())
               .taskId(taskEvent.getId())
               .build(),

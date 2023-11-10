@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0i0whvl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="Collaboration_188byzq">
-    <bpmn:participant id="Participant_1lydy9i" name="合同备案" processRef="contract_record" />
+    <bpmn:participant id="Participant_1lydy9i" name="合同备案" processRef="process_sale_contract_new" />
   </bpmn:collaboration>
-  <bpmn:process id="contract_record" name="商品买卖合同备案" isExecutable="true" camunda:historyTimeToLive="3600">
+  <bpmn:process id="process_sale_contract_new" name="商品买卖合同备案" isExecutable="true" camunda:historyTimeToLive="3600">
     <bpmn:laneSet id="LaneSet_0h28klw">
       <bpmn:lane id="Lane_121a9lz" name="初审">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
@@ -19,9 +19,6 @@
         <bpmn:flowNodeRef>Gateway_02j91ru</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1bblnnj</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0x7hnm7</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_1hfsrj0">
-        <bpmn:flowNodeRef>Activity_1tlgmzg</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_03z002w</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
@@ -29,7 +26,7 @@
       <bpmn:outgoing>Flow_1bblagr</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Activity_01eaeh8" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-first">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="FIRST_CHECK" />
@@ -44,7 +41,7 @@
       <bpmn:outgoing>Flow_1lnhmx8</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0m951zy" name="复审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-second">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="SECOND_CHECK" />
@@ -59,7 +56,7 @@
       <bpmn:outgoing>Flow_0gxleei</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0fx083r" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-last">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="CHECKED" />
@@ -79,20 +76,6 @@
       <bpmn:incoming>Flow_1lnhmx8</bpmn:incoming>
       <bpmn:outgoing>Flow_08ewnrw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_0x7hnm7">
-      <bpmn:incoming>Flow_08ewnrw</bpmn:incoming>
-      <bpmn:terminateEventDefinition id="TerminateEventDefinition_0ukvqio" />
-    </bpmn:endEvent>
-    <bpmn:serviceTask id="Activity_1tlgmzg" name="签章" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.WorkValidDelegate">
-      <bpmn:incoming>Flow_00zc7db</bpmn:incoming>
-      <bpmn:outgoing>Flow_0wi37mz</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_03z002w">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0wi37mz</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1bblagr" sourceRef="StartEvent_1" targetRef="Activity_01eaeh8" />
     <bpmn:sequenceFlow id="Flow_01sstpm" sourceRef="Activity_01eaeh8" targetRef="Gateway_0hotuc3" />
     <bpmn:sequenceFlow id="Flow_0k6q2c5" sourceRef="Gateway_0hotuc3" targetRef="Activity_0m951zy" />
@@ -108,21 +91,27 @@
     <bpmn:sequenceFlow id="Flow_061ehmf" sourceRef="Gateway_02j91ru" targetRef="Activity_1bblnnj">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_00zc7db" sourceRef="Gateway_02j91ru" targetRef="Activity_1tlgmzg" />
+    <bpmn:sequenceFlow id="Flow_00zc7db" sourceRef="Gateway_02j91ru" targetRef="Event_03z002w" />
     <bpmn:sequenceFlow id="Flow_08ewnrw" sourceRef="Activity_1bblnnj" targetRef="Event_0x7hnm7" />
-    <bpmn:sequenceFlow id="Flow_0wi37mz" sourceRef="Activity_1tlgmzg" targetRef="Event_03z002w" />
+    <bpmn:endEvent id="Event_0x7hnm7">
+      <bpmn:incoming>Flow_08ewnrw</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEventDefinition_0ukvqio" />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_03z002w">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00zc7db</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_188byzq">
       <bpmndi:BPMNShape id="Participant_1lydy9i_di" bpmnElement="Participant_1lydy9i" isHorizontal="true">
-        <dc:Bounds x="160" y="100" width="1200" height="620" />
+        <dc:Bounds x="160" y="100" width="1200" height="550" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_1hfsrj0_di" bpmnElement="Lane_1hfsrj0" isHorizontal="true">
-        <dc:Bounds x="190" y="570" width="1170" height="150" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0ei9pbw_di" bpmnElement="Lane_0ei9pbw" isHorizontal="true">
-        <dc:Bounds x="190" y="410" width="1170" height="160" />
+        <dc:Bounds x="190" y="410" width="1170" height="240" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1x0njzu_di" bpmnElement="Lane_1x0njzu" isHorizontal="true">
@@ -162,14 +151,10 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1s0ap5y_di" bpmnElement="Event_0x7hnm7">
-        <dc:Bounds x="1262" y="462" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_07drtv4_di" bpmnElement="Activity_1tlgmzg">
-        <dc:Bounds x="1080" y="600" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="1112" y="562" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_03z002w_di" bpmnElement="Event_03z002w">
-        <dc:Bounds x="1262" y="622" width="36" height="36" />
+        <dc:Bounds x="922" y="562" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1bblagr_di" bpmnElement="Flow_1bblagr">
         <di:waypoint x="298" y="170" />
@@ -211,16 +196,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00zc7db_di" bpmnElement="Flow_00zc7db">
         <di:waypoint x="940" y="505" />
-        <di:waypoint x="940" y="640" />
-        <di:waypoint x="1080" y="640" />
+        <di:waypoint x="940" y="562" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_08ewnrw_di" bpmnElement="Flow_08ewnrw">
-        <di:waypoint x="1180" y="480" />
-        <di:waypoint x="1262" y="480" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0wi37mz_di" bpmnElement="Flow_0wi37mz">
-        <di:waypoint x="1180" y="640" />
-        <di:waypoint x="1262" y="640" />
+        <di:waypoint x="1130" y="520" />
+        <di:waypoint x="1130" y="562" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

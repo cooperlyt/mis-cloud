@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_02gy3cr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="Collaboration_0i186hl">
-    <bpmn:participant id="Participant_1bqoy4c" name="合同撤消" processRef="contract_cancel" />
+    <bpmn:participant id="Participant_1bqoy4c" name="合同撤消" processRef="process_sale_contract_new_cancel" />
   </bpmn:collaboration>
-  <bpmn:process id="contract_cancel" name="商品房买卖合同撤消" isExecutable="true" camunda:historyTimeToLive="3600">
+  <bpmn:process id="process_sale_contract_new_cancel" name="商品房买卖合同撤消" isExecutable="true" camunda:historyTimeToLive="3600">
     <bpmn:laneSet id="LaneSet_1gimqp1">
       <bpmn:lane id="Lane_1gxa36h">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
@@ -18,11 +18,8 @@
         <bpmn:flowNodeRef>Activity_0q4j49l</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1q1hpe5</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1mlamge</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_1g8ytpy</bpmn:flowNodeRef>
-      </bpmn:lane>
-      <bpmn:lane id="Lane_06budz7">
-        <bpmn:flowNodeRef>Activity_09s9o3b</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0gkr3zg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1g8ytpy</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_1xeifgu" sourceRef="StartEvent_1" targetRef="Activity_1veu71t" />
@@ -30,19 +27,19 @@
       <bpmn:outgoing>Flow_1xeifgu</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Activity_1veu71t" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-first">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1xeifgu</bpmn:incoming>
       <bpmn:outgoing>Flow_0kdd4to</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_0fmvq2e" name="复审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-second">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1t3otwx</bpmn:incoming>
       <bpmn:outgoing>Flow_1a0o322</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_0q4j49l" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-last">
-      <bpmn:documentation>${developerName} - ${houseAddress}</bpmn:documentation>
+      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0xcnlyd</bpmn:incoming>
       <bpmn:outgoing>Flow_0yigrxm</bpmn:outgoing>
@@ -52,10 +49,6 @@
       <bpmn:incoming>Flow_18o6nww</bpmn:incoming>
       <bpmn:incoming>Flow_1269d6v</bpmn:incoming>
       <bpmn:outgoing>Flow_1f9ds1z</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_09s9o3b" name="撤消合同" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.WorkValidDelegate">
-      <bpmn:incoming>Flow_1pz8fxe</bpmn:incoming>
-      <bpmn:outgoing>Flow_0mkftte</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="Gateway_1c88ksf" default="Flow_1t3otwx">
       <bpmn:incoming>Flow_0kdd4to</bpmn:incoming>
@@ -80,25 +73,24 @@
     <bpmn:sequenceFlow id="Flow_1k6m13q" sourceRef="Gateway_1mlamge" targetRef="Activity_1q1hpe5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1pz8fxe" sourceRef="Gateway_1mlamge" targetRef="Activity_09s9o3b" />
+    <bpmn:sequenceFlow id="Flow_1pz8fxe" sourceRef="Gateway_1mlamge" targetRef="Event_0gkr3zg" />
     <bpmn:sequenceFlow id="Flow_1f9ds1z" sourceRef="Activity_1q1hpe5" targetRef="Event_1g8ytpy" />
-    <bpmn:endEvent id="Event_1g8ytpy">
-      <bpmn:incoming>Flow_1f9ds1z</bpmn:incoming>
-      <bpmn:terminateEventDefinition id="TerminateEventDefinition_0b0vlod" />
-    </bpmn:endEvent>
-    <bpmn:endEvent id="Event_0gkr3zg">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0mkftte</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_0mkftte" sourceRef="Activity_09s9o3b" targetRef="Event_0gkr3zg" />
     <bpmn:sequenceFlow id="Flow_18o6nww" sourceRef="Gateway_1c88ksf" targetRef="Activity_1q1hpe5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1269d6v" sourceRef="Gateway_0a8y6sx" targetRef="Activity_1q1hpe5">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_0gkr3zg">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1pz8fxe</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1g8ytpy">
+      <bpmn:incoming>Flow_1f9ds1z</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEventDefinition_0b0vlod" />
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0i186hl">
@@ -107,16 +99,13 @@
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0s3trio_di" bpmnElement="Lane_0s3trio" isHorizontal="true">
-        <dc:Bounds x="190" y="380" width="1150" height="140" />
+        <dc:Bounds x="190" y="380" width="1150" height="290" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_072vdff_di" bpmnElement="Lane_072vdff" isHorizontal="true">
         <dc:Bounds x="190" y="240" width="1150" height="140" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1gxa36h_di" bpmnElement="Lane_1gxa36h" isHorizontal="true">
         <dc:Bounds x="190" y="95" width="1150" height="145" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_06budz7_di" bpmnElement="Lane_06budz7" isHorizontal="true">
-        <dc:Bounds x="190" y="520" width="1150" height="150" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="229" y="152" width="36" height="36" />
@@ -136,10 +125,6 @@
         <dc:Bounds x="1020" y="410" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_024u2qt_di" bpmnElement="Activity_09s9o3b">
-        <dc:Bounds x="1020" y="560" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1c88ksf_di" bpmnElement="Gateway_1c88ksf" isMarkerVisible="true">
         <dc:Bounds x="545" y="145" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -149,11 +134,11 @@
       <bpmndi:BPMNShape id="Gateway_1mlamge_di" bpmnElement="Gateway_1mlamge" isMarkerVisible="true">
         <dc:Bounds x="895" y="425" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ewjh4g_di" bpmnElement="Event_1g8ytpy">
-        <dc:Bounds x="1202" y="432" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0gkr3zg_di" bpmnElement="Event_0gkr3zg">
-        <dc:Bounds x="1202" y="582" width="36" height="36" />
+        <dc:Bounds x="902" y="562" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ewjh4g_di" bpmnElement="Event_1g8ytpy">
+        <dc:Bounds x="1052" y="562" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1xeifgu_di" bpmnElement="Flow_1xeifgu">
         <di:waypoint x="265" y="170" />
@@ -185,16 +170,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pz8fxe_di" bpmnElement="Flow_1pz8fxe">
         <di:waypoint x="920" y="475" />
-        <di:waypoint x="920" y="600" />
-        <di:waypoint x="1020" y="600" />
+        <di:waypoint x="920" y="562" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1f9ds1z_di" bpmnElement="Flow_1f9ds1z">
-        <di:waypoint x="1120" y="450" />
-        <di:waypoint x="1202" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0mkftte_di" bpmnElement="Flow_0mkftte">
-        <di:waypoint x="1120" y="600" />
-        <di:waypoint x="1202" y="600" />
+        <di:waypoint x="1070" y="490" />
+        <di:waypoint x="1070" y="562" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18o6nww_di" bpmnElement="Flow_18o6nww">
         <di:waypoint x="595" y="170" />
