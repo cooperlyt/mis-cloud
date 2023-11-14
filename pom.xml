@@ -7,7 +7,7 @@
     <groupId>io.github.cooperlyt.mis</groupId>
     <artifactId>mis-cloud</artifactId>
     <packaging>pom</packaging>
-    <version>2.1.8-snapshot</version>
+    <version>2.1.8</version>
     <modules>
         <module>commons-cloud</module>
         <module>camunda-work</module>

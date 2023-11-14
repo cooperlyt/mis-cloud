@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt.mis</groupId>
         <artifactId>mis-cloud</artifactId>
-        <version>2.1.8-snapshot</version>
+        <version>2.1.8</version>
     </parent>
 
     <artifactId>camunda-work-service</artifactId>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>io.github.cooperlyt.mis</groupId>
             <artifactId>commons-work-api</artifactId>
-            <version>2.1.8-snapshot</version>
+            <version>2.1.8</version>
         </dependency>
 
         <dependency>

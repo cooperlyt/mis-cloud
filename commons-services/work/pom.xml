@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt.mis</groupId>
         <artifactId>commons-services</artifactId>
-        <version>2.1.8-snapshot</version>
+        <version>2.1.8</version>
     </parent>
 
     <artifactId>work</artifactId>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>io.github.cooperlyt.mis</groupId>
             <artifactId>commons-work-api</artifactId>
-            <version>2.1.8-snapshot</version>
+            <version>2.1.8</version>
         </dependency>
 
         <dependency>

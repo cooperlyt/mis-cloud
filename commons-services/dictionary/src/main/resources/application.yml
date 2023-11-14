@@ -9,7 +9,7 @@ mis:
 
 spring:
   application:
-    name: dictionary
+    name: dictionary2
   profiles:
     active: local
   jackson:
