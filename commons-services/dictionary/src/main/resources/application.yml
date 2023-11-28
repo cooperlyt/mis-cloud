@@ -52,8 +52,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${JWT_ISS:http://keycloak:8080/realms/house-sale}
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:${KEYCLOAK_URI}}/realms/${KEYCLOAK_REALM:construction}
+          jwk-set-uri: ${KEYCLOAK_URI}/realms/${KEYCLOAK_REALM:construction}/protocol/openid-connect/certs
   r2dbc:
     url: ${DB_URL:r2dbc:mariadb://database:3306/work?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false}
     username: ${DB_USERNAME:root}
@@ -160,7 +160,6 @@ spring:
   jpa:
     show-sql: "false"
   r2dbc:
-    url: r2dbc:mariadb://database:3306/building?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     pool:
       initial-size: 13
       ## 连接池数量 = ((核心数 * 2) + 有效磁盘数)

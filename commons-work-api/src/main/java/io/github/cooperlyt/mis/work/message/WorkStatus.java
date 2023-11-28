@@ -10,6 +10,7 @@ public enum WorkStatus {
   RUNNING(false), //运行中
 
   COMPLETED(true), //已完成
+  ACCEPTED(false), //已接受
 
   VALID(true), //已生效，但业务还未完成
   REJECT(false), //业务被驳加

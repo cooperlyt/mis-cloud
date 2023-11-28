@@ -50,10 +50,10 @@ camunda.bpm:
 
 keycloak:
   realms: ${KEYCLOAK_REALM:house-sale}
-  url.auth: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
+  url.auth: ${KEYCLOAK_URI:https://192.168.1.21:8443}
 #  ${KEYCLOAK_URL_AUTH:https://192.168.1.21:8443}
-  url.token: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
-  url.plugin: ${KEYCLOAK_SCHEME:https}://${KEYCLOAK_HOST:172.17.0.1}:${KEYCLOAK_PORT:8443}
+  url.token: ${KEYCLOAK_URI:https://192.168.1.21:8443}
+  url.plugin: ${KEYCLOAK_URI:https://192.168.1.21:8443}
   client.id: ${KEYCLOAK_CLIENT_ID:camunda-identity-service}
   client.secret: ${KEYCLOAK_CLIENT_SECRET:7Osuidv7klOGg80FruUrm6bDFvg4SnQr}
 

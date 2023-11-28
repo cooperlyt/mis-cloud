@@ -5,6 +5,7 @@ package io.github.cooperlyt.mis;
 import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -22,6 +23,11 @@ public class MockWorkRemoteService implements WorkRemoteService {
     define.setEnabled(true);
     define.setProcess(true);
     return Mono.just(define);
+  }
+
+  @Override
+  public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
+    return null;
   }
 
   @Override

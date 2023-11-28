@@ -1,19 +1,28 @@
 #!/usr/bin/env bash
 
 
-#[ -z $CONSULSERVER_HOST ] && CONSULSERVER_HOST=$(cat /opt/config/ip)
-echo "********************************************************"
-echo "Waiting for the Consul server to start on port $CONSUL_HOST:$CONSUL_PORT"
-echo "********************************************************"
-./wait-for-it.sh -t 0 $CONSUL_HOST:$CONSUL_PORT -- echo "******* Consul Server has started"
-echo "********************************************************"
-echo "Waiting for the Rocket MQ server to start on port $MQ_ADDR"
-echo "********************************************************"
-./wait-for-it.sh -t 0 $MQ_ADDR -- echo "******* MQ Server has started"
-echo "********************************************************"
-echo "Waiting for the Keycloak server to start on port $KEYCLOAK_HOST : $KEYCLOAK_PORT"
-echo "********************************************************"
-./wait-for-it.sh -t 0 $KEYCLOAK_HOST:$KEYCLOAK_PORT -- echo "******* Keycloak Server has started"
+IFS=";"
+
+read -a items <<< "$WAIT_SERVICES"
+
+if [ ${#items[@]} -eq 1 ]; then
+  echo "********************************************************"
+  echo "Waiting for the server to start on ${items[0]}"
+  echo "********************************************************"
+  ./wait-for-it.sh -t 0 ${items[0]} -- echo "*******  ${items[0]} Server has started"
+  echo "${items[0]} SERVER IS UP"
+else
+  # 有分号，遍历数组中的每个字段
+  for item in "${items[@]}"; do
+    echo "Processing item: $item"
+    echo "********************************************************"
+    echo "Waiting for the server to start on $item"
+    echo "********************************************************"
+    ./wait-for-it.sh -t 0 $item -- echo "*******  $item Server has started"
+    echo "$item SERVER IS UP"
+  done
+fi
+
 
 echo "********************************************************"
 echo "Starting @project.build.finalName@ Service with $(hostname -I | cut -d' ' -f1):$SERVER_PORT - $PROFILE"

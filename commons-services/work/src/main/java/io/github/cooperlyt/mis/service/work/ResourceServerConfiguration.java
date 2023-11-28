@@ -40,7 +40,9 @@ public class ResourceServerConfiguration {
 
             .pathMatchers("/protected/gov/**").hasRole("gov-sale-record")
 
-            .pathMatchers("/protected/external/**").hasRole("external-joint")
+            .pathMatchers("/protected/corp/**").hasRole("corp-joint")
+
+            .pathMatchers("/protected/corp/developer/**").hasRole("corp-developer-sale")
 
             .anyExchange().authenticated()
         )

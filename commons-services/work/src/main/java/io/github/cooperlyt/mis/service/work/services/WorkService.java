@@ -70,7 +70,7 @@ public class WorkService {
   }
 
   public Mono<WorkDefineForProcess> prepareProcess(String defineId){
-    log.info("prepare work:" + defineId);
+    log.info("prepare work for process:" + defineId);
     return defaultUidGenerator.getUID().flatMap(workId ->
             workAttachmentDefineRepository.findAllByDefineId(defineId)
                 .flatMap(define -> defaultUidGenerator.getUID().map(uid -> new WorkAttachmentModel(uid,workId,define)))

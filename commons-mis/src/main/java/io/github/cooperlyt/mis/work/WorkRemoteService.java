@@ -3,6 +3,7 @@ package io.github.cooperlyt.mis.work;
 
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -11,6 +12,8 @@ public interface WorkRemoteService {
 
 
   Mono<WorkDefineForCreate> prepareCreate(String defineId);
+
+  Mono<WorkDefineForProcess> prepareProcess(String defineId);
 
   Mono<WorkDefine> define(String defineId);
 

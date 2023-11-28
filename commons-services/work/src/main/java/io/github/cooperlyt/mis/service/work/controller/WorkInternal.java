@@ -4,6 +4,7 @@ import io.github.cooperlyt.cloud.uid.UidGenerator;
 import io.github.cooperlyt.mis.service.work.services.WorkService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,6 +37,15 @@ public class WorkInternal {
   public Mono<WorkDefineForCreate> prepareCreate(@PathVariable("defineId") String defineId){
     log.info("prepare create work {}" , defineId);
     return workService.prepareCreate(defineId);
+  }
+
+  @Operation(summary = "功能创建定义", description = "附加一个生成的WORK_ID",
+      parameters = {@Parameter(name = "defineId", description = "操作定义ID")})
+  @ApiResponses({@ApiResponse(responseCode = "2xx", description = "成功")})
+  @RequestMapping(value = "create/process/{defineId}" ,method = RequestMethod.GET)
+  public Mono<WorkDefineForProcess> prepareProcess(@PathVariable("defineId") String defineId){
+    log.info("prepare process:" + defineId);
+    return workService.prepareProcess(defineId);
   }
 
   @RequestMapping(value = "define/{defineId}" ,method = RequestMethod.GET)

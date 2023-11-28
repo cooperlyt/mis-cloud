@@ -6,6 +6,7 @@ import io.github.cooperlyt.mis.work.Constant;
 import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import io.github.cooperlyt.mis.work.message.WorkCreateType;
 import io.github.cooperlyt.mis.work.message.WorkMessage;
@@ -43,6 +44,15 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
         .uri("http://" + serverName + "/internal/create/{defineId}", defineId)
         .accept(MediaType.APPLICATION_JSON)
         .exchangeToMono(response -> sourceResponse(WorkDefineForCreate.class, response));
+  }
+
+  @Override
+  public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
+    return webClient
+        .get()
+        .uri("http://" + serverName + "/internal/create/process/{defineId}", defineId)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchangeToMono(response -> sourceResponse(WorkDefineForProcess.class, response));
   }
 
   @Override

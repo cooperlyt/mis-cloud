@@ -1,5 +1,6 @@
 package io.github.cooperlyt.mis.work.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class WorkDefineForProcess extends WorkDefineForCreate implements java.io
   }
 
   @JsonSerialize(contentAs = WorkAttachmentInfo.class)
+  @JsonDeserialize(contentAs = WorkAttachmentImpl.class)
   private List<WorkAttachmentInfo> attachments;
 
 
