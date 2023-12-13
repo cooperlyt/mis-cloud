@@ -4,6 +4,7 @@ import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkImpl;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,17 +21,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class WorkModel extends WorkImpl {
 
-  private final static String SOURCE_FROM_SYSTEM = "SYS";
-
   @Builder
-  public WorkModel(WorkDefine define, long workId, WorkStatus status) {
+  public WorkModel(WorkDefine define, long workId, WorkStatus status, String dataSource) {
     this.workId = workId;
     this.workName = define.getWorkName();
     this.defineId = define.getDefineId();
     this.process = define.isProcess();
     this.type = define.getType();
     this.status = status;
-    this.dataSource = SOURCE_FROM_SYSTEM;
+    if (StringUtils.isBlank(dataSource)) {
+      this.dataSource = SOURCE_FROM_SYSTEM;
+    }else {
+      this.dataSource = dataSource;
+    }
   }
 
   @Id

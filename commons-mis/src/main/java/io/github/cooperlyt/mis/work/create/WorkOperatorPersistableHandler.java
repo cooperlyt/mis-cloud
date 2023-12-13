@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 public interface WorkOperatorPersistableHandler {
 
 
-  Mono<Void> persist(WorkDefine define, long workId, WorkAction.ActionType type , WorkOperator operator);
+  Mono<Void> persist(WorkDefine define, long workId, WorkAction.ActionType type , WorkOperator operator,String dataSource);
 
 
 }

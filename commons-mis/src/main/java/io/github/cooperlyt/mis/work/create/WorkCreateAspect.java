@@ -62,13 +62,15 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     public PrepareWorkDefine(WorkOperator operator,
                              WorkDefine define, Long workId,
                              String binding, boolean optional,
-                             WorkCreate.OperatorWay operatorWay) {
+                             WorkCreate.OperatorWay operatorWay,
+                             String dataSource) {
       this.define = define;
       this.originalWorkId = workId;
       this.binding = binding;
       this.optional = optional;
       this.operatorWay = operatorWay;
       this.operator = operator;
+      this.dataSource = dataSource;
     }
 
     private final WorkOperator operator;
@@ -86,6 +88,9 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
     @Getter
     private final WorkCreate.OperatorWay operatorWay;
+
+    @Getter
+    private final String dataSource;
 
     public Optional<Long> getWorkId() {
       return Optional.ofNullable(originalWorkId);
@@ -195,6 +200,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     }
 
     return Mono.just(PrepareWorkDefine.builder()
+            .dataSource(workCreate.dataSource())
             .optional(workCreate.optional()).operatorWay(workCreate.operatorWay())
             .binding(binding).workId(workId.orElse(null))
             .operator(operator.orElse(null)))
@@ -217,8 +223,8 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
             Mono<?> result = Mono.just(define.operatorWay)
                 .filter(WorkCreate.OperatorWay.FIRST::equals)
                 .flatMap(way -> Mono.justOrEmpty(define.getOperator())
-                    .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),define.getWorkId().orElseThrow(),op))
-                    .switchIfEmpty(persistContextOperator(define.getDefine(),define.getWorkId().orElseThrow()))
+                    .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),define.getWorkId().orElseThrow(),op,define.getDataSource()))
+                    .switchIfEmpty(persistContextOperator(define.getDefine(),define.getWorkId().orElseThrow(),define.getDataSource()))
                 )
                 .then(((Mono<?>) joinPoint.proceed(args)))
                 .filter(r -> !define.isOptional() || !(r instanceof Boolean)  || ((Boolean) r))
@@ -242,13 +248,13 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
   }
 
-  private Mono<Void> persistEmployeeWorkOperator(WorkDefine define, long workId, WorkOperator operator){
-    return workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.APPLY, operator);
+  private Mono<Void> persistEmployeeWorkOperator(WorkDefine define, long workId, WorkOperator operator, String dataSource){
+    return workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.APPLY, operator,dataSource);
   }
 
-  private Mono<Void> persistContextOperator(WorkDefine define, long workId){
+  private Mono<Void> persistContextOperator(WorkDefine define, long workId, String dataSource){
     return contextOperator()
-        .flatMap(op -> workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.CREATE,op));
+        .flatMap(op -> workPrepareCreateHandler.persist(define,workId, WorkAction.ActionType.CREATE,op,dataSource));
   }
 
   private Mono<WorkOperator> contextOperator(){
@@ -278,8 +284,8 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     Mono<Long> prepare = Mono.just(define.operatorWay)
         .filter(WorkCreate.OperatorWay.LAST::equals)
         .flatMap(way -> Mono.justOrEmpty(define.getOperator())
-            .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),workId,op).thenReturn(workId))
-            .switchIfEmpty(persistContextOperator(define.define,workId).thenReturn(workId))
+            .flatMap(op -> persistEmployeeWorkOperator(define.getDefine(),workId,op,define.getDataSource()).thenReturn(workId))
+            .switchIfEmpty(persistContextOperator(define.define,workId,define.getDataSource()).thenReturn(workId))
         )
         .defaultIfEmpty(workId);
 

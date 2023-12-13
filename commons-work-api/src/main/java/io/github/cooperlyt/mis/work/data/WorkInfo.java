@@ -6,6 +6,11 @@ import io.github.cooperlyt.mis.work.message.WorkStatus;
 import java.time.LocalDateTime;
 
 public interface WorkInfo extends java.io.Serializable {
+
+  public final static String SOURCE_FROM_SYSTEM = "SYS";
+
+  public final static String SOURCE_FROM_PATCH = "PATCH";
+
   long getWorkId();
 
   String getDataSource();

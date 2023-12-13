@@ -80,9 +80,9 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   @Override
   public Mono<Void> persist(WorkDefine define, long workId,
-                            WorkAction.ActionType type, WorkOperator operator) {
+                            WorkAction.ActionType type, WorkOperator operator,String dataSource) {
     return workRepository.save(WorkModel.builder()
-            .define(define).workId(workId)
+            .define(define).workId(workId).dataSource(dataSource)
             .status(define.isProcess() ? WorkStatus.RUNNING : WorkStatus.COMPLETED)
             .build())
         .flatMap(work -> workOperatorRepository.save(WorkActionModel.operatorBuilder()
