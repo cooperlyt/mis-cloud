@@ -23,6 +23,9 @@ import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
 @Slf4j
 @Configuration
 @ConditionalOnClass(ElasticsearchAsyncClient.class)
@@ -59,6 +62,8 @@ public class ElasticsearchAutoConfigure {
     }).setHttpClientConfigCallback(httpClientBuilder -> {
       httpClientBuilder.disableAuthCaching();
       //设置账密
+      //httpClientBuilder.setConnectionTimeToLive(properties.connectionTimeout, TimeUnit.SECONDS);
+      httpClientBuilder.setKeepAliveStrategy((response, context) -> Duration.ofMinutes(5).toMillis());
       return getHttpAsyncClientBuilder(httpClientBuilder, properties.username, properties.password);
     }).build();
     ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
