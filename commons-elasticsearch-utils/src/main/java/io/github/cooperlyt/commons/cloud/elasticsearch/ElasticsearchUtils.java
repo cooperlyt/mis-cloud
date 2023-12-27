@@ -91,7 +91,7 @@ public class ElasticsearchUtils {
   public static DataPage<ResultHint> toDataPage(SearchResponse<JsonData> response ,
                                                 int pageNum, int pageSize, boolean snakeToCamel){
     log.debug("--elasticsearch result---");
-    log.debug(toJson(response));
+    log.trace(toJson(response));
     TotalHits total = response.hits().total();
     boolean isExactResult = total.relation() == TotalHitsRelation.Eq;
     List<ResultHint> data = response.hits().hits().stream().map(h ->

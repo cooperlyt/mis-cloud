@@ -20,7 +20,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:${KEYCLOAK_URI}}/realms/${KEYCLOAK_REALM:construction}
+#          issuer-uri: ${KEYCLOAK_ISSUER_URI:${KEYCLOAK_URI}}/realms/${KEYCLOAK_REALM:construction}
           jwk-set-uri: ${KEYCLOAK_URI}/realms/${KEYCLOAK_REALM:construction}/protocol/openid-connect/certs
   cache:
     cache-names: work,define

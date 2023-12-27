@@ -29,12 +29,12 @@ public class ReactiveKeycloakAuthenticationConverter
 
     log.info("convert jwt to spring role");
 
-    log.debug("Claims:");
-    log.debug(jwt.getClaims().toString());
-    log.debug("Header:");
-    log.debug(jwt.getHeaders().toString());
-    log.debug("token:");
-    log.debug(jwt.getTokenValue());
+    log.trace("Claims:");
+    log.trace(jwt.getClaims().toString());
+    log.trace("Header:");
+    log.trace(jwt.getHeaders().toString());
+    log.trace("token:");
+    log.trace(jwt.getTokenValue());
 
     // keycloak 14 default jwt  format
 //Claims
