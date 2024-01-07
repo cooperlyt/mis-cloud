@@ -1,7 +1,5 @@
 package io.github.cooperlyt.mis.work.message;
 
-import java.util.EnumSet;
-
 public enum WorkStatus {
 
 //  PREPARE(false), //准备中
@@ -14,6 +12,11 @@ public enum WorkStatus {
 
   VALID(true), //已生效，但业务还未完成
   REJECT(false), //业务被驳加
+
+  RESTART(false), //业务被驳回，需要重新开始
+
+  IMMINENT(false), //业务即将完成， 已生成部分数据， 目录用于打证
+
   ABORT(false), //业务未完成，被中止
   DELETED(false); //业务已完成，后被删除
 
@@ -23,6 +26,13 @@ public enum WorkStatus {
 
   public final boolean valid;
 
+  public WorkStatus getDisplayWorkStatus() {
+    return switch (this) {
+      case RESTART -> REJECT;
+      case IMMINENT -> RUNNING;
+      default -> this;
+    };
+  }
   WorkStatus(boolean valid) {
     this.valid = valid;
   }

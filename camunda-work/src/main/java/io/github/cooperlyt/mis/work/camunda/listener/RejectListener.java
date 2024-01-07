@@ -10,20 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Deprecated
 @Slf4j
-public class AcceptedListener implements ExecutionListener {
+public class RejectListener implements ExecutionListener {
 
   @Autowired
   private ProcessChangeService processChangeService;
 
-  public AcceptedListener() {
+  public RejectListener() {
     BeanInjectionHelper.autowireBean(this);
   }
+
   @Override
-  public void notify(DelegateExecution delegateExecution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
+    log.info("reject listener process: {}", execution.getProcessBusinessKey());
 
-    log.info("complete listener process: {}", delegateExecution.getProcessBusinessKey());
-
-    processChangeService.statusChange(Long.parseLong(delegateExecution.getProcessBusinessKey()),
-        WorkStatus.ACCEPTED, delegateExecution.getProcessDefinitionId());
+    processChangeService.statusChange(Long.parseLong(execution.getProcessBusinessKey()),
+        WorkStatus.REJECT, execution.getProcessDefinitionId());
   }
 }

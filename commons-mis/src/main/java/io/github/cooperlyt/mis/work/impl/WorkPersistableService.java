@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static io.github.cooperlyt.mis.work.Constant.ErrorDefine.WORK_NOT_EXISTS;
@@ -53,7 +54,7 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
   public Mono<Void> workStatusChange(long workId, WorkStatus status){
     return workRepository.findById(workId)
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
-        .map(work -> work.updateStatus(status))
+        .map(work -> work.updateStatus(status.getDisplayWorkStatus()))
         .flatMap(workRepository::save)
         .then();
   }
@@ -63,7 +64,7 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
     WorkChangeMessage message = msg.getPayload();
     return
         workOperatorRepository.save(WorkActionModel.actionBuilder()
-                .id(message.getTaskId())
+                .id(UUID.randomUUID().toString().replace("-","").toLowerCase())
                 .workId(message.getWorkId())
                 .type(WorkAction.ActionType.TASK)
                 .userId(message.getUserId())

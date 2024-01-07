@@ -7,6 +7,8 @@ public final class Constant {
 
   public static final String WORK_ID_PARAM = "workID";
 
+  public final static String CREATE_USER_PARAM = "create_user";
+
 
   public enum ErrorDefine implements ExceptionStatusCode {
 

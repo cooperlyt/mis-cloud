@@ -1,4 +1,4 @@
-package io.github.cooperlyt.mis.work.camunda.listener;
+package io.github.cooperlyt.mis.work.camunda.delegate;
 
 import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeService;
 import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
@@ -26,10 +26,15 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * EventListener
+ *
+ *
+ */
 
 @Slf4j
 @Component
-public class CamundaListener {
+public class CamundaEventListener {
 
   private final TaskService taskService;
 
@@ -41,9 +46,9 @@ public class CamundaListener {
 
   private final IdentityService identityService;
 
-  public CamundaListener(TaskService taskService,
-                         RuntimeService runtimeService, ProcessChangeService processChangeService,
-                         RepositoryService repositoryService, IdentityService identityService) {
+  public CamundaEventListener(TaskService taskService,
+                              RuntimeService runtimeService, ProcessChangeService processChangeService,
+                              RepositoryService repositoryService, IdentityService identityService) {
     this.taskService = taskService;
     this.runtimeService = runtimeService;
     this.processChangeService = processChangeService;

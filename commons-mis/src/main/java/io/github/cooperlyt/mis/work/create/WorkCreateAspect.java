@@ -34,6 +34,7 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -300,7 +301,21 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
       }else {
         throw new UnsupportedOperationException("work create method return type must be Mono<Map<String,Object>> or Mono<ProcessWorkResult>");
       }
-      return Mono.just(processData).flatMap(data -> prepare
+
+      return Mono.just(processData)
+          .flatMap(data -> Mono.just(!data.containsKey(Constant.CREATE_USER_PARAM))
+              .filter(Boolean::booleanValue)
+              .flatMap(b -> ReactiveKeycloakSecurityContextHolder.getContext())
+              .filter(KeycloakSecurityContext::isAuthenticated)
+              .map(context -> Optional.ofNullable(context.getUserInfo().getUsername()))
+              .defaultIfEmpty(Optional.empty())
+              .map(userName -> {
+                var newData = new HashMap<>(data);
+                newData.put(Constant.CREATE_USER_PARAM,userName.orElse(null));
+                return newData;
+              })
+              .doOnNext(createData -> log.info("work create method process data: {}",createData))
+          ).flatMap(data -> prepare
               .flatMap(wid -> workRemoteService.sendWorkMessage(bindingName,define.getDefineId(),workId,data))
           );
     }

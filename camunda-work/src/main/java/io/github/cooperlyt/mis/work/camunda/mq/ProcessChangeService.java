@@ -6,6 +6,7 @@ import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.support.MessageBuilder;
@@ -23,6 +24,10 @@ public class ProcessChangeService {
   public ProcessChangeService(StreamBridge streamBridge, RepositoryService repositoryService) {
     this.streamBridge = streamBridge;
     this.repositoryService = repositoryService;
+  }
+
+  public void statusChange(DelegateExecution delegateExecution, WorkStatus status) throws Exception {
+    statusChange(Long.parseLong(delegateExecution.getProcessBusinessKey()),status,delegateExecution.getProcessDefinitionId());
   }
 
   public void statusChange(Long workId, WorkStatus status, String processDefinitionId) throws Exception {
