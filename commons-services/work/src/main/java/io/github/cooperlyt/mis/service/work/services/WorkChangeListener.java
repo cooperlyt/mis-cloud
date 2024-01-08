@@ -1,8 +1,7 @@
 package io.github.cooperlyt.mis.service.work.services;
 
 
-import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
-import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
+import io.github.cooperlyt.mis.work.message.WorkRecreateMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -22,15 +21,23 @@ public class WorkChangeListener {
 
 
 
+//  @Bean
+//  public Function<Flux<Message<WorkCreateMessage>>, Mono<Void>> workCreateChannel(){
+//    return Flux::then;
+//  }
+//
+//
+//
+//  @Bean
+//  public Function<Flux<Message<WorkChangeMessage>>,Mono<Void>> workChangeChannel(){
+//    return Flux::then;
+//  }
+
   @Bean
-  public Function<Flux<Message<WorkCreateMessage>>, Mono<Void>> workCreateChannel(){
-    return flux -> flux.flatMap(workService::workCreated).then();
-  }
-
-
-
-  @Bean
-  public Function<Flux<Message<WorkChangeMessage>>,Mono<Void>> workChangeChannel(){
-    return flux -> flux.flatMap(workService::workTaskChange).then();
+  public Function<Flux<Message<WorkRecreateMessage>>,Mono<Void>> workFileCloneChannel(){
+    return flux -> flux
+        .map(Message::getPayload)
+        .flatMap(msg -> workService.cloneWorkFile(msg.getOriginalWorkId(),msg.getTargetWorkId()))
+        .then();
   }
 }

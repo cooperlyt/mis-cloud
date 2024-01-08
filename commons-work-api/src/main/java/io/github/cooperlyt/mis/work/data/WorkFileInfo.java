@@ -6,7 +6,6 @@ public interface WorkFileInfo {
 
   String getSha256();
 
-  String getTaskId();
 
   Integer getSize();
 

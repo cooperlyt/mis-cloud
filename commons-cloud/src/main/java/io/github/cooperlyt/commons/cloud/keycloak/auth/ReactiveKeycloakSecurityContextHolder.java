@@ -58,6 +58,8 @@ public class ReactiveKeycloakSecurityContextHolder {
             this.userInfo = userInfo;
         }
 
+
+
         private final T userInfo;
 
     }
@@ -68,10 +70,9 @@ public class ReactiveKeycloakSecurityContextHolder {
 
     public static <T extends UserInfo> Mono<KeycloakUserSecurityContext<T>> getContext(JwtUserConverter<T> converter){
         return ReactiveSecurityContextHolder.getContext()
-                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED)))
                 .flatMap(context -> {
                     if (!context.getAuthentication().isAuthenticated()){
-                        return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+                        return Mono.just(new KeycloakUserSecurityContext<>(context,null));
                     }
                     Object principal = context.getAuthentication().getPrincipal();
                     if (principal instanceof Jwt){

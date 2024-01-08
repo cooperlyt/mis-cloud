@@ -66,20 +66,14 @@ spring:
 #        - 172.16.
 #      use-only-site-local-interfaces: false
     function:
-      definition: workCreateChannel;workChangeChannel
+      definition: workFileCloneChannel
     stream:
       bindings:
-        workCreateChannel-in-0:
+        workFileCloneChannel-in-0:
           #RocketMQ Topic
-          destination: topic-work-create
+          destination: topic-work-recreate
           content-type: application/json
-          group: group-work-create
-        workChangeChannel-in-0:
-          #RocketMQ Topic
-          destination: topic-process-change
-          content-type: application/json
-          group: group-work-change
-
+          group: group-work-recreate
 
       # Spring Cloud Stream RocketMQ 配置项
       rocketmq:
@@ -88,7 +82,7 @@ spring:
           name-server: ${MQ_ADDR:namesrv:9876}
         # RocketMQ 自定义 Binding 配置项， 对应 RocketMQBindingProperties Map
         bindings:
-          workCreateChannel-in-0:
+          workFileCloneChannel-in-0:
             consumer:
 #              messageModel:
               # 是否开启消费,默认为 true
@@ -96,9 +90,6 @@ spring:
               #是否使用广播消费，默认为false 使用集群消费， 如果要使用广播消费值设成true
               #顺序接收消息
               #orderly: true
-          workChangeChannel-in-0:
-            consumer:
-              enabled: true
 
   r2dbc:
     url: ${DB_URL:r2dbc:mariadb://database:3306/work?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false}

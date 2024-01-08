@@ -82,7 +82,7 @@
       <bpmn:outgoing>Flow_15k794q</bpmn:outgoing>
       <bpmn:outgoing>Flow_0ermf96</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_00sbvta" name="信息更正" camunda:formKey="project-license-correct" camunda:assignee="${create_user}" camunda:candidateGroups="camunda-project-license-accept">
+    <bpmn:userTask id="Activity_00sbvta" name="信息更正" camunda:formKey="project-license-correct" camunda:candidateGroups="camunda-project-license-accept">
       <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>

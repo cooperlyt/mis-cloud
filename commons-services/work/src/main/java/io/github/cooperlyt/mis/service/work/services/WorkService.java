@@ -9,18 +9,13 @@ import io.github.cooperlyt.mis.service.work.repositories.WorkAttachmentRepositor
 import io.github.cooperlyt.mis.service.work.repositories.WorkDefineRepository;
 import io.github.cooperlyt.mis.service.work.repositories.WorkFileRepository;
 import io.github.cooperlyt.mis.work.data.*;
-import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
-import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-
-import static io.github.cooperlyt.mis.service.work.Application.ErrorDefine.WORK_NOT_EXISTS;
 
 @Slf4j
 @Service
@@ -83,35 +78,39 @@ public class WorkService {
         );
   }
 
+  //TODO 使用网关 上传文件信息
+  // 所有文件只存fid
+  @Transactional
   public Mono<Void> addWorkFile(long attachId, WorkFileImpl file){
-    return Mono.just(new WorkFileModel(attachId,file))
+    return Mono.just(new WorkFileModel(file))
         .flatMap(workFileRepository::save)
+        .flatMap(workFile -> workAttachmentRepository.addAttachmentFile(attachId,workFile.getFid()))
         .then();
   }
 
-  @Transactional
-  public Mono<Void> workCreated(Message<WorkCreateMessage> msg){
-    WorkCreateMessage message = msg.getPayload();
-    return workFileRepository.updateFileWorkItem(String.valueOf(message.getWorkId()),message.getWorkId())
-        .then();
-  }
+//  @Transactional
+//  public Mono<Void> workCreated(Message<WorkCreateMessage> msg){
+//    WorkCreateMessage message = msg.getPayload();
+//    return workFileRepository.updateFileWorkItem(String.valueOf(message.getWorkId()),message.getWorkId())
+//        .then();
+//  }
 
 
-  @Transactional
-  public Mono<Void> workTaskChange(Message<WorkChangeMessage> msg){
-    WorkChangeMessage message = msg.getPayload();
-    return workFileRepository.updateFileWorkItem(message.getTaskId(),message.getWorkId())
-        .then();
-  }
+//  @Transactional
+//  public Mono<Void> workTaskChange(Message<WorkChangeMessage> msg){
+//    WorkChangeMessage message = msg.getPayload();
+//    return workFileRepository.updateFileWorkItem(message.getTaskId(),message.getWorkId())
+//        .then();
+//  }
 
   @Transactional
-  public Mono<Void> removeWorkFile(String fileId){
-    return workFileRepository.deleteByFid(fileId);
+  public Mono<Void> removeWorkFile(long attachId,String fileId){
+    return workAttachmentRepository.removeAttachmentFile(attachId,fileId);
   }
 
   @Transactional
   public Mono<List<WorkFileInfo>> workFiles(long attachId){
-    return workFileRepository.findAllByAttachId(attachId)
+    return workAttachmentRepository.listAttachmentFile(attachId)
         .map(WorkFileInfo.class::cast)
         .collectList();
   }
@@ -128,8 +127,9 @@ public class WorkService {
         .map(WorkAttachmentModel::getId);
   }
 
+  @Transactional
   public Mono<Void> removeWorkAttachment(long attachId){
-    return workFileRepository.deleteAllByAttachId(attachId)
+    return workAttachmentRepository.clearAttachmentFile(attachId)
         .then(workAttachmentRepository.deleteById(attachId));
   }
 
@@ -146,5 +146,17 @@ public class WorkService {
     return workDefineRepository.findAllByType(type)
         .map(WorkDefine.class::cast)
         .collectList();
+  }
+
+  @Transactional
+  public Mono<Void> cloneWorkFile(long originalWorkId, long newWorkId){
+    return workAttachmentRepository.findAllByWorkId(originalWorkId)
+        .flatMap(originalAttachment -> defaultUidGenerator.getUID()
+            .map(uid -> new WorkAttachmentModel(uid,newWorkId,originalAttachment))
+            .flatMap(workAttachmentRepository::save)
+            .map(WorkAttachmentModel::getId)
+            .flatMap(newAttachId -> workAttachmentRepository.cloneAttachmentFile(originalAttachment.getId(),newAttachId))
+            .then()
+        ).then();
   }
 }

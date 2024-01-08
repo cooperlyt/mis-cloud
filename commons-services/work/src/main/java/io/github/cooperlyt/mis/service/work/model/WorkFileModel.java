@@ -15,18 +15,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
 public class WorkFileModel extends WorkFileImpl implements Persistable<String> {
 
-  public WorkFileModel(Long attachId, WorkFileImpl workFile) {
-    super(workFile.getFid(), workFile.getSha256(), workFile.getTaskId(), workFile.getSize(), workFile.getMime(), workFile.getETag(), workFile.getFilename());
-    this.attachId = attachId;
+  public WorkFileModel(WorkFileImpl workFile) {
+    super(workFile.getFid(), workFile.getSha256(), workFile.getSize(), workFile.getMime(), workFile.getETag(), workFile.getFilename());
   }
-
-  private Long attachId;
-
-  private int orderNum;
 
   @Id
   @Override

@@ -13,7 +13,6 @@ public class WorkFileImpl implements WorkFileInfo{
 
     private String fid;
     private String sha256;
-    private String taskId;
     private Integer size;
     private String mime;
     private String eTag;

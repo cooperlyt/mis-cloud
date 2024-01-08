@@ -50,9 +50,10 @@ public class WorkManage {
   @Operation(summary = "移除文件", description = "移除文件",
       parameters = {@Parameter(name = "attachId", description = "附件ID"),
                     @Parameter(name = "fileId", description = "文件ID")})
-  @RequestMapping(value = "file/{fileId}" ,method = RequestMethod.DELETE)
-  public Mono<Void> removeFile(@PathVariable("fileId") String fileId){
-    return workService.removeWorkFile(fileId);
+  @RequestMapping(value = "file/{attachId}/{fileId}" ,method = RequestMethod.DELETE)
+  public Mono<Void> removeFile(@PathVariable("attachId")long attachId,
+                               @PathVariable("fileId") String fileId){
+    return workService.removeWorkFile(attachId,fileId);
   }
 
   @Operation(summary = "工作文件列表", description = "工作文件列表",
