@@ -1,9 +1,9 @@
 package io.github.cooperlyt.commons.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,15 +15,29 @@ import java.time.format.DateTimeFormatter;
 public class PersonCardInfo{
 
 
+  @NotBlank
   private String name;
+  @NotBlank
   private String sex;
+  @NotBlank
   private String ethnic;
+  @NotNull
   private LocalDateTime birthday;
+  @NotBlank
   private String address;
+  @NotBlank
   private String id;
+  @NotBlank
   private String agency;
+
+
+  @NotNull
+  @JsonProperty("expire_start")
   private LocalDateTime expireStart;
+
+  @JsonProperty("expire_end")
   private LocalDateTime expireEnd;
+  @NotBlank
   private String picture;
 
   public PersonCardInfo(PersonCardInfo cardInfo) {
@@ -39,17 +53,4 @@ public class PersonCardInfo{
     this.picture = cardInfo.getPicture();
   }
 
-  private final DateTimeFormatter validDateFormat = DateTimeFormatter.ofPattern("yyyy.MM.dd");
-
-
-  public String getValidBeginDate(){
-    return expireStart.format(validDateFormat);
-  }
-
-  public String getValidEndDate(){
-    if (expireEnd == null){
-      return "长期";
-    }
-    return expireEnd.format(validDateFormat);
-  }
 }
