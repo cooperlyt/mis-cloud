@@ -22,8 +22,8 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_1xeifgu</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Activity_1veu71t" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-first">
-      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
+    <bpmn:userTask id="Activity_1veu71t" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-cancel-first">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_1xeifgu</bpmn:incoming>
       <bpmn:outgoing>Flow_0kdd4to</bpmn:outgoing>
@@ -43,8 +43,8 @@
       <bpmn:outgoing>Flow_18o6nww</bpmn:outgoing>
       <bpmn:outgoing>Flow_0q58ihk</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_0q4j49l" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-last">
-      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
+    <bpmn:userTask id="Activity_0q4j49l" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-contract-cancel-last">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0q58ihk</bpmn:incoming>
       <bpmn:outgoing>Flow_0yigrxm</bpmn:outgoing>

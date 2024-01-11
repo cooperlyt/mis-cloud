@@ -18,6 +18,12 @@
 
     <dependencies>
 
+<!--        <dependency>-->
+<!--            <groupId>io.github.cooperlyt.mis</groupId>-->
+<!--            <artifactId>commons-utils</artifactId>-->
+<!--            <version>2.1.8</version>-->
+<!--        </dependency>-->
+
 
 <!--        <dependency>-->
 <!--            <groupId>io.github.cooperlyt.mis</groupId>-->

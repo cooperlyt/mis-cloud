@@ -35,7 +35,7 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1y89whv" sourceRef="Activity_0uru4zn" targetRef="Gateway_03j7k1h" />
     <bpmn:userTask id="Activity_0uru4zn" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-project-license-first">
-      <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="FIRST_CHECK" />
@@ -49,7 +49,7 @@
       <bpmn:outgoing>Flow_1y89whv</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_1rdz8jz" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-project-license-last">
-      <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="CHECKED" />
@@ -83,7 +83,7 @@
       <bpmn:outgoing>Flow_0ermf96</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_00sbvta" name="信息更正" camunda:formKey="project-license-correct" camunda:candidateGroups="camunda-project-license-accept">
-      <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
@@ -94,7 +94,7 @@
       <bpmn:outgoing>Flow_0jgckhi</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_15ber4w" name="缮证" camunda:formKey="project-license-print" camunda:candidateGroups="camunda-project-license-print">
-      <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="VALID" />
@@ -104,7 +104,7 @@
       <bpmn:outgoing>Flow_0rj23th</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_0ueavhr" name="发证" camunda:formKey="project-license-print" camunda:candidateGroups="camunda-project-license-print">
-      <bpmn:documentation>${developerName} - ${projectName}(${buildsName})</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0rj23th</bpmn:incoming>
       <bpmn:outgoing>Flow_0th211z</bpmn:outgoing>

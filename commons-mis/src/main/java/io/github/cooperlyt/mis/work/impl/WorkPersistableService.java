@@ -1,10 +1,13 @@
 package io.github.cooperlyt.mis.work.impl;
 
+import io.github.cooperlyt.commons.data.PowerBody;
 import io.github.cooperlyt.mis.work.create.WorkOperatorPersistableHandler;
 import io.github.cooperlyt.mis.work.data.*;
+import io.github.cooperlyt.mis.work.impl.model.WorkApplicantModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkActionModel;
 import io.github.cooperlyt.mis.work.impl.model.WorkTaskModel;
+import io.github.cooperlyt.mis.work.impl.repositories.WorkApplicantRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
 import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
@@ -27,13 +30,17 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   private final WorkTaskRepository workTaskRepository;
 
+  private final WorkApplicantRepository workApplicantRepository;
+
   private final WorkRepository workRepository;
 
   public WorkPersistableService(WorkOperatorRepository workOperatorRepository,
                                 WorkTaskRepository workTaskRepository,
+                                WorkApplicantRepository workApplicantRepository,
                                 WorkRepository workRepository) {
     this.workOperatorRepository = workOperatorRepository;
     this.workTaskRepository = workTaskRepository;
+    this.workApplicantRepository = workApplicantRepository;
     this.workRepository = workRepository;
   }
 
@@ -48,6 +55,11 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
         .cast(WorkInfo.class)
         .cache();
+  }
+
+  public Mono<Long> saveWorkApplicant(PowerBody powerBody, long workId){
+    return workApplicantRepository.save(new WorkApplicantModel(powerBody,workId))
+        .map(WorkApplicantModel::getWorkId);
   }
 
   @Transactional
@@ -79,6 +91,19 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
             ).then();
   }
 
+  @Transactional
+  public Mono<Long> prepareWork(WorkDefineForCreate work){
+    return workRepository.save(WorkModel.builder()
+        .define(work)
+        .workId(work.getWorkId())
+        .dataSource(WorkInfo.SOURCE_FROM_SYSTEM)
+        .status(WorkStatus.PREPARE)
+        .build())
+        .thenReturn(work.getWorkId());
+  }
+
+
+  @Transactional
   @Override
   public Mono<Void> persist(WorkDefine define, long workId,
                             WorkAction.ActionType type, WorkOperator operator,String dataSource) {
@@ -94,4 +119,5 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
             .build()))
         .then();
   }
+
 }

@@ -3,6 +3,7 @@ package io.github.cooperlyt.mis.work;
 import io.github.cooperlyt.mis.work.create.WorkCreateAspect;
 import io.github.cooperlyt.mis.work.create.WorkOperatorPersistableHandler;
 import io.github.cooperlyt.mis.work.impl.WorkRemoteServiceImpl;
+import io.github.cooperlyt.mis.work.impl.repositories.WorkApplicantRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
@@ -43,8 +44,9 @@ public class WorkCreateAutoConfigure {
   @ConditionalOnProperty(prefix = "mis.internal.work.operator",name = "persistable")
   public WorkPersistableService workOperatorService(WorkOperatorRepository workOperatorRepository,
                                                     WorkTaskRepository workTaskRepository,
+                                                    WorkApplicantRepository workApplicantRepository,
                                                     WorkRepository workRepository){
-    return new WorkPersistableService(workOperatorRepository,workTaskRepository,workRepository);
+    return new WorkPersistableService(workOperatorRepository,workTaskRepository,workApplicantRepository,workRepository);
   }
 
 }

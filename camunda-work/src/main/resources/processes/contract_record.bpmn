@@ -37,7 +37,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${source eq "PATCH"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="Activity_01eaeh8" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-first">
-      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="FIRST_CHECK" />
@@ -55,7 +55,7 @@
       <bpmn:outgoing>Flow_1e2e36e</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0fx083r" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-contract-record-last">
-      <bpmn:documentation>${developer_name} - ${build_address}${apartment_name}</bpmn:documentation>
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="CHECKED" />

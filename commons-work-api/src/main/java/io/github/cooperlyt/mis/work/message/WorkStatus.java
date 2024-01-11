@@ -2,7 +2,7 @@ package io.github.cooperlyt.mis.work.message;
 
 public enum WorkStatus {
 
-//  PREPARE(false), //准备中
+  PREPARE(false), //准备中
 //  PRIVATE(false), //私有的，只有本人或本组可以看到
 //
   RUNNING(false), //运行中
