@@ -37,6 +37,15 @@ public class WorkAction extends WorkMessage implements WorkOperator {
     this.type = type;
   }
 
+  public WorkAction(WorkAction action) {
+    super(action.getWorkId(), action.getUserId(), action.getUserName());
+    this.type = action.getType();
+    this.corpInfoId = action.getCorpInfoId();
+    this.employeeInfoId = action.getEmployeeInfoId();
+    this.orgName = action.getOrgName();
+    this.workTime = action.getWorkTime();
+  }
+
   public enum ActionType {
     CREATE,
     TASK,

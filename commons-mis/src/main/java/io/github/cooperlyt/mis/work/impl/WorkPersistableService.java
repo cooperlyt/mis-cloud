@@ -50,6 +50,11 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .cache();
   }
 
+  public Mono<List<WorkTask>> workRejectTasks(long workId){
+    return workOperatorRepository.workRejectActions(workId).collectSortedList(Comparator.comparing(WorkAction::getWorkTime))
+        .cache();
+  }
+
   public Mono<WorkInfo> workInfo(long workId){
     return workRepository.findById(workId)
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
@@ -102,7 +107,20 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .thenReturn(work.getWorkId());
   }
 
+  //TODO receive MQ message
+  @Transactional
+  public Mono<Void> processWorkCreateListener(long workId, WorkOperator operator){
+    return workRepository.updateWorkStatus(workId,WorkStatus.RUNNING)
+        .then(workOperatorRepository.save(WorkActionModel.operatorBuilder()
+            .id(String.valueOf(workId))
+            .workId(workId)
+            .type(WorkAction.ActionType.CREATE)
+            .operator(operator)
+            .build()))
+        .then();
+  }
 
+  //TODO function work MQ message
   @Transactional
   @Override
   public Mono<Void> persist(WorkDefine define, long workId,

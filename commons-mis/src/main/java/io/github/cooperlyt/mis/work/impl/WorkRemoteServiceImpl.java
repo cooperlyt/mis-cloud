@@ -1,6 +1,5 @@
 package io.github.cooperlyt.mis.work.impl;
 
-import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakSecurityContextHolder;
 import io.github.cooperlyt.mis.RemoteResponseService;
 import io.github.cooperlyt.mis.work.Constant;
 import io.github.cooperlyt.mis.work.WorkRemoteService;

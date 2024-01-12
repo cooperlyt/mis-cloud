@@ -21,5 +21,10 @@ public interface WorkOperatorRepository extends ReactiveCrudRepository<WorkActio
   Flux<WorkTask> workActions(long workId);
 
 
+  @Query("SELECT o.*,t.message,t.task_name,t.pass FROM work_task t " +
+      "left join work_operator o on t.task_id = o.task_id WHERE o.work_id = :workId AND t.pass = false")
+  Flux<WorkTask> workRejectActions(long workId);
+
+
   Mono<WorkActionModel> findFirstByWorkIdAndTypeIn(long workId, Collection<WorkAction.ActionType> types);
 }
