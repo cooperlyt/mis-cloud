@@ -17,6 +17,8 @@ import lombok.experimental.SuperBuilder;
 public class PowerBodyImpl implements PowerBody,java.io.Serializable {
 
 
+
+
   public PowerBodyImpl(PowerBody powerBody) {
     this.idType = powerBody.getIdType();
     this.name = powerBody.getName();

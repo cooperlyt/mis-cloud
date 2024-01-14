@@ -18,6 +18,7 @@ public final class Constant {
 
     WORK_NOT_EXISTS(HttpStatus.NOT_FOUND,1),
 
+    WORK_STATUS_NOT_ALLOW(HttpStatus.CONFLICT,9),
     DICTIONARY_FIELD_REQUIRED(HttpStatus.BAD_REQUEST,6),
 
     DICTIONARY_VALUE_INVALID(HttpStatus.BAD_REQUEST,7),

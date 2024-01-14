@@ -4,7 +4,7 @@
     <bpmn:extensionElements />
     <bpmn:participant id="Participant_0bxvbgt" name="竣工备案" processRef="project_completed_record" />
   </bpmn:collaboration>
-  <bpmn:process id="project_completed_record" isExecutable="true">
+  <bpmn:process id="project_completed_record" isExecutable="true" camunda:historyTimeToLive="3600">
     <bpmn:laneSet id="LaneSet_01hq0id">
       <bpmn:lane id="Lane_109uygz" name="初审">
         <bpmn:flowNodeRef>Gateway_0wtcmb0</bpmn:flowNodeRef>
@@ -138,12 +138,12 @@
         <dc:Bounds x="200" y="80" width="728" height="600" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_109uygz_di" bpmnElement="Lane_109uygz" isHorizontal="true">
-        <dc:Bounds x="230" y="80" width="698" height="450" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1j8y8kl_di" bpmnElement="Lane_1j8y8kl" isHorizontal="true">
         <dc:Bounds x="230" y="530" width="698" height="150" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_109uygz_di" bpmnElement="Lane_109uygz" isHorizontal="true">
+        <dc:Bounds x="230" y="80" width="698" height="450" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0wtcmb0_di" bpmnElement="Gateway_0wtcmb0" isMarkerVisible="true">

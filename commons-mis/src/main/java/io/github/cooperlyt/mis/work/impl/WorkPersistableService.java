@@ -62,9 +62,19 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .cache();
   }
 
-  public Mono<Long> saveWorkApplicant(PowerBody powerBody, long workId){
-    return workApplicantRepository.save(new WorkApplicantModel(powerBody,workId))
+  public Mono<Long> createWorkApplicant(long workId, PowerBody applicant){
+    return workApplicantRepository.save(new WorkApplicantModel(true,applicant,workId))
         .map(WorkApplicantModel::getWorkId);
+  }
+
+  public Mono<Long> updateWorkApplicant(long workId, PowerBody applicant){
+    return workApplicantRepository.save(new WorkApplicantModel(false,applicant,workId))
+        .map(WorkApplicantModel::getWorkId);
+  }
+
+  public Mono<PowerBody> getWorkApplicant(long workId){
+    return workApplicantRepository.findById(workId).cast(PowerBody.class);
+
   }
 
   @Transactional
