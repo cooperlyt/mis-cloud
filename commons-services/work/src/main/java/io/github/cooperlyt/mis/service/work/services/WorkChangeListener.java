@@ -1,6 +1,7 @@
 package io.github.cooperlyt.mis.service.work.services;
 
 
+import io.github.cooperlyt.mis.work.message.StatusChangeMessage;
 import io.github.cooperlyt.mis.work.message.WorkRecreateMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -35,12 +36,12 @@ public class WorkChangeListener {
 //    return Flux::then;
 //  }
 
-  @Bean
-  public Function<Flux<Message<WorkRecreateMessage>>,Mono<Void>> workFileCloneChannel(){
-    return flux -> flux
-        .map(Message::getPayload)
-        .doOnNext(msg -> log.info("work file clone: {}",msg))
-        .flatMap(msg -> workService.cloneWorkFile(msg.getOriginalWorkId(),msg.getTargetWorkId()))
-        .then();
-  }
+//  @Bean
+//  public Function<Flux<Message<StatusChangeMessage>>,Mono<Void>> workStatusChannel(){
+//    return flux -> flux
+//        .map(Message::getPayload)
+//        .doOnNext(msg -> log.info("work file clone: {}",msg))
+//        .flatMap(msg -> workService.cloneWorkFile(msg.getOriginalWorkId(),msg.getTargetWorkId()))
+//        .then();
+//  }
 }

@@ -113,9 +113,12 @@ public class CamundaEventListener {
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
         .processInstanceId(taskEvent.getProcessInstanceId())
         .singleResult();
-    try {
+    if (processInstance.isEnded()){
+      log.warn("process instance is ended: {}",taskEvent.getProcessInstanceId());
+    }
+    try {//          processInstance.isEnded() ? WorkStatus.DELETED : WorkStatus.ABORT,
       processChangeService.statusChange(Long.parseLong(taskEvent.getCaseInstanceId()),
-          processInstance.isEnded() ? WorkStatus.DELETED : WorkStatus.ABORT,
+          WorkStatus.ABORT,
           taskEvent.getProcessDefinitionId());
     } catch (Exception e) {
       throw new RuntimeException(e);

@@ -4,7 +4,7 @@
     <bpmn:extensionElements />
     <bpmn:participant id="Participant_0bxvbgt" name="竣工备案" processRef="project_completed_record" />
   </bpmn:collaboration>
-  <bpmn:process id="project_completed_record" isExecutable="true" camunda:historyTimeToLive="3600">
+  <bpmn:process id="project_completed_record" name="竣工备案" isExecutable="true" camunda:historyTimeToLive="3600">
     <bpmn:laneSet id="LaneSet_01hq0id">
       <bpmn:lane id="Lane_109uygz" name="初审">
         <bpmn:flowNodeRef>Gateway_0wtcmb0</bpmn:flowNodeRef>
@@ -56,7 +56,8 @@
       <bpmn:incoming>Flow_11h9dwl</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_1fepdh2" />
     </bpmn:endEvent>
-    <bpmn:userTask id="Activity_130ppfh" name="更正" camunda:formKey="correct" camunda:candidateGroups="camunda-project-completed-accept">
+    <bpmn:userTask id="Activity_130ppfh" name="更正" camunda:formKey="correct/project-completed" camunda:candidateGroups="camunda-project-completed-accept">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
@@ -106,6 +107,7 @@
       <bpmn:outgoing>Flow_1kegxgv</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0f9ayo5" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-project-completed-last">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>

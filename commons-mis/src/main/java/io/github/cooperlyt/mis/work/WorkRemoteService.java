@@ -13,6 +13,8 @@ public interface WorkRemoteService {
 
   Mono<WorkDefineForCreate> prepareCreate(String defineId);
 
+  Mono<WorkDefineForCreate> recreate(String defineId, long originalWorkId);
+
   Mono<WorkDefineForProcess> prepareProcess(String defineId);
 
   Mono<WorkDefine> define(String defineId);

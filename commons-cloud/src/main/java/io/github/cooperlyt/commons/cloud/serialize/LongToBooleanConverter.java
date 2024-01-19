@@ -10,7 +10,6 @@ import org.springframework.data.convert.ReadingConverter;
 public class LongToBooleanConverter implements Converter<Long,Boolean> {
   @Override
   public Boolean convert(@NotNull Long source) {
-    log.debug("LongToBooleanConverter: {}",source);
     return source != 0;
   }
 }

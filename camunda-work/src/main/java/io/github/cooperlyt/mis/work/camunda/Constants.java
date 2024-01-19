@@ -6,6 +6,8 @@ public class Constants {
 
   public static final String DEFINE_KEY_NAME = "define";
 
+  public static final String WORK_STATUS_KEY_NAME = "status";
+
 
   //public static final String
 

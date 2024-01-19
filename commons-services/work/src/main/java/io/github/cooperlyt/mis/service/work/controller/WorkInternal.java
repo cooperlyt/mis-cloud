@@ -39,6 +39,17 @@ public class WorkInternal {
     return workService.prepareCreate(defineId);
   }
 
+  @Operation(summary = "重建业务", description = "附加一个生成的WORK_ID",
+      parameters = {@Parameter(name = "defineId", description = "操作定义ID")})
+  @ApiResponses({@ApiResponse(responseCode = "2xx", description = "成功")})
+  @GetMapping(value = "create/{defineId}/{workId}")
+  public Mono<WorkDefineForCreate> recreateWork(@PathVariable("defineId") String defineId,
+                                                @PathVariable("workId") long originalWorkId){
+    log.info("recreate work {}" , defineId);
+    return workService.recreateWork(defineId,originalWorkId);
+
+  }
+
   @Operation(summary = "功能创建定义", description = "附加一个生成的WORK_ID",
       parameters = {@Parameter(name = "defineId", description = "操作定义ID")})
   @ApiResponses({@ApiResponse(responseCode = "2xx", description = "成功")})
@@ -47,6 +58,8 @@ public class WorkInternal {
     log.info("prepare process:" + defineId);
     return workService.prepareProcess(defineId);
   }
+
+
 
   @RequestMapping(value = "define/{defineId}" ,method = RequestMethod.GET)
   public Mono<WorkDefine> workDefine(@PathVariable("defineId") String defineId){

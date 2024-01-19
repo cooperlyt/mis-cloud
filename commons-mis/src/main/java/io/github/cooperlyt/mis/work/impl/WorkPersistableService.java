@@ -117,9 +117,20 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .thenReturn(work.getWorkId());
   }
 
-  //TODO receive MQ message
   @Transactional
-  public Mono<Void> processWorkCreateListener(long workId, WorkOperator operator){
+  public Mono<Long> createRunningWork(WorkDefineForCreate work){
+    return workRepository.save(WorkModel.builder()
+        .define(work)
+        .workId(work.getWorkId())
+        .dataSource(WorkInfo.SOURCE_FROM_SYSTEM)
+        .status(WorkStatus.RUNNING)
+        .build())
+        .thenReturn(work.getWorkId());
+  }
+
+
+  @Transactional
+  public Mono<Void> runProcessWork(long workId, WorkOperator operator){
     return workRepository.updateWorkStatus(workId,WorkStatus.RUNNING)
         .then(workOperatorRepository.save(WorkActionModel.operatorBuilder()
             .id(String.valueOf(workId))
@@ -130,7 +141,14 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .then();
   }
 
-  //TODO function work MQ message
+  @Transactional
+  public Mono<Void> cloneApplicant(long workId, long newWorkId){
+    return workApplicantRepository.findById(workId)
+        .map(applicant -> new WorkApplicantModel(true,applicant,newWorkId))
+        .flatMap(workApplicantRepository::save)
+        .then();
+  }
+
   @Transactional
   @Override
   public Mono<Void> persist(WorkDefine define, long workId,

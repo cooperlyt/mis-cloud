@@ -26,6 +26,11 @@ public class MockWorkRemoteService implements WorkRemoteService {
   }
 
   @Override
+  public Mono<WorkDefineForCreate> recreate(String defineId, long originalWorkId) {
+    return null;
+  }
+
+  @Override
   public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
     return null;
   }

@@ -46,6 +46,16 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
   }
 
   @Override
+  public Mono<WorkDefineForCreate> recreate(String defineId, long originalWorkId) {
+    log.debug("prepare create work {}" , defineId);
+    return webClient
+        .get()
+        .uri("http://" + serverName + "/internal/create/{defineId}/{workId}", defineId,originalWorkId)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchangeToMono(response -> sourceResponse(WorkDefineForCreate.class, response));
+  }
+
+  @Override
   public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
     return webClient
         .get()

@@ -148,7 +148,13 @@ public class WorkService {
         .collectList();
   }
 
-  @Transactional
+
+  public Mono<WorkDefineForCreate> recreateWork(String defineId, long originalWorkId){
+    return prepareCreate(defineId)
+        .flatMap(define -> cloneWorkFile(originalWorkId,define.getWorkId())
+            .thenReturn(define));
+  }
+
   public Mono<Void> cloneWorkFile(long originalWorkId, long newWorkId){
     return workAttachmentRepository.findAllByWorkId(originalWorkId)
         .flatMap(originalAttachment -> defaultUidGenerator.getUID()

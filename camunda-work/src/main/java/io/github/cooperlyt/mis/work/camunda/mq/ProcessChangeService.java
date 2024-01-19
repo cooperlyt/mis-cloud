@@ -33,6 +33,7 @@ public class ProcessChangeService {
   public void statusChange(Long workId, WorkStatus status, String processDefinitionId) throws Exception {
     var msg = MessageBuilder.withPayload(StatusChangeMessage.builder().status(status).workId(workId).build())
         .setHeader(Constants.DEFINE_KEY_NAME,getDefineId(processDefinitionId))
+        .setHeader(Constants.WORK_STATUS_KEY_NAME,status)
         .build();
     if (!streamBridge.send("statusChangeChannel-out-0",msg)){
       throw new Exception("message send fail!");
