@@ -112,12 +112,17 @@ spring:
         # 服务注册标识，格式为：应用名称+服务器IP+端口
         instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
     function:
-      definition: processCreateChannel
+      definition: processCreateChannel;signalEventChannel
     stream:
       bindings:
         processCreateChannel-in-0:
           #RocketMQ Topic
           destination: topic-work-create
+          content-type: application/json
+          group: group-camunda
+        signalEventChannel-in-0:
+          #RocketMQ Topic
+          destination: topic-work-signal
           content-type: application/json
           group: group-camunda
         processChangeChannel-out-0:
@@ -136,6 +141,9 @@ spring:
           processCreateChannel-in-0:
             consumer:
               subscription: sql:(type = 'RUNNING')
+          signalEventChannel-in-0:
+            consumer:
+              enabled: true
           statusChangeChannel-out-0:
             producer:
               group: group-camunda

@@ -8,6 +8,8 @@ public class Constants {
 
   public static final String WORK_STATUS_KEY_NAME = "status";
 
+  public static final String SIGNAL_KEY_NAME = "signal";
+
 
   //public static final String
 
