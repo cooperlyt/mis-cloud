@@ -13,7 +13,6 @@
       <bpmn:lane id="Lane_0s3trio">
         <bpmn:flowNodeRef>Activity_0q4j49l</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1mlamge</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_1q1hpe5</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0gkr3zg</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1g8ytpy</bpmn:flowNodeRef>
       </bpmn:lane>
@@ -29,12 +28,12 @@
       <bpmn:outgoing>Flow_0kdd4to</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_0kdd4to" sourceRef="Activity_1veu71t" targetRef="Gateway_1c88ksf" />
-    <bpmn:sequenceFlow id="Flow_18o6nww" sourceRef="Gateway_1c88ksf" targetRef="Activity_1q1hpe5">
+    <bpmn:sequenceFlow id="Flow_18o6nww" sourceRef="Gateway_1c88ksf" targetRef="Event_1g8ytpy">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0q58ihk" sourceRef="Gateway_1c88ksf" targetRef="Activity_0q4j49l" />
     <bpmn:sequenceFlow id="Flow_0yigrxm" sourceRef="Activity_0q4j49l" targetRef="Gateway_1mlamge" />
-    <bpmn:sequenceFlow id="Flow_1k6m13q" sourceRef="Gateway_1mlamge" targetRef="Activity_1q1hpe5">
+    <bpmn:sequenceFlow id="Flow_1k6m13q" sourceRef="Gateway_1mlamge" targetRef="Event_1g8ytpy">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1pz8fxe" sourceRef="Gateway_1mlamge" targetRef="Event_0gkr3zg" />
@@ -54,12 +53,6 @@
       <bpmn:outgoing>Flow_1k6m13q</bpmn:outgoing>
       <bpmn:outgoing>Flow_1pz8fxe</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Activity_1q1hpe5" name="驳回" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.WorkRejectDelegate">
-      <bpmn:incoming>Flow_1k6m13q</bpmn:incoming>
-      <bpmn:incoming>Flow_18o6nww</bpmn:incoming>
-      <bpmn:outgoing>Flow_1r83n07</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_1r83n07" sourceRef="Activity_1q1hpe5" targetRef="Event_1g8ytpy" />
     <bpmn:endEvent id="Event_0gkr3zg">
       <bpmn:extensionElements>
         <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
@@ -67,21 +60,25 @@
       <bpmn:incoming>Flow_1pz8fxe</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="Event_1g8ytpy">
-      <bpmn:incoming>Flow_1r83n07</bpmn:incoming>
+      <bpmn:extensionElements>
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1k6m13q</bpmn:incoming>
+      <bpmn:incoming>Flow_18o6nww</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_0b0vlod" />
     </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0i186hl">
       <bpmndi:BPMNShape id="Participant_1bqoy4c_di" bpmnElement="Participant_1bqoy4c" isHorizontal="true">
-        <dc:Bounds x="160" y="95" width="770" height="375" />
+        <dc:Bounds x="160" y="95" width="860" height="375" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_0s3trio_di" bpmnElement="Lane_0s3trio" isHorizontal="true">
-        <dc:Bounds x="190" y="270" width="740" height="200" />
+        <dc:Bounds x="190" y="270" width="830" height="200" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_1gxa36h_di" bpmnElement="Lane_1gxa36h" isHorizontal="true">
-        <dc:Bounds x="190" y="95" width="740" height="175" />
+        <dc:Bounds x="190" y="95" width="830" height="175" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="229" y="152" width="36" height="36" />
@@ -100,15 +97,11 @@
       <bpmndi:BPMNShape id="Gateway_1mlamge_di" bpmnElement="Gateway_1mlamge" isMarkerVisible="true">
         <dc:Bounds x="655" y="325" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_16xxkaq_di" bpmnElement="Activity_1q1hpe5">
-        <dc:Bounds x="760" y="310" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0gkr3zg_di" bpmnElement="Event_0gkr3zg">
         <dc:Bounds x="662" y="412" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1ewjh4g_di" bpmnElement="Event_1g8ytpy">
-        <dc:Bounds x="792" y="412" width="36" height="36" />
+        <dc:Bounds x="762" y="332" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1xeifgu_di" bpmnElement="Flow_1xeifgu">
         <di:waypoint x="265" y="170" />
@@ -120,8 +113,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18o6nww_di" bpmnElement="Flow_18o6nww">
         <di:waypoint x="575" y="170" />
-        <di:waypoint x="810" y="170" />
-        <di:waypoint x="810" y="310" />
+        <di:waypoint x="780" y="170" />
+        <di:waypoint x="780" y="332" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0q58ihk_di" bpmnElement="Flow_0q58ihk">
         <di:waypoint x="550" y="195" />
@@ -133,15 +126,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1k6m13q_di" bpmnElement="Flow_1k6m13q">
         <di:waypoint x="705" y="350" />
-        <di:waypoint x="760" y="350" />
+        <di:waypoint x="762" y="350" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1pz8fxe_di" bpmnElement="Flow_1pz8fxe">
         <di:waypoint x="680" y="375" />
         <di:waypoint x="680" y="412" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1r83n07_di" bpmnElement="Flow_1r83n07">
-        <di:waypoint x="810" y="390" />
-        <di:waypoint x="810" y="412" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

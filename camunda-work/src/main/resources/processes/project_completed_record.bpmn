@@ -51,7 +51,7 @@
     </bpmn:endEvent>
     <bpmn:endEvent id="Event_0x8enf8">
       <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.RejectListener" event="end" />
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_11h9dwl</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_1fepdh2" />
@@ -96,7 +96,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="Event_0h7543w">
       <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.RejectListener" event="end" />
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_099cqii</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_0utn8c0" />

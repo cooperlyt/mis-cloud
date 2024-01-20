@@ -119,7 +119,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="Event_1irqvmy">
       <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.RejectListener" event="end" />
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1skbira</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_0zf9mu4" />
