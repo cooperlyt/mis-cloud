@@ -64,8 +64,8 @@ public class ElasticsearchAutoConfigure {
       //设置账密
       // tcp 连接超时 java.net.SocketException: Connection reset
       // 疑似 为 docker overlay TCP 15分钟断开， 而TCP连接池中的连接还在，导致连接失效  https://stackoverflow.com/questions/62148388/java-elasticsearch-highlevelrestclient-throw-java-net-socketexception-connecti
-      httpClientBuilder.setConnectionTimeToLive(5, TimeUnit.MINUTES);
-      httpClientBuilder.setKeepAliveStrategy((response, context) -> Duration.ofMinutes(5).toMillis());
+      httpClientBuilder.setConnectionTimeToLive(10, TimeUnit.MINUTES);
+      httpClientBuilder.setKeepAliveStrategy((response, context) -> Duration.ofMinutes(10).toMillis());
       return getHttpAsyncClientBuilder(httpClientBuilder, properties.username, properties.password);
     }).build();
     ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());

@@ -119,20 +119,20 @@ spring:
           #RocketMQ Topic
           destination: topic-work-create
           content-type: application/json
-          group: group-camunda
+          group: group-camunda-create
         signalEventChannel-in-0:
           #RocketMQ Topic
           destination: topic-work-signal
           content-type: application/json
-          group: group-camunda
+          group: group-camunda-signal
         processChangeChannel-out-0:
           destination: topic-process-change
           content-type: application/json
-          group: group-camunda
+          group: group-camunda-change
         statusChangeChannel-out-0:
           destination: topic-status-change
           content-type: application/json
-          group: group-camunda
+          group: group-camunda-status
 
       rocketmq:
         binder:
@@ -144,12 +144,13 @@ spring:
           signalEventChannel-in-0:
             consumer:
               enabled: true
-          statusChangeChannel-out-0:
-            producer:
-              group: group-camunda
           processChangeChannel-out-0:
             producer:
-              group: group-camunda
+              group: group-camunda-change
+          statusChangeChannel-out-0:
+            producer:
+              group: group-camunda-status
+
 #              transactionListener: processStatusChangeTransactionListener
 #              producerType: Trans
 #              sendMessageTimeout: 60000

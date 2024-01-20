@@ -1,8 +1,13 @@
 package io.github.cooperlyt.commons.cloud.resteasy;
 
 import io.github.cooperlyt.commons.cloud.keycloak.admin.KeycloakAdminProperties;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpAsyncClient4Engine;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -14,7 +19,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @AutoConfiguration
 @ConditionalOnClass(ResteasyClient.class)
@@ -30,7 +38,16 @@ public class ResteasyClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ResteasyClientBuilder resteasyClientBuilder(ResteasyClientProperties properties) {
+
+      //https://cloud.tencent.com/developer/article/1347296
+      //docker overlay network 15 分钟内不活跃的连接会被关闭
+      CloseableHttpClient httpClient = HttpClientBuilder.create()
+          .setConnectionTimeToLive(10, TimeUnit.MINUTES)
+          .setKeepAliveStrategy((response, context) -> Duration.ofMinutes(10).toMillis())
+          .build();
+
       ResteasyClientBuilder result = new ResteasyClientBuilderImpl();
+      result.httpEngine(new ApacheHttpClient43Engine(httpClient));
       Optional.of(properties.getConnection().getPoolSize()).ifPresent(result::connectionPoolSize);
       Optional.of(properties.getConnection().getCheckoutTimeout()).ifPresent(durationProperties -> result.connectionCheckoutTimeout(durationProperties.getDuration(), durationProperties.getUnit()));
       Optional.of(properties.getConnection().getMaxPooledPerRoute()).ifPresent(result::maxPooledPerRoute);
