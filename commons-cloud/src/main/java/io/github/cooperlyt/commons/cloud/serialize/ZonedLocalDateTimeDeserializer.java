@@ -85,7 +85,7 @@ public class ZonedLocalDateTimeDeserializer extends InstantDeserializer<LocalDat
   public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException
   {
     //context.getTimeZone()
-    log.debug("deserialize LocalDateTime: {} to {}", parser.getText(), targetZoneId);
+    log.trace("deserialize LocalDateTime: {} to {}", parser.getText(), targetZoneId);
     return super.deserialize(parser, context);
   }
 

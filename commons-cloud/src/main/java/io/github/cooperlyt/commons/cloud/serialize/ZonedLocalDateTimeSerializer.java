@@ -122,6 +122,8 @@ public class ZonedLocalDateTimeSerializer extends InstantSerializerBase<LocalDat
 
     g.writeString(formatValue(_value, provider));
 
+    log.trace("serialize LocalDateTime: {} to {}", value, _value);
+
   }
 
 //  @Override

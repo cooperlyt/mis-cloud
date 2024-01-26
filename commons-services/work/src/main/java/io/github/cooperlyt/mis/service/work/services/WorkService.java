@@ -145,7 +145,8 @@ public class WorkService {
   public Mono<List<WorkDefine>> defineByType(String type){
     return workDefineRepository.findAllByType(type)
         .map(WorkDefine.class::cast)
-        .collectList();
+        .collectList()
+        .doOnNext(list -> log.info("define list:{}",list));
   }
 
 

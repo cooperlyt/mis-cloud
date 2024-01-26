@@ -79,10 +79,7 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   @Transactional
   public Mono<Void> workStatusChange(long workId, WorkStatus status){
-    return workRepository.findById(workId)
-        .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
-        .map(work -> work.updateStatus(status.getDisplayWorkStatus()))
-        .flatMap(workRepository::save)
+    return workRepository.updateWorkStatus(workId,status)
         .then();
   }
 

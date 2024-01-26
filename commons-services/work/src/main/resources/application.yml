@@ -65,27 +65,8 @@ spring:
 #      preferred-networks:
 #        - 172.16.
 #      use-only-site-local-interfaces: false
-#    function:
-#      definition: workStatusChannel
-    stream:
-#      bindings:
-#        workStatusChannel-in-0:
-#          #RocketMQ Topic
-#          destination: topic-status-change
-#          content-type: application/json
-#          group: group-work-status
 
-      # Spring Cloud Stream RocketMQ 配置项
-      rocketmq:
-        # 对应 RocketMQBinderConfigurationProperties 类
-        binder:
-          name-server: ${MQ_ADDR:namesrv:9876}
-        # RocketMQ 自定义 Binding 配置项， 对应 RocketMQBindingProperties Map
-#        bindings:
-#          workStatusChannel-in-0:
-#            consumer:
-#              enabled: true
-#              subscription: sql:(status = 'RESTART')
+
 
   r2dbc:
     url: ${DB_URL:r2dbc:mariadb://database:3306/work?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false}

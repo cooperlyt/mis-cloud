@@ -31,6 +31,16 @@ import java.util.TimeZone;
 @Slf4j
 public class LocalDateTimeTest {
 
+  static class TestDateTime2{
+
+
+    @Getter
+    @Setter
+    private LocalDateTime localDateTime;
+
+
+  }
+
 
   static class TestDateTime{
 
@@ -47,6 +57,8 @@ public class LocalDateTimeTest {
 
   }
 
+
+
   static class TestDateTimeResult{
 
 
@@ -62,6 +74,44 @@ public class LocalDateTimeTest {
 
   }
 
+
+  @Test
+  public void testDeserialization() throws JsonProcessingException {
+
+    String testStr = "{\"localDateTime\":\"2024-01-20T14:43:42+08:00\"}";
+    DateTimeFormatter dateTimeFormatter =  DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    ZoneId zoneId = ZoneId.of("Asia/Shanghai");
+
+    JavaTimeModule javaTimeModule = new JavaTimeModule();
+
+
+    javaTimeModule.addSerializer(LocalDateTime.class, ZonedLocalDateTimeSerializer.INSTANCE);
+
+
+    javaTimeModule.addDeserializer(LocalDateTime.class, new ZonedLocalDateTimeDeserializer(zoneId));
+
+    //builder.modules(javaTimeModule);
+
+
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+    objectMapper.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+    objectMapper.setDateFormat(new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"));
+
+
+
+    objectMapper.registerModule(javaTimeModule);
+
+    TestDateTime2 obj = objectMapper.readValue(testStr,TestDateTime2.class);
+
+    System.out.println(obj.getLocalDateTime());
+
+    System.out.println(objectMapper.writeValueAsString(obj));
+
+
+
+  }
 
 
   @Test
@@ -151,6 +201,8 @@ public class LocalDateTimeTest {
       System.out.println(testTimestampTime1.getLocalDateTime());
 
       assert testTimestampTime1.getZonedDateTime().withZoneSameInstant(ZoneId.of("Asia/Shanghai")).toLocalDateTime().equals(testTimestampTime1.getLocalDateTime());
+
+
 
 
     } catch (JsonProcessingException e) {

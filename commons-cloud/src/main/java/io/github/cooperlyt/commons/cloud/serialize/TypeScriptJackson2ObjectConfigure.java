@@ -4,23 +4,21 @@ package io.github.cooperlyt.commons.cloud.serialize;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.util.StringUtils;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 
+@Slf4j
 @AutoConfiguration
 @ConditionalOnClass(ObjectMapper.class)
 @EnableConfigurationProperties(TypeScriptJacksonProperties.class)
@@ -58,9 +56,11 @@ public class TypeScriptJackson2ObjectConfigure {
 
       javaTimeModule.addDeserializer(LocalDateTime.class, new ZonedLocalDateTimeDeserializer(zoneId));
 
-      //builder.modules(javaTimeModule);
 
       builder.modulesToInstall(javaTimeModule);
+
+      log.info("LocalDateTime Serializer and Deserializer has been installed");
+      log.debug("LocalDateTime Serializer and Deserializer has been installed with timeZone: {}", zoneId);
 
 
     };
@@ -80,6 +80,9 @@ public class TypeScriptJackson2ObjectConfigure {
       builder.serializerByType(BigInteger.class, ToStringSerializer.instance);
       builder.serializerByType(Long.class, ToStringSerializer.instance);
       builder.serializerByType(Long.TYPE, ToStringSerializer.instance);
+
+      log.info("Long Serializer has been installed");
+      log.debug("Long Serializer has been installed --- toStringSerializer");
     };
   }
 
