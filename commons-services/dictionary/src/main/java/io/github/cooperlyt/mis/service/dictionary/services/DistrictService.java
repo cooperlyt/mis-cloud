@@ -28,7 +28,7 @@ public class DistrictService {
             .reduce(new District(District.ROOT_LEVEL),(root ,district) -> {
                 root.putChild(district);
                 return root;
-            }).map(District::getChildren).cache();
+            }).map(District::getChildren);
     }
 
     public Mono<String> getAddress(int id){

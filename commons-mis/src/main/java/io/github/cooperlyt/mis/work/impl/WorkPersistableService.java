@@ -46,20 +46,17 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   public Mono<List<WorkTask>> workTasks(long workId){
     return workOperatorRepository.workActions(workId).collectList()
-        .map(list -> list.stream().sorted(Comparator.comparing(WorkAction::getWorkTime).reversed()).collect(Collectors.toList()))
-        .cache();
+        .map(list -> list.stream().sorted(Comparator.comparing(WorkAction::getWorkTime).reversed()).collect(Collectors.toList()));
   }
 
   public Mono<List<WorkTask>> workRejectTasks(long workId){
-    return workOperatorRepository.workRejectActions(workId).collectSortedList(Comparator.comparing(WorkAction::getWorkTime))
-        .cache();
+    return workOperatorRepository.workRejectActions(workId).collectSortedList(Comparator.comparing(WorkAction::getWorkTime));
   }
 
   public Mono<WorkInfo> workInfo(long workId){
     return workRepository.findById(workId)
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
-        .cast(WorkInfo.class)
-        .cache();
+        .cast(WorkInfo.class);
   }
 
   public Mono<Long> createWorkApplicant(long workId, PowerBody applicant){

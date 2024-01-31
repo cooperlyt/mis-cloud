@@ -13,7 +13,7 @@ public enum IdentityType {
   SPECIAL(false, false,"港澳身份证"), //港澳身份证
 
   COMPANY(true, false,"营业执照"), //营业执照
-  ORGANIZATION(true, false,"组织机构代码"), //组织机构代码
+  ORGANIZATION(true, false,"组织机构代码证"), //组织机构代码
   ORG_CODE(true, false,"统一社会信用代码证"), //统一社会信用代码证
   RELIGION(true, false,"宗教证"); //宗教证
 
