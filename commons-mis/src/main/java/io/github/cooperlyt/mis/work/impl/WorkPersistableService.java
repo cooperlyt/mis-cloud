@@ -17,6 +17,7 @@ import org.springframework.messaging.Message;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -76,8 +77,23 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   @Transactional
   public Mono<Void> workStatusChange(long workId, WorkStatus status){
-    return workRepository.updateWorkStatus(workId,status)
+    return workRepository.findById(workId)
+        .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))
+        .filter(work -> work.getStatus() != status)
+        .doOnNext(work -> {
+          work.setStatus(status);
+          if (status.valid){
+            work.setValidateAt(LocalDateTime.now());
+            if (WorkStatus.COMPLETED.equals(status)){
+              work.setCompletedAt(LocalDateTime.now());
+            }
+          }
+        })
+        .flatMap(workRepository::save)
         .then();
+
+//    return workRepository.updateWorkStatus(workId,status)
+//        .then();
   }
 
   @Transactional
@@ -147,6 +163,8 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
   @Override
   public Mono<Void> persist(WorkDefine define, long workId,
                             WorkAction.ActionType type, WorkOperator operator,String dataSource) {
+
+
     return workRepository.save(WorkModel.builder()
             .define(define).workId(workId).dataSource(dataSource)
             .status(define.isProcess() ? WorkStatus.RUNNING : WorkStatus.COMPLETED)

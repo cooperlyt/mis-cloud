@@ -34,6 +34,12 @@ public class WorkModel extends WorkImpl {
     }else {
       this.dataSource = dataSource;
     }
+    if (status.valid){
+      this.validateAt = LocalDateTime.now();
+    }
+    if (WorkStatus.COMPLETED.equals(status)){
+      this.completedAt = LocalDateTime.now();
+    }
   }
 
   @Id

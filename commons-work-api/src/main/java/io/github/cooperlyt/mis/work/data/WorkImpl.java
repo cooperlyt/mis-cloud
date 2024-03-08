@@ -29,6 +29,6 @@ public abstract class WorkImpl implements WorkInfo {
 
   @Timestamp
   private LocalDateTime updatedAt;
-  private LocalDateTime completedAt;
-  private LocalDateTime validateAt;
+  protected LocalDateTime completedAt;
+  protected LocalDateTime validateAt;
 }
