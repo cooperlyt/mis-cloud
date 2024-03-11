@@ -152,11 +152,13 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
   }
 
   @Transactional
-  public Mono<Void> cloneApplicant(long workId, long newWorkId){
-    return workApplicantRepository.findById(workId)
-        .map(applicant -> new WorkApplicantModel(true,applicant,newWorkId))
-        .flatMap(workApplicantRepository::save)
-        .then();
+  public Mono<Void> cloneApplicant(long sourceWorkId, long newWorkId){
+    return workApplicantRepository.cloneApplicant(newWorkId,sourceWorkId);
+
+//        .findById(sourceWorkId)
+//        .map(applicant -> new WorkApplicantModel(true,applicant,newWorkId))
+//        .flatMap(workApplicantRepository::save)
+//        .then();
   }
 
   @Transactional
