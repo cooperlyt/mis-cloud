@@ -291,7 +291,7 @@ public class ChineseUtils {
      *            15位身份编码
      * @return 18位身份编码
      */
-    public static String conver15CardTo18(String idCard) {
+    public static String convert15CardTo18(String idCard) {
       String idCard18 = "";
       if (idCard.length() != CHINA_ID_MIN_LENGTH) {
         return null;
@@ -339,13 +339,9 @@ public class ChineseUtils {
       if (validateIdCard15(card)) {
         return true;
       }
-      String[] cardval = validateIdCard10(card);
-      if (cardval != null) {
-        if (cardval[2].equals("true")) {
-          return true;
-        }
-      }
-      return false;
+      String[] cardSpecial = validateIdCard10(card);
+      assert cardSpecial != null;
+      return cardSpecial[2].equals("true");
     }
 
     /**
@@ -403,7 +399,7 @@ public class ChineseUtils {
         Calendar cal = Calendar.getInstance();
         if (birthDate != null)
           cal.setTime(birthDate);
-        return valiDate(cal.get(Calendar.YEAR), Integer.parseInt(birthCode.substring(2, 4)),
+        return validDate(cal.get(Calendar.YEAR), Integer.parseInt(birthCode.substring(2, 4)),
             Integer.parseInt(birthCode.substring(4, 6)));
       } else {
         return false;
@@ -614,12 +610,13 @@ public class ChineseUtils {
     public static int getAgeByIdCard(String idCard) {
       int iAge = 0;
       if (idCard.length() == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       String year = idCard.substring(6, 10);
       Calendar cal = Calendar.getInstance();
       int iCurrYear = cal.get(Calendar.YEAR);
-      iAge = iCurrYear - Integer.valueOf(year);
+      iAge = iCurrYear - Integer.parseInt(year);
       return iAge;
     }
 
@@ -630,12 +627,13 @@ public class ChineseUtils {
      * @return 生日(yyyyMMdd)
      */
     public static String getBirthByIdCard(String idCard) {
-      Integer len = idCard.length();
+      int len = idCard.length();
       if (len < CHINA_ID_MIN_LENGTH) {
         return null;
       } else if (len == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       return idCard.substring(6, 14);
     }
 
@@ -646,12 +644,13 @@ public class ChineseUtils {
      * @return 生日(yyyy)
      */
     public static Short getYearByIdCard(String idCard) {
-      Integer len = idCard.length();
+      int len = idCard.length();
       if (len < CHINA_ID_MIN_LENGTH) {
         return null;
       } else if (len == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       return Short.valueOf(idCard.substring(6, 10));
     }
 
@@ -663,12 +662,13 @@ public class ChineseUtils {
      * @return 生日(MM)
      */
     public static Short getMonthByIdCard(String idCard) {
-      Integer len = idCard.length();
+      int len = idCard.length();
       if (len < CHINA_ID_MIN_LENGTH) {
         return null;
       } else if (len == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       return Short.valueOf(idCard.substring(10, 12));
     }
 
@@ -680,12 +680,13 @@ public class ChineseUtils {
      * @return 生日(dd)
      */
     public static Short getDateByIdCard(String idCard) {
-      Integer len = idCard.length();
+      int len = idCard.length();
       if (len < CHINA_ID_MIN_LENGTH) {
         return null;
       } else if (len == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       return Short.valueOf(idCard.substring(12, 14));
     }
 
@@ -698,8 +699,9 @@ public class ChineseUtils {
     public static String getGenderByIdCard(String idCard) {
       String sGender = "N";
       if (idCard.length() == CHINA_ID_MIN_LENGTH) {
-        idCard = conver15CardTo18(idCard);
+        idCard = convert15CardTo18(idCard);
       }
+      assert idCard != null;
       String sCardNum = idCard.substring(16, 17);
       if (Integer.parseInt(sCardNum) % 2 != 0) {
         sGender = "M";
@@ -733,7 +735,7 @@ public class ChineseUtils {
      * @return 提取的数字。
      */
     public static boolean isNum(String val) {
-      return val == null || "".equals(val) ? false : val.matches("^[0-9]*$");
+      return val != null && !val.isEmpty() && val.matches("^[0-9]*$");
     }
 
     /**
@@ -747,7 +749,7 @@ public class ChineseUtils {
      *            待验证日期(日)
      * @return 是否有效
      */
-    public static boolean valiDate(int iYear, int iMonth, int iDate) {
+    public static boolean validDate(int iYear, int iMonth, int iDate) {
       Calendar cal = Calendar.getInstance();
       int year = cal.get(Calendar.YEAR);
       int datePerMonth;
@@ -757,21 +759,14 @@ public class ChineseUtils {
       if (iMonth < 1 || iMonth > 12) {
         return false;
       }
-      switch (iMonth) {
-        case 4:
-        case 6:
-        case 9:
-        case 11:
-          datePerMonth = 30;
-          break;
-        case 2:
-          boolean dm = ((iYear % 4 == 0 && iYear % 100 != 0) || (iYear % 400 == 0))
-              && (iYear > MIN && iYear < year);
-          datePerMonth = dm ? 29 : 28;
-          break;
-        default:
-          datePerMonth = 31;
-      }
+      datePerMonth = switch (iMonth) {
+        case 4, 6, 9, 11 -> 30;
+        case 2 -> {
+          boolean dm = (iYear % 4 == 0 && iYear % 100 != 0 || iYear % 400 == 0) && iYear > MIN;
+          yield dm ? 29 : 28;
+        }
+        default -> 31;
+      };
       return (iDate >= 1) && (iDate <= datePerMonth);
     }
 

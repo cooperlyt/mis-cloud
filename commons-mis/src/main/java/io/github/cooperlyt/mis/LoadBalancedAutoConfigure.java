@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,15 +21,18 @@ public class LoadBalancedAutoConfigure {
     this.objectMapper = objectMapper;
   }
 
-
   @Bean
-  @LoadBalanced
-  public WebClient.Builder builder() {
-    final ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+  public ExchangeStrategies exchangeStrategies() {
+    return ExchangeStrategies.builder()
         .codecs(configurer -> configurer.defaultCodecs()
             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper)))
         .build();
+  }
 
+  @Bean
+  @Lazy
+  @LoadBalanced
+  public WebClient.Builder builder(ExchangeStrategies exchangeStrategies) {
     return WebClient.builder().exchangeStrategies(exchangeStrategies);
   }
 }

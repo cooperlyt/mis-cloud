@@ -12,6 +12,9 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.github.cooperlyt.mis.MisCommonsErrorDefine.DICTIONARY_NOT_FOUND;
+import static io.github.cooperlyt.mis.MisCommonsErrorDefine.DISTRICT_NOT_FOUND;
+
 @Slf4j
 public class DictionaryRemoteServiceImpl extends RemoteResponseService implements DictionaryRemoteService {
 
@@ -32,37 +35,39 @@ public class DictionaryRemoteServiceImpl extends RemoteResponseService implement
   @Value("${mis.internal.dictionary.serverName}")
   private String serverName;
 
-  private Mono<String> getRemoteDistrictAddress(int id){
+  private Mono<String> getRemoteDistrictAddress(int id, boolean must){
     return webClient
         .get()
         .uri("http://" + serverName + "/public/district/{code}", id)
         .accept(MediaType.TEXT_PLAIN)
-        .exchangeToMono(response -> sourceResponse(String.class, response));
+        .exchangeToMono(response -> sourceResponse(String.class, response))
+        .switchIfEmpty(must ? Mono.error(DISTRICT_NOT_FOUND.exception()) : Mono.empty());
   }
 
   @Override
-  public Mono<String> districtAddress(int id) {
+  public Mono<String> districtAddress(int id, boolean must) {
     if (districtAddressCache.containsKey(id)){
       return Mono.just(districtAddressCache.get(id));
     }
-    return getRemoteDistrictAddress(id).doOnNext(r -> districtAddressCache.put(id,r));
+    return getRemoteDistrictAddress(id, must).doOnNext(r -> districtAddressCache.put(id,r));
   }
 
-  private Mono<Map<Integer,String>> getDictionary(String category) {
+  private Mono<Map<Integer,String>> getDictionary(String category, boolean must) {
     return webClient
         .get()
         .uri("http://" + serverName + "/public/label/{category}/all", category)
         .accept(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(new ParameterizedTypeReference<>() {}, response));
+        .exchangeToMono(response -> sourceResponse(new ParameterizedTypeReference<Map<Integer,String>>() {}, response))
+        .switchIfEmpty(must ? Mono.error(DICTIONARY_NOT_FOUND.exception()) : Mono.empty());
   }
 
   @Override
-  public Mono<String> dictionaryLabel(String category, int key) {
+  public Mono<String> dictionaryLabel(String category, int key, boolean must) {
     if (dictionaryCache.containsKey(category)){
       log.info("load dictionary from cache:{}",category);
       return Mono.justOrEmpty(dictionaryCache.get(category).get(key));
     }
-    return getDictionary(category)
+    return getDictionary(category, must)
         .doOnNext(r -> dictionaryCache.put(category,r))
         .flatMap(r -> Mono.justOrEmpty(r.get(key)));
   }

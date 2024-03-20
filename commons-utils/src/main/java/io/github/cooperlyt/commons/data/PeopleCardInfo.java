@@ -1,18 +1,18 @@
 package io.github.cooperlyt.commons.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.cooperlyt.commons.utils.OptionalUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonCardInfo{
+public class PeopleCardInfo {
 
 
   @NotBlank
@@ -40,7 +40,20 @@ public class PersonCardInfo{
   @NotBlank
   private String picture;
 
-  public PersonCardInfo(PersonCardInfo cardInfo) {
+
+  private String formatId(String id) {
+    return OptionalUtils.justOrEmpty(id).map(String::trim).map(String::toUpperCase).orElse(null);
+  }
+
+  public void setId(String id) {
+    this.id = formatId(id);
+  }
+
+  public String getId() {
+    return formatId(this.id);
+  }
+
+  public PeopleCardInfo(PeopleCardInfo cardInfo) {
     this.name = cardInfo.getName();
     this.sex = cardInfo.getSex();
     this.ethnic = cardInfo.getEthnic();

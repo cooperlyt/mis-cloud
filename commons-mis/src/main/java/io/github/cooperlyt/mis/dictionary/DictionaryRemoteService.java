@@ -4,9 +4,17 @@ import reactor.core.publisher.Mono;
 
 public interface DictionaryRemoteService {
 
-    Mono<String> districtAddress(int id);
+    Mono<String> districtAddress(int id, boolean must);
 
-    Mono<String> dictionaryLabel(String category, int key);
+    default Mono<String> districtAddress(int id){
+        return districtAddress(id, true);
+    }
+
+    Mono<String> dictionaryLabel(String category, int key, boolean must);
+
+    default Mono<String> dictionaryLabel(String category, int key){
+        return dictionaryLabel(category, key, true);
+    }
 
 //    Mono<Map<String,String>> getDistrictName(Set<Integer> ids);
 //

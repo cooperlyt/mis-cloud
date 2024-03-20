@@ -6,6 +6,7 @@ import io.github.cooperlyt.commons.cloud.exception.ResponseDefineException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import reactor.core.publisher.Mono;
 
@@ -14,6 +15,10 @@ public abstract class RemoteResponseService {
 
   protected <T> Mono<T> responseError(ClientResponse response) {
     log.warn("request return error. http code:" + response.statusCode().value());
+    if (HttpStatus.NOT_FOUND.isSameCodeAs(response.statusCode()) ) {
+      return Mono.empty();
+    }
+
     return response.bodyToMono(HttpStatusExplain.class)
         .switchIfEmpty(Mono.error(new ResponseDefineException(HttpStatus.BAD_GATEWAY, new DefineStatusCode() {
           @Override
@@ -51,4 +56,6 @@ public abstract class RemoteResponseService {
     }
     return response.bodyToMono(elementTypeRef);
   }
+
+
 }

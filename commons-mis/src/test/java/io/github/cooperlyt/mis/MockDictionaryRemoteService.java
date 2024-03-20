@@ -9,12 +9,12 @@ import reactor.core.publisher.Mono;
 public class MockDictionaryRemoteService implements DictionaryRemoteService {
 
   @Override
-  public Mono<String> districtAddress(int id) {
+  public Mono<String> districtAddress(int id, boolean must) {
     return Mono.just("test");
   }
 
   @Override
-  public Mono<String> dictionaryLabel(String category, int key) {
+  public Mono<String> dictionaryLabel(String category, int key, boolean must) {
 
     System.out.println("-------------------> call mock dictionary:" + category + " " + key);
     return Mono.just("test-dictionary:" + category + "-" + key);
