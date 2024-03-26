@@ -36,6 +36,9 @@ public class PersonImpl extends PowerBodyImpl implements Person{
 
   private String address;
 
+  @Deprecated
   private String photo;
+
+  private String email;
 
 }

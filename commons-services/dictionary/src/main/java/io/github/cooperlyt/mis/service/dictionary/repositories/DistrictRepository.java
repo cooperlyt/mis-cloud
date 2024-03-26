@@ -2,6 +2,7 @@ package io.github.cooperlyt.mis.service.dictionary.repositories;
 
 import io.github.cooperlyt.mis.service.dictionary.model.District;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -15,6 +16,9 @@ public interface DistrictRepository extends ReactiveCrudRepository<District,Inte
 
     @Query("SELECT address FROM district WHERE id = :id ")
     Mono<String> getDistrictAddress(int id);
+
+    @Query("SELECT id,level,name,address FROM district WHERE (SELECT level + 1 FROM district WHERE id = :code) = level and id like :parent")
+    Flux<District> findChildren(@Param("code") int code, @Param("parent") String parent);
 //
 ////    @Query("SELECT ")
 ////    Mono<String> getName(int id);

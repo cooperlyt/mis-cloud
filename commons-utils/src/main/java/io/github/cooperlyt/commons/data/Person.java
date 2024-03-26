@@ -28,7 +28,10 @@ public interface Person extends PowerBody{
 
   String getAddress();
 
+  @Deprecated
   String getPhoto();
+
+  String getEmail();
 
 
 

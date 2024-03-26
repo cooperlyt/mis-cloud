@@ -36,5 +36,9 @@ public class DistrictService {
             .switchIfEmpty(Mono.error(Application.ErrorDefine.DISTRICT_CODE_INVALID::exception));
     }
 
+    public Mono<List<District>> children(int code){
+        return districtRepository.findChildren(code, code + "%").collectList();
+    }
+
 
 }

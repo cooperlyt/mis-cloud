@@ -78,6 +78,13 @@ public class DictionaryController {
     }
 
 
+    @Operation(summary = "行政区列表",parameters = {@Parameter(name = "code",description = "区划代码", in = ParameterIn.PATH)})
+    @GetMapping(value = "/districts/{code}/children")
+    public Mono<List<District>> childrenDistrict(@PathVariable("code") int code){
+        return districtService.children(code);
+    }
+
+
 
 //    @ApiOperation("批量取得区划代码")
 //    @ApiImplicitParams({

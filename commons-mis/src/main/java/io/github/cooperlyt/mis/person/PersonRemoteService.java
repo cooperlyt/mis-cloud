@@ -1,10 +1,9 @@
 package io.github.cooperlyt.mis.person;
 
 import io.github.cooperlyt.commons.data.PeopleCardInfo;
-import io.github.cooperlyt.mis.RemoteResponseService;
 import reactor.core.publisher.Mono;
 
-public interface PeopleRemoteService{
+public interface PersonRemoteService {
 
   Mono<PeopleCardInfo> getPeopleCardInfo(String id, boolean must);
 

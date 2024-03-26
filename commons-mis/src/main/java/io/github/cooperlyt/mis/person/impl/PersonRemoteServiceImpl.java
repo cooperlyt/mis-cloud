@@ -2,7 +2,7 @@ package io.github.cooperlyt.mis.person.impl;
 
 import io.github.cooperlyt.commons.data.PeopleCardInfo;
 import io.github.cooperlyt.mis.RemoteResponseService;
-import io.github.cooperlyt.mis.person.PeopleRemoteService;
+import io.github.cooperlyt.mis.person.PersonRemoteService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,14 +10,14 @@ import reactor.core.publisher.Mono;
 
 import static io.github.cooperlyt.mis.MisCommonsErrorDefine.PEOPLE_CARD_NOT_FOUND;
 
-public class PeopleRemoteServiceImpl extends RemoteResponseService implements PeopleRemoteService {
+public class PersonRemoteServiceImpl extends RemoteResponseService implements PersonRemoteService {
 
   private final WebClient webClient;
 
-  @Value("${mis.internal.person.serverName}")
-  private String serverName;
+  @Value("${mis.internal.person.server}")
+  private String server;
 
-  public PeopleRemoteServiceImpl(WebClient webClient) {
+  public PersonRemoteServiceImpl(WebClient webClient) {
     this.webClient = webClient;
   }
 
@@ -25,7 +25,7 @@ public class PeopleRemoteServiceImpl extends RemoteResponseService implements Pe
   public Mono<PeopleCardInfo> getPeopleCardInfo(String id, boolean must) {
     return webClient
         .get()
-        .uri("http://" + serverName + "/people/card/{id}", id)
+        .uri( server + "/people/card/{id}", id)
         .accept(MediaType.APPLICATION_JSON)
         .exchangeToMono(response -> sourceResponse(PeopleCardInfo.class, response))
         .switchIfEmpty(must ? Mono.error(PEOPLE_CARD_NOT_FOUND.exception()) : Mono.empty());
