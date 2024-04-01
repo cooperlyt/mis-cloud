@@ -24,6 +24,8 @@ public class ProcessDocumentation {
     private List<String> tags = new ArrayList<>();
     private String keywords;
 
+    private Integer districtCode;
+
     ProcessDocumentationBuilder() {
     }
 
@@ -48,6 +50,11 @@ public class ProcessDocumentation {
       return this;
     }
 
+    public ProcessDocumentation.ProcessDocumentationBuilder districtCode(Integer districtCode) {
+      this.districtCode = districtCode;
+      return this;
+    }
+
     private void putKeyword(String keyword) {
       if (this.keywords == null) {
         this.keywords = "";
@@ -63,7 +70,7 @@ public class ProcessDocumentation {
     }
 
     public ProcessDocumentation build() {
-      return new ProcessDocumentation(this.description, this.tags, this.keywords);
+      return new ProcessDocumentation(this.description, this.tags, this.keywords, this.districtCode);
     }
 
   }
@@ -73,6 +80,8 @@ public class ProcessDocumentation {
   private List<String> tags;
 
   private String keywords;
+
+  private Integer districtCode;
 
 
 

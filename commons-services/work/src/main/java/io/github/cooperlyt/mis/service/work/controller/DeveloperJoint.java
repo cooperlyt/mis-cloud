@@ -2,10 +2,13 @@ package io.github.cooperlyt.mis.service.work.controller;
 
 import io.github.cooperlyt.mis.service.work.services.WorkService;
 import io.github.cooperlyt.mis.work.data.WorkAttachment;
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import io.github.cooperlyt.mis.work.data.WorkFileImpl;
 import io.github.cooperlyt.mis.work.data.WorkFileInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -75,5 +78,13 @@ public class DeveloperJoint {
   @RequestMapping(value = "attach/{attachmentId}" ,method = RequestMethod.DELETE)
   public Mono<Void> deleteAttachment(@PathVariable("attachmentId") long attachmentId){
     return workService.removeWorkAttachment(attachmentId);
+  }
+
+  @Operation(summary = "功能创建定义", description = "附加一个生成的WORK_ID",
+      parameters = {@Parameter(name = "defineId", description = "操作定义ID")})
+  @ApiResponses({@ApiResponse(responseCode = "2xx", description = "成功")})
+  @RequestMapping(value = "create/process_fixed_price" ,method = RequestMethod.GET)
+  public Mono<WorkDefineForProcess> prepareProcess(){
+    return workService.prepareProcess("process_fixed_price");
   }
 }
