@@ -72,7 +72,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'recreate'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0hnavdi" sourceRef="Gateway_0wtcmb0" targetRef="Activity_1pu4akd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'back'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'unaccepted'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0zuvjp2" sourceRef="Activity_0w53uxh" targetRef="Event_0nmtehk" />
     <bpmn:sequenceFlow id="Flow_12uqyn7" sourceRef="Event_00khskd" targetRef="Activity_1pu4akd" />

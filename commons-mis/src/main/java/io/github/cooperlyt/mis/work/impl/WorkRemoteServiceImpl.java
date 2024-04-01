@@ -8,6 +8,7 @@ import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
 import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import io.github.cooperlyt.mis.work.message.WorkCreateType;
+import io.github.cooperlyt.mis.work.message.WorkEventMessage;
 import io.github.cooperlyt.mis.work.message.WorkMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -167,6 +168,19 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
 //  }
 
 
+  public Mono<Long> sendWorkEventMessage(String bindingName, String defineId,
+                                         long workId, Map<String,Object> processData, String messageName ){
+    var msg = MessageBuilder.withPayload(new WorkEventMessage(String.valueOf(workId), processData))
+        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, defineId)
+        .setHeader(WorkMessage.MESSAGE_HEADER_DATA_ID, String.valueOf(workId))
+        .setHeader(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, messageName)
+        .build();
+    return Mono.fromCallable(() -> streamBridge.send(bindingName, msg))
+        .filter(ifSend -> ifSend)
+        .map(ifSend -> workId)
+        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
+  }
+
   @Override
   public Mono<Long> sendWorkMessage(String bindingName, String defineId,
                              long workId, Map<String,Object> processData){
@@ -181,6 +195,8 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
         .map(ifSend -> workId)
         .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
   }
+
+
 
 
 

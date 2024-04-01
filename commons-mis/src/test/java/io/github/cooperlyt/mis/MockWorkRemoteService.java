@@ -48,6 +48,11 @@ public class MockWorkRemoteService implements WorkRemoteService {
   }
 
   @Override
+  public Mono<Long> sendWorkEventMessage(String bindingName, String defineId, long workId, Map<String, Object> processData, String messageName) {
+    return null;
+  }
+
+  @Override
   public Mono<Long> applyWorkId() {
     return Mono.just(1l);
   }

@@ -3,9 +3,10 @@ package io.github.cooperlyt.mis.work.camunda.mq;
 import io.github.cooperlyt.mis.work.camunda.Constants;
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import io.github.cooperlyt.mis.work.message.WorkMessage;
-import io.github.cooperlyt.mis.work.message.WorkSignal;
+import io.github.cooperlyt.mis.work.message.WorkEventMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.impl.util.StringUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -44,18 +45,40 @@ public class MessageListener {
   public Consumer<Message<Map<String,Object>>> signalEventChannel() {
     return msg -> {
       var arg = msg.getHeaders();
-      log.info(Thread.currentThread().getName() + " Receive New Signal Messages: " + msg.getPayload() + " ARG:"
+      log.info(Thread.currentThread().getName() + " Receive Signal Messages: " + msg.getPayload() + " ARG:"
           + arg);
 
-      WorkSignal signal = arg.get(Constants.SIGNAL_KEY_NAME, WorkSignal.class);
-      if (signal != null) {
+      String signal = arg.get(WorkMessage.MESSAGE_HEADER_SIGNAL, String.class);
+      if (StringUtil.hasText(signal)) {
         Map<String,Object> vars = msg.getPayload();
         if(vars.isEmpty()){
-          runtimeService.signalEventReceived(signal.getRef());
+          runtimeService.signalEventReceived(signal);
         }else{
-          runtimeService.signalEventReceived(signal.getRef(),vars);
+          runtimeService.signalEventReceived(signal,vars);
         }
       }
+    };
+  }
+
+  @Bean
+  public Consumer<Message<WorkEventMessage>> eventEventChannel() {
+    return msg -> {
+      var arg = msg.getHeaders();
+      log.info(Thread.currentThread().getName() + " Receive Messages Event: " + msg.getPayload() + " ARG:"
+          + arg);
+
+      String messageName = arg.get(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, String.class);
+      if (StringUtil.hasText(messageName)) {
+        WorkEventMessage event = msg.getPayload();
+
+        if(event.getArgs().isEmpty()){
+          runtimeService.correlateMessage(messageName,event.getBusinessKey());
+        }else{
+          runtimeService.correlateMessage(messageName,event.getBusinessKey(),event.getArgs());
+        }
+      }
+
+      //runtimeService.correlateMessage();
     };
   }
 

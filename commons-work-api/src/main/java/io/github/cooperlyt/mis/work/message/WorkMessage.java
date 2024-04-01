@@ -15,6 +15,8 @@ public class WorkMessage implements java.io.Serializable{
   public static final String MESSAGE_HEADER_WORK_DEFINE = "define";
   public static final String MESSAGE_HEADER_DATA_ID = "work_id";
 
+  public static final String MESSAGE_HEADER_SIGNAL = "signal";
+
   private long workId;
   private String userId;
   private String userName;

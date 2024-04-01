@@ -140,7 +140,7 @@
     <bpmn:sequenceFlow id="Flow_1y89whv" sourceRef="Activity_0uru4zn" targetRef="Gateway_03j7k1h" />
     <bpmn:sequenceFlow id="Flow_0e3gdzw" sourceRef="StartEvent_1" targetRef="Activity_0uru4zn" />
     <bpmn:sequenceFlow id="Flow_1svb3li" sourceRef="Gateway_0ckdw7e" targetRef="Activity_0uru4zn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'back'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'unaccepted'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1skbira" sourceRef="Gateway_0ckdw7e" targetRef="Event_1irqvmy" />
     <bpmn:sequenceFlow id="Flow_0xaw44j" sourceRef="Gateway_0ckdw7e" targetRef="Activity_1kqwz0x">
