@@ -7,4 +7,9 @@ public class ProcessConstant {
   public static final String APPLY_FROM_VAR = "windows_apply";
 
   public static final String DOCUMENTATION_VAR = "documentation";
+
+  public static final String NOTE_VAR = "note";
+
+  public static final String DISTRICT_VAR = "district_code";
+
 }

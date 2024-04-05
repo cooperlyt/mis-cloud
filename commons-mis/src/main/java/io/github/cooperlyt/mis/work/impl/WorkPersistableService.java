@@ -138,16 +138,26 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .thenReturn(work.getWorkId());
   }
 
+  private Mono<WorkActionModel> saveCreateOperator(long workId, WorkOperator operator){
+    return workOperatorRepository.save(WorkActionModel.operatorBuilder()
+        .id(String.valueOf(workId))
+        .workId(workId)
+        .type(WorkAction.ActionType.CREATE)
+        .operator(operator)
+        .build());
+  }
 
   @Transactional
-  public Mono<Void> runProcessWork(long workId, WorkOperator operator){
+  public Mono<Long> createRunningWork(WorkDefineForCreate work, WorkOperator operator){
+    return createRunningWork(work)
+        .flatMap(workId -> saveCreateOperator(workId,operator))
+        .thenReturn(work.getWorkId());
+  }
+
+  @Transactional
+  public Mono<Void> runWork(long workId, WorkOperator operator){
     return workRepository.updateWorkStatus(workId,WorkStatus.RUNNING)
-        .then(workOperatorRepository.save(WorkActionModel.operatorBuilder()
-            .id(String.valueOf(workId))
-            .workId(workId)
-            .type(WorkAction.ActionType.CREATE)
-            .operator(operator)
-            .build()))
+        .then(saveCreateOperator(workId,operator))
         .then();
   }
 

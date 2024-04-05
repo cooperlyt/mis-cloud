@@ -124,7 +124,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="Event_14y942p">
       <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.CompleteDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_05zjw6y</bpmn:incoming>
     </bpmn:endEvent>

@@ -149,7 +149,7 @@
     <bpmn:sequenceFlow id="Flow_0oe422j" sourceRef="Activity_1kqwz0x" targetRef="Event_0r55zyu" />
     <bpmn:endEvent id="Event_0mxy1v1">
       <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.listener.CompleteListener" event="end" />
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.CompleteDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0th211z</bpmn:incoming>
     </bpmn:endEvent>

@@ -5,6 +5,7 @@ import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import io.github.cooperlyt.mis.work.message.WorkMessage;
 import io.github.cooperlyt.mis.work.message.WorkEventMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.camunda.bpm.engine.MismatchingMessageCorrelationException;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.impl.util.StringUtil;
 import org.springframework.context.annotation.Bean;
@@ -71,11 +72,16 @@ public class MessageListener {
       if (StringUtil.hasText(messageName)) {
         WorkEventMessage event = msg.getPayload();
 
-        if(event.getArgs().isEmpty()){
-          runtimeService.correlateMessage(messageName,event.getBusinessKey());
-        }else{
-          runtimeService.correlateMessage(messageName,event.getBusinessKey(),event.getArgs());
+        try {
+          if(event.getArgs().isEmpty()){
+            runtimeService.correlateMessage(messageName,event.getBusinessKey());
+          }else{
+            runtimeService.correlateMessage(messageName,event.getBusinessKey(),event.getArgs());
+          }
+        } catch (MismatchingMessageCorrelationException e){
+          log.error("MismatchingMessageCorrelationException",e);
         }
+
       }
 
       //runtimeService.correlateMessage();

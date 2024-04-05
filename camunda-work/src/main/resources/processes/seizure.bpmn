@@ -28,6 +28,9 @@
       <bpmn:outgoing>Flow_16jtkmr</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="Event_1rlatpk">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="start" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1qbby57</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_10tq8jn" />
     </bpmn:endEvent>
@@ -55,6 +58,9 @@
       <bpmn:outgoing>Flow_044bf33</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="Event_0drj0b8">
+      <bpmn:extensionElements>
+        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.CompleteDelegate" event="start" />
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_044bf33</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_08zu0al" sourceRef="Activity_0cbncm7" targetRef="Gateway_05nwhrz" />
