@@ -19,13 +19,14 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static io.github.cooperlyt.mis.work.Constant.ErrorDefine.WORK_NOT_EXISTS;
 
-public class WorkPersistableService implements WorkOperatorPersistableHandler {
+public class WorkDao implements WorkOperatorPersistableHandler {
 
   private final WorkOperatorRepository workOperatorRepository;
 
@@ -35,10 +36,10 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
 
   private final WorkRepository workRepository;
 
-  public WorkPersistableService(WorkOperatorRepository workOperatorRepository,
-                                WorkTaskRepository workTaskRepository,
-                                WorkApplicantRepository workApplicantRepository,
-                                WorkRepository workRepository) {
+  public WorkDao(WorkOperatorRepository workOperatorRepository,
+                 WorkTaskRepository workTaskRepository,
+                 WorkApplicantRepository workApplicantRepository,
+                 WorkRepository workRepository) {
     this.workOperatorRepository = workOperatorRepository;
     this.workTaskRepository = workTaskRepository;
     this.workApplicantRepository = workApplicantRepository;
@@ -73,6 +74,12 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
   public Mono<PowerBody> getWorkApplicant(long workId){
     return workApplicantRepository.findById(workId).cast(PowerBody.class);
 
+  }
+
+  public Mono<WorkOperator> getWorkCreateOperator(long workId){
+    return workOperatorRepository
+        .findFirstByWorkIdAndTypeIn(workId, EnumSet.of(WorkAction.ActionType.CREATE,WorkAction.ActionType.APPLY))
+        .cast(WorkOperator.class);
   }
 
   @Transactional
@@ -121,21 +128,25 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
     return workRepository.save(WorkModel.builder()
         .define(work)
         .workId(work.getWorkId())
-        .dataSource(WorkInfo.SOURCE_FROM_SYSTEM)
+        .dataSource(WorkInfo.SOURCE_FROM_OFFICE)
         .status(WorkStatus.PREPARE)
         .build())
         .thenReturn(work.getWorkId());
   }
 
-  @Transactional
-  public Mono<Long> createRunningWork(WorkDefineForCreate work){
+  private Mono<Long> createWork(WorkDefineForCreate work, WorkStatus status, String source){
     return workRepository.save(WorkModel.builder()
-        .define(work)
-        .workId(work.getWorkId())
-        .dataSource(WorkInfo.SOURCE_FROM_SYSTEM)
-        .status(WorkStatus.RUNNING)
-        .build())
-        .thenReturn(work.getWorkId());
+            .define(work)
+            .workId(work.getWorkId())
+            .dataSource(source)
+            .status(status)
+            .build())
+        .map(WorkModel::getWorkId);
+  }
+
+  @Transactional
+  public Mono<Long> createRunningWork(WorkDefineForCreate work, String source){
+    return createWork(work,WorkStatus.RUNNING,source);
   }
 
   private Mono<WorkActionModel> saveCreateOperator(long workId, WorkOperator operator){
@@ -147,9 +158,15 @@ public class WorkPersistableService implements WorkOperatorPersistableHandler {
         .build());
   }
 
+  public Mono<Long> createCompletedWork(WorkDefineForCreate work, WorkOperator operator){
+    return createWork(work,WorkStatus.COMPLETED,WorkInfo.SOURCE_FROM_OFFICE)
+        .flatMap(workId -> saveCreateOperator(workId,operator))
+        .thenReturn(work.getWorkId());
+  }
+
   @Transactional
-  public Mono<Long> createRunningWork(WorkDefineForCreate work, WorkOperator operator){
-    return createRunningWork(work)
+  public Mono<Long> createRunningWork(WorkDefineForCreate work, String source, WorkOperator operator){
+    return createRunningWork(work,source)
         .flatMap(workId -> saveCreateOperator(workId,operator))
         .thenReturn(work.getWorkId());
   }

@@ -4,6 +4,10 @@ public class ProcessConstant {
 
   public static final String FLOW_DIRECTION_VAR = "process_method";
 
+  /**
+   * @deprecated use {@link #SOURCE_VAR} instead
+   */
+  @Deprecated
   public static final String APPLY_FROM_VAR = "windows_apply";
 
   public static final String DOCUMENTATION_VAR = "documentation";
@@ -11,5 +15,7 @@ public class ProcessConstant {
   public static final String NOTE_VAR = "note";
 
   public static final String DISTRICT_VAR = "district_code";
+
+  public static final String SOURCE_VAR = "source";
 
 }

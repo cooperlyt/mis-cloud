@@ -7,9 +7,17 @@ import java.time.LocalDateTime;
 
 public interface WorkInfo extends java.io.Serializable {
 
-  public final static String SOURCE_FROM_SYSTEM = "SYS";
+  /**
+   * @deprecated use {@link #SOURCE_FROM_PATCH} instead
+   */
+  @Deprecated
+  String SOURCE_FROM_SYSTEM = "SYS";
 
-  public final static String SOURCE_FROM_PATCH = "PATCH";
+  String SOURCE_FROM_JOINT = "JOINT";
+
+  String SOURCE_FROM_OFFICE = "OFFICE";
+
+  String SOURCE_FROM_PATCH = "PATCH";
 
   long getWorkId();
 

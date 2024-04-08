@@ -40,6 +40,7 @@
       <bpmn:incoming>Flow_1bblagr</bpmn:incoming>
       <bpmn:outgoing>Flow_0v36epr</bpmn:outgoing>
       <bpmn:outgoing>Flow_0bl9tvi</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1kcpcy2</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1umhsqh" sourceRef="Activity_1ktbkoc" targetRef="Event_16tu3x8" />
     <bpmn:userTask id="Activity_01eaeh8" name="初审" camunda:formKey="check/contract" camunda:candidateGroups="camunda-contract-record-first">
@@ -50,6 +51,7 @@
         </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0herxqt</bpmn:incoming>
+      <bpmn:incoming>Flow_1kcpcy2</bpmn:incoming>
       <bpmn:outgoing>Flow_01sstpm</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="Activity_1ktbkoc" name="重新受理" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.UnAcceptedDelegate">
@@ -109,6 +111,9 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0q7mhsj" sourceRef="Activity_0fx083r" targetRef="Gateway_02j91ru" />
     <bpmn:sequenceFlow id="Flow_00zc7db" sourceRef="Gateway_02j91ru" targetRef="Event_03z002w" />
+    <bpmn:sequenceFlow id="Flow_1kcpcy2" sourceRef="Gateway_153ta4o" targetRef="Activity_01eaeh8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${source eq "OFFICE"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_2dhuc4b" name="ATTACH_UPLOADED" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -214,6 +219,12 @@
       <bpmndi:BPMNEdge id="Flow_00zc7db_di" bpmnElement="Flow_00zc7db">
         <di:waypoint x="580" y="525" />
         <di:waypoint x="580" y="572" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kcpcy2_di" bpmnElement="Flow_1kcpcy2">
+        <di:waypoint x="340" y="145" />
+        <di:waypoint x="340" y="100" />
+        <di:waypoint x="580" y="100" />
+        <di:waypoint x="580" y="130" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

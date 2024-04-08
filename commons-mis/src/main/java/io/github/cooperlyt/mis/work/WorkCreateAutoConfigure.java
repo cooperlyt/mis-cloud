@@ -7,7 +7,7 @@ import io.github.cooperlyt.mis.work.impl.repositories.WorkApplicantRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
-import io.github.cooperlyt.mis.work.impl.WorkPersistableService;
+import io.github.cooperlyt.mis.work.impl.WorkDao;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -42,11 +42,11 @@ public class WorkCreateAutoConfigure {
   @Bean
   @ConditionalOnMissingBean
   @ConditionalOnProperty(prefix = "mis.internal.work.operator",name = "persistable")
-  public WorkPersistableService workOperatorService(WorkOperatorRepository workOperatorRepository,
-                                                    WorkTaskRepository workTaskRepository,
-                                                    WorkApplicantRepository workApplicantRepository,
-                                                    WorkRepository workRepository){
-    return new WorkPersistableService(workOperatorRepository,workTaskRepository,workApplicantRepository,workRepository);
+  public WorkDao workOperatorService(WorkOperatorRepository workOperatorRepository,
+                                     WorkTaskRepository workTaskRepository,
+                                     WorkApplicantRepository workApplicantRepository,
+                                     WorkRepository workRepository){
+    return new WorkDao(workOperatorRepository,workTaskRepository,workApplicantRepository,workRepository);
   }
 
 }

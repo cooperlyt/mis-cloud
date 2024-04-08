@@ -37,7 +37,7 @@ public @interface WorkCreate {
 
   OperatorWay operatorWay() default OperatorWay.LAST;
 
-  String dataSource() default WorkInfo.SOURCE_FROM_SYSTEM;
+  String dataSource() default WorkInfo.SOURCE_FROM_OFFICE;
 
   /**
    *  尝试从参数传取得操作人信息, 如果为 true, 会尝试从参数中获取操作人信息, 如果获取不到, 则从当前上下文中获取
