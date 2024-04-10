@@ -77,7 +77,7 @@
     <bpmn:sequenceFlow id="Flow_1tly2al" sourceRef="Activity_0hg5bbz" targetRef="Activity_15ber4w" />
     <bpmn:sequenceFlow id="Flow_0rj23th" sourceRef="Activity_15ber4w" targetRef="Activity_0ueavhr" />
     <bpmn:sequenceFlow id="Flow_0th211z" sourceRef="Activity_0ueavhr" targetRef="Event_0mxy1v1" />
-    <bpmn:userTask id="Activity_00sbvta" name="更正" camunda:formKey="correct/project-license" camunda:candidateGroups="camunda-project-license-accept">
+    <bpmn:userTask id="Activity_00sbvta" name="更正" camunda:formKey="correct/recreate" camunda:candidateGroups="camunda-project-license-accept">
       <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>

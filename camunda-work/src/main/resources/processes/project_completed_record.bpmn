@@ -11,7 +11,6 @@
         <bpmn:flowNodeRef>Activity_0w53uxh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1pu4akd</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0nmtehk</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_0x8enf8</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_130ppfh</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1ijqprt</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_0h7543w</bpmn:flowNodeRef>
@@ -50,14 +49,7 @@
       <bpmn:incoming>Flow_0zuvjp2</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_0cv9v6i" />
     </bpmn:endEvent>
-    <bpmn:endEvent id="Event_0x8enf8">
-      <bpmn:extensionElements>
-        <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_11h9dwl</bpmn:incoming>
-      <bpmn:terminateEventDefinition id="TerminateEventDefinition_1fepdh2" />
-    </bpmn:endEvent>
-    <bpmn:userTask id="Activity_130ppfh" name="更正" camunda:formKey="correct/project-completed" camunda:candidateGroups="camunda-project-completed-accept">
+    <bpmn:userTask id="Activity_130ppfh" name="更正" camunda:formKey="correct/recreate" camunda:candidateGroups="camunda-project-completed-accept">
       <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -68,7 +60,7 @@
       <bpmn:outgoing>Flow_1otwzq3</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="Flow_1otwzq3" sourceRef="Activity_130ppfh" targetRef="Gateway_0wtcmb0" />
-    <bpmn:sequenceFlow id="Flow_11h9dwl" sourceRef="Gateway_0wtcmb0" targetRef="Event_0x8enf8" />
+    <bpmn:sequenceFlow id="Flow_11h9dwl" sourceRef="Gateway_0wtcmb0" targetRef="Event_0h7543w" />
     <bpmn:sequenceFlow id="Flow_1eb12va" sourceRef="Gateway_0wtcmb0" targetRef="Activity_0w53uxh">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'recreate'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -87,7 +79,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_13zdqz4" sourceRef="Gateway_1ijqprt" targetRef="Activity_130ppfh" />
     <bpmn:sequenceFlow id="Flow_099cqii" sourceRef="Gateway_1ijqprt" targetRef="Event_0h7543w">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!windows_apply}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${source eq "JOINT"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="Gateway_1ijqprt" default="Flow_13zdqz4">
       <bpmn:incoming>Flow_1y9y6zu</bpmn:incoming>
@@ -100,6 +92,7 @@
         <camunda:executionListener class="io.github.cooperlyt.mis.work.camunda.delegate.RejectDelegate" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_099cqii</bpmn:incoming>
+      <bpmn:incoming>Flow_11h9dwl</bpmn:incoming>
       <bpmn:terminateEventDefinition id="TerminateEventDefinition_0utn8c0" />
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="Gateway_1xd0uv9" default="Flow_1bqo8if">
@@ -163,9 +156,6 @@
       <bpmndi:BPMNShape id="Event_1he6sri_di" bpmnElement="Event_0nmtehk">
         <dc:Bounds x="722" y="132" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0op2ev1_di" bpmnElement="Event_0x8enf8">
-        <dc:Bounds x="722" y="242" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zedp3g_di" bpmnElement="Activity_130ppfh">
         <dc:Bounds x="560" y="320" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -196,7 +186,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11h9dwl_di" bpmnElement="Flow_11h9dwl">
         <di:waypoint x="635" y="260" />
-        <di:waypoint x="722" y="260" />
+        <di:waypoint x="740" y="260" />
+        <di:waypoint x="740" y="452" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1eb12va_di" bpmnElement="Flow_1eb12va">
         <di:waypoint x="610" y="235" />

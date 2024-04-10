@@ -15,7 +15,7 @@
       <bpmn:outgoing>Flow_044bf33</bpmn:outgoing>
       <bpmn:outgoing>Flow_0zwv3er</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_0cbncm7" name="审批" camunda:formKey="check" camunda:candidateGroups="seizure-last">
+    <bpmn:userTask id="Activity_0cbncm7" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-seizure-last">
       <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -31,7 +31,7 @@
       <bpmn:outgoing>Flow_18ruh5u</bpmn:outgoing>
       <bpmn:outgoing>Flow_12a8ocn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_0q87g0p" name="更正" camunda:formKey="correct/seizure-record" camunda:candidateGroups="seizure-accept">
+    <bpmn:userTask id="Activity_0q87g0p" name="更正" camunda:formKey="correct/seizure-record" camunda:candidateGroups="camunda-seizure-accept">
       <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
@@ -47,7 +47,7 @@
       <bpmn:outgoing>Flow_0jpozcq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1qbby57</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_1ydzqkw" name="初审" camunda:formKey="check" camunda:candidateGroups="seizure-first">
+    <bpmn:userTask id="Activity_1ydzqkw" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-seizure-first">
       <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
