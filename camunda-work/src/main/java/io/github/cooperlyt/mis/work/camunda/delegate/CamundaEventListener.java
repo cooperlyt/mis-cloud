@@ -84,7 +84,8 @@ public class CamundaEventListener {
 
     try {
       processChangeService.processChange(WorkChangeMessage.builder()
-              .message((String) taskService.getVariable(taskEvent.getId(),"message"))
+              .message((String) taskService.getVariable(taskEvent.getId(),"task_message"))
+              //.message((String) taskService.getVariableLocal(taskEvent.getId(),"message"))
               .pass(pass)
               .workId(Long.parseLong(taskEvent.getCaseInstanceId()))
               .userId(taskEvent.getAssignee())

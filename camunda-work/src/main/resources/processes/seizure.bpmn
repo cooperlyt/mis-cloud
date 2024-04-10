@@ -5,6 +5,13 @@
   </bpmn:collaboration>
   <bpmn:process id="limit_seizure_cancel" name="查封解除" isExecutable="true" camunda:historyTimeToLive="3600">
     <bpmn:userTask id="Activity_1ydzqkw" name="初审" camunda:formKey="check" camunda:candidateGroups="seizure-first">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="task_message">初审意见</camunda:inputParameter>
+          <camunda:outputParameter name="message">${task_message}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_16jtkmr</bpmn:incoming>
       <bpmn:incoming>Flow_0jpozcq</bpmn:incoming>
       <bpmn:outgoing>Flow_0onoz7e</bpmn:outgoing>
@@ -15,6 +22,12 @@
       <bpmn:outgoing>Flow_12a8ocn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0q87g0p" name="更正" camunda:formKey="correct/seizure-cancel" camunda:candidateGroups="seizure-accept">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0zwv3er</bpmn:incoming>
       <bpmn:incoming>Flow_12a8ocn</bpmn:incoming>
       <bpmn:outgoing>Flow_01es5ju</bpmn:outgoing>
@@ -49,6 +62,13 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approval == false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="Activity_0cbncm7" name="审批" camunda:formKey="check" camunda:candidateGroups="seizure-last">
+      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="message">审批意见</camunda:inputParameter>
+          <camunda:outputParameter name="message">${message}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_18ruh5u</bpmn:incoming>
       <bpmn:outgoing>Flow_08zu0al</bpmn:outgoing>
     </bpmn:userTask>

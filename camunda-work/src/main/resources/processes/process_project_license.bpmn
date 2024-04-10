@@ -36,8 +36,8 @@
           <camunda:property name="type" value="CHECKED" />
         </camunda:properties>
         <camunda:inputOutput>
-          <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
-          <camunda:outputParameter name="message">${message}</camunda:outputParameter>
+          <camunda:inputParameter name="task_message">审批意见</camunda:inputParameter>
+          <camunda:outputParameter name="message">${task_message}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_12jn0nu</bpmn:incoming>
@@ -100,8 +100,8 @@
           <camunda:property name="type" value="FIRST_CHECK" />
         </camunda:properties>
         <camunda:inputOutput>
-          <camunda:inputParameter name="message" />
-          <camunda:outputParameter name="message">${message}</camunda:outputParameter>
+          <camunda:inputParameter name="task_message">初审意见</camunda:inputParameter>
+          <camunda:outputParameter name="message">${task_message}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0e3gdzw</bpmn:incoming>
