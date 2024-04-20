@@ -15,7 +15,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <camunda.version>7.21.0</camunda.version>
+        <camunda.version>7.20.0</camunda.version>
         <camunda.keycloak.version>7.20.1</camunda.keycloak.version>
     </properties>
 
