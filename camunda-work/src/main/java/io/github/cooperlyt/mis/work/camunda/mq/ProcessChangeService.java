@@ -5,10 +5,10 @@ import io.github.cooperlyt.mis.work.message.StatusChangeMessage;
 import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProcessChangeService {
 
-  private final StreamBridge streamBridge;
+  private final RocketMQTemplate rocketMQTemplate;
 
   private final RepositoryService repositoryService;
 
 
-  public ProcessChangeService(StreamBridge streamBridge, RepositoryService repositoryService) {
-    this.streamBridge = streamBridge;
+  public ProcessChangeService(RocketMQTemplate rocketMQTemplate, RepositoryService repositoryService) {
+    this.rocketMQTemplate = rocketMQTemplate;
     this.repositoryService = repositoryService;
   }
 
@@ -35,9 +35,7 @@ public class ProcessChangeService {
         .setHeader(Constants.DEFINE_KEY_NAME,getDefineId(processDefinitionId))
         .setHeader(Constants.WORK_STATUS_KEY_NAME,status)
         .build();
-    if (!streamBridge.send("statusChangeChannel-out-0",msg)){
-      throw new Exception("message send fail!");
-    }
+    rocketMQTemplate.send("topic-status-change",msg);
     log.info("status change mq is send: {} -> {}",workId,status);
   }
 
@@ -45,9 +43,7 @@ public class ProcessChangeService {
     var msg = MessageBuilder.withPayload(changeMessage)
         .setHeader(Constants.DEFINE_KEY_NAME,getDefineId(processDefinitionId))
         .build();
-    if (!streamBridge.send("processChangeChannel-out-0",msg)){
-      throw new Exception("message send fail!");
-    }
+    rocketMQTemplate.send("topic-process-change",msg);
     log.info("process change  mq is send : {}",changeMessage);
   }
 

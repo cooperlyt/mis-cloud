@@ -37,11 +37,11 @@ public interface WorkRemoteService {
 //  Mono<Long> sendWorkMessage(String bindingName, String defineId, long workId);
 
 
-  Mono<Long> sendWorkMessage(String bindingName, String defineId,
+  Mono<Long> sendWorkMessage(String topicName, String defineId,
                              long workId, Map<String,Object> processData);
 
 
-  public Mono<Long> sendWorkEventMessage(String bindingName, String defineId,
+  public Mono<Long> sendWorkEventMessage(String topicName, String defineId,
                                          long workId, Map<String,Object> processData, String messageName );
 
   Mono<Long> applyWorkId();

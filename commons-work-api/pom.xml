@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.cooperlyt.mis</groupId>
         <artifactId>mis-cloud</artifactId>
-        <version>2.1.8</version>
+        <version>2.2.1</version>
     </parent>
 
     <artifactId>commons-work-api</artifactId>

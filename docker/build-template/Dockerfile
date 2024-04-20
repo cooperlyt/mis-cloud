@@ -1,4 +1,4 @@
-FROM ibm-semeru-runtimes:open-17-jre
+FROM ibm-semeru-runtimes:open-21-jre
 ENV TZ=Asia/Shanghai \
     DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update && apt-get -y upgrade \
@@ -11,8 +11,8 @@ RUN apt-get -y update && apt-get -y upgrade \
     && mkdir -p /usr/local/app \
     && mkdir -p /opt/config
 ADD @project.build.finalName@.jar /usr/local/app/
-ADD ca.pem /usr/local/app/
-RUN echo yes | keytool -importcert -trustcacerts -cacerts -file /usr/local/app/ca.pem -alias feipuCert -storepass changeit
+#ADD ca.pem /usr/local/app/
+#RUN echo yes | keytool -importcert -trustcacerts -cacerts -file /usr/local/app/ca.pem -alias feipuCert -storepass changeit
 ADD wait-for-it.sh wait-for-it.sh
 RUN chmod +x wait-for-it.sh
 ADD run.sh run.sh

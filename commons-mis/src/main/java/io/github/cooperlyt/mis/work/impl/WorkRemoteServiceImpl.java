@@ -12,9 +12,9 @@ import io.github.cooperlyt.mis.work.message.WorkEventMessage;
 import io.github.cooperlyt.mis.work.message.WorkMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.support.MessageBuilder;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -28,12 +28,14 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
   @Value("${mis.internal.work.serverName}")
   private String serverName;
 
-  private final StreamBridge streamBridge;
+//  private final StreamBridge streamBridge;
+
+  private RocketMQTemplate rocketMQTemplate;
 
 
-  public WorkRemoteServiceImpl(WebClient webClient, StreamBridge streamBridge) {
+  public WorkRemoteServiceImpl(WebClient webClient, RocketMQTemplate rocketMQTemplate) {
     this.webClient = webClient;
-    this.streamBridge = streamBridge;
+    this.rocketMQTemplate = rocketMQTemplate;
   }
 
   @Override
@@ -168,17 +170,15 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
 //  }
 
 
-  public Mono<Long> sendWorkEventMessage(String bindingName, String defineId,
+  public Mono<Long> sendWorkEventMessage(String topicName, String defineId,
                                          long workId, Map<String,Object> processData, String messageName ){
     var msg = MessageBuilder.withPayload(new WorkEventMessage(String.valueOf(workId), processData))
         .setHeader(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, defineId)
         .setHeader(WorkMessage.MESSAGE_HEADER_DATA_ID, String.valueOf(workId))
         .setHeader(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, messageName)
         .build();
-    return Mono.fromCallable(() -> streamBridge.send(bindingName, msg))
-        .filter(ifSend -> ifSend)
-        .map(ifSend -> workId)
-        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
+    return Mono.fromRunnable(() -> rocketMQTemplate.send(topicName, msg))
+        .thenReturn(workId);
   }
 
   @Override
@@ -186,14 +186,12 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
                              long workId, Map<String,Object> processData){
 
 
-    return Mono.fromCallable(() -> sendMessage(bindingName, defineId, WorkCreateType.RUNNING, String.valueOf(workId) ,
+    return Mono.fromRunnable(() -> sendRunningMessage(bindingName, defineId, String.valueOf(workId) ,
             WorkCreateMessage.builder()
                 .workId(workId)
                 .data(processData)
                 .build()))
-        .filter(ifSend -> ifSend)
-        .map(ifSend -> workId)
-        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
+        .thenReturn(workId);
   }
 
 
@@ -204,20 +202,19 @@ public class WorkRemoteServiceImpl extends RemoteResponseService implements Work
    * 发送消息
    * @param bindingName Spring streamBridge 绑定名称
    * @param define 操作定义ID
-   * @param type 消息类型
    * @param workId 数据ID 用与消息事务回查
    * @param message 消息内容
    * @return 是否发送成功
    */
 
-  private boolean sendMessage(String bindingName, String define, WorkCreateType type, String workId, WorkCreateMessage message) {
-    log.info("send message {} {} {} {}", bindingName, define, type, workId);
+  private void sendRunningMessage(String bindingName, String define, String workId, WorkCreateMessage message) {
+    log.info("send message {} {} {}", bindingName, define, workId);
     var msg = MessageBuilder.withPayload(message)
-        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_TYPE, type.name())
+        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_TYPE, WorkCreateType.RUNNING.name())
         .setHeader(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, define)
         .setHeader(WorkMessage.MESSAGE_HEADER_DATA_ID, workId)
         .build();
-    return streamBridge.send(bindingName, msg);
+    rocketMQTemplate.send(bindingName, msg);
   }
 
 //  @Override

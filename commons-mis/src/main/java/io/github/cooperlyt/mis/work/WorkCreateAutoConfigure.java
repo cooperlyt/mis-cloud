@@ -12,11 +12,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 
 @Configuration
 @ConditionalOnWebApplication
@@ -26,8 +26,8 @@ public class WorkCreateAutoConfigure {
   @Lazy
   @ConditionalOnMissingBean
   @ConditionalOnProperty("mis.internal.work.serverName")
-  public WorkRemoteService workRemoteService(WebClient.Builder builder, StreamBridge streamBridge){
-    return new WorkRemoteServiceImpl(builder.build(),streamBridge);
+  public WorkRemoteService workRemoteService(WebClient.Builder builder, RocketMQTemplate rocketMQTemplate){
+    return new WorkRemoteServiceImpl(builder.build(),rocketMQTemplate);
   }
 
   @Bean
