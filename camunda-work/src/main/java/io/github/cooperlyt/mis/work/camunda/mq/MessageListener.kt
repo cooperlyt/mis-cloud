@@ -3,6 +3,7 @@ package io.github.cooperlyt.mis.work.camunda.mq
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage
 import io.github.cooperlyt.mis.work.message.WorkEventMessage
 import io.github.cooperlyt.mis.work.message.WorkMessage
+import io.github.cooperlyt.rocketmq.client.TypedConsumer
 import io.github.cooperlyt.rocketmq.client.support.ReactiveListenerContainer
 import lombok.extern.slf4j.Slf4j
 import org.camunda.bpm.engine.MismatchingMessageCorrelationException
@@ -23,8 +24,8 @@ open class MessageListener(private val runtimeService: RuntimeService) {
 
     //  process_project_license
     @Bean
-    open fun processCreateChannel(): Consumer<Message<WorkCreateMessage>> {
-        return Consumer<Message<WorkCreateMessage>> { msg: Message<WorkCreateMessage> ->
+    open fun processCreateChannel() = object: TypedConsumer<Message<WorkCreateMessage>>(
+        Consumer<Message<WorkCreateMessage>> { msg ->
             val arg = msg.headers
             log.info(
                 Thread.currentThread().name + " Receive New Create Messages: " + msg.payload + " ARG:"
@@ -36,13 +37,13 @@ open class MessageListener(private val runtimeService: RuntimeService) {
 
             //      approval
             runtimeService.startProcessInstanceByKey(define, workId, workId, msg.payload.data)
-        }
-    }
+        }){}
+
 
 
     @Bean
-    open fun signalEventChannel(): Consumer<Message<Map<String?, Any?>>> {
-        return Consumer<Message<Map<String?, Any?>>> { msg: Message<Map<String?, Any?>> ->
+    open fun signalEventChannel() = object: TypedConsumer<Message<Map<String, Any>>>(
+        Consumer<Message<Map<String, Any>>> { msg  ->
             val arg = msg.headers
             log.info(
                 Thread.currentThread().name + " Receive Signal Messages: " + msg.payload + " ARG:"
@@ -58,12 +59,12 @@ open class MessageListener(private val runtimeService: RuntimeService) {
                     runtimeService.signalEventReceived(signal, vars)
                 }
             }
-        }
-    }
+        }){}
+
 
     @Bean
-    open fun eventEventChannel(): Consumer<Message<WorkEventMessage>> {
-        return Consumer<Message<WorkEventMessage>> { msg: Message<WorkEventMessage> ->
+    open fun eventEventChannel() = object: TypedConsumer<Message<WorkEventMessage>>(
+        Consumer<Message<WorkEventMessage>> { msg ->
             val arg = msg.headers
             log.info(
                 Thread.currentThread().name + " Receive Messages Event: " + msg.payload + " ARG:"
@@ -88,6 +89,6 @@ open class MessageListener(private val runtimeService: RuntimeService) {
                     )
                 }
             }
-        }
-    }
+        }) {}
+
 }

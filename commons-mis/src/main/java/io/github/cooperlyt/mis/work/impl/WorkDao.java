@@ -46,6 +46,10 @@ public class WorkDao implements WorkOperatorPersistableHandler {
     this.workRepository = workRepository;
   }
 
+  public Mono<Boolean> workIsExists(long workId){
+    return workRepository.existsById(workId);
+  }
+
   public Mono<List<WorkTask>> workTasks(long workId){
     return workOperatorRepository.workActions(workId).collectList()
         .map(list -> list.stream().sorted(Comparator.comparing(WorkAction::getWorkTime).reversed()).collect(Collectors.toList()));
@@ -104,10 +108,8 @@ public class WorkDao implements WorkOperatorPersistableHandler {
   }
 
   @Transactional
-  public Mono<Void> workChange(Message<WorkChangeMessage> msg){
-    WorkChangeMessage message = msg.getPayload();
-    return
-        workOperatorRepository.save(WorkActionModel.actionBuilder()
+  public Mono<Void> workChange(WorkChangeMessage message){
+    return workOperatorRepository.save(WorkActionModel.actionBuilder()
                 .id(UUID.randomUUID().toString().replace("-","").toLowerCase())
                 .workId(message.getWorkId())
                 .type(WorkAction.ActionType.TASK)
