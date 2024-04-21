@@ -59,6 +59,11 @@ public class WorkDao implements WorkOperatorPersistableHandler {
     return workOperatorRepository.workRejectActions(workId).collectSortedList(Comparator.comparing(WorkAction::getWorkTime));
   }
 
+  public Mono<TaskMessage> workFailTask(long workId){
+    return workOperatorRepository.findLastFailTaskByWorkId(workId)
+        .cast(TaskMessage.class);
+  }
+
   public Mono<WorkInfo> workInfo(long workId){
     return workRepository.findById(workId)
         .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()))

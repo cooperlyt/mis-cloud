@@ -4,6 +4,7 @@ package io.github.cooperlyt.mis.work.impl.repositories;
 import io.github.cooperlyt.mis.work.data.WorkAction;
 import io.github.cooperlyt.mis.work.data.WorkTask;
 import io.github.cooperlyt.mis.work.impl.model.WorkActionModel;
+import io.github.cooperlyt.mis.work.impl.model.WorkTaskModel;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.r2dbc.repository.Query;
@@ -25,6 +26,10 @@ public interface WorkOperatorRepository extends ReactiveCrudRepository<WorkActio
       "left join work_operator o on t.task_id = o.task_id WHERE o.work_id = :workId AND t.pass = false")
   Flux<WorkTask> workRejectActions(long workId);
 
+  @Query("SELECT t.* FROM work_task t " +
+      "left join work_operator o on t.task_id = o.task_id " +
+      "WHERE o.work_id = :workId AND t.pass = false ORDER BY o.work_time DESC LIMIT 1")
+  Mono<WorkTaskModel> findLastFailTaskByWorkId(long workId);
 
   Mono<WorkActionModel> findFirstByWorkIdAndTypeIn(long workId, Collection<WorkAction.ActionType> types);
 }

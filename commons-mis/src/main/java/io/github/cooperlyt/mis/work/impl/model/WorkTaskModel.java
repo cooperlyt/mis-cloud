@@ -1,6 +1,7 @@
 package io.github.cooperlyt.mis.work.impl.model;
 
 
+import io.github.cooperlyt.mis.work.data.TaskMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WorkTaskModel implements Persistable<String> {
+public class WorkTaskModel implements TaskMessage, Persistable<String> {
 
   @Id
   @Column("task_id")
@@ -25,7 +26,7 @@ public class WorkTaskModel implements Persistable<String> {
 
   private String taskName;
 
-  private boolean pass;
+  private Boolean pass;
 
   @Override
   public boolean isNew() {
