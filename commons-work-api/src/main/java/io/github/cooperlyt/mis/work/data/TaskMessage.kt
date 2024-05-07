@@ -6,3 +6,9 @@ interface TaskMessage {
     val taskName: String
     val pass: Boolean?
 }
+
+class DefaultTaskMessageImpl(
+    override val message: String,
+    override val taskName: String,
+    override val pass: Boolean?
+): TaskMessage
