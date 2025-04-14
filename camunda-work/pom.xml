@@ -17,7 +17,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <camunda.version>7.23.0</camunda.version>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.1.0</kotlin.version>
     </properties>
 
 
