@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
-import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeService;
+import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RestartDelegate implements JavaDelegate , ExecutionListener {
 
   @Autowired
-  private ProcessChangeService processChangeService;
+  private ProcessChangeEventService processChangeEventService;
 
   public RestartDelegate() {
     BeanInjectionHelper.autowireBean(this);
@@ -21,11 +21,11 @@ public class RestartDelegate implements JavaDelegate , ExecutionListener {
 
   @Override
   public void execute(DelegateExecution delegateExecution) throws Exception {
-    processChangeService.statusChange(delegateExecution, WorkStatus.RESTART);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.RESTART);
   }
 
   @Override
   public void notify(DelegateExecution delegateExecution) throws Exception {
-    processChangeService.statusChange(delegateExecution, WorkStatus.RESTART);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.RESTART);
   }
 }

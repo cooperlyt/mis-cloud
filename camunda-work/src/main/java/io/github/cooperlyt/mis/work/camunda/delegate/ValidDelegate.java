@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
-import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeService;
+import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ValidDelegate implements JavaDelegate, ExecutionListener {
 
   @Autowired
-  private ProcessChangeService processChangeService;
+  private ProcessChangeEventService processChangeEventService;
 
   public ValidDelegate() {
     BeanInjectionHelper.autowireBean(this);
@@ -21,11 +21,11 @@ public class ValidDelegate implements JavaDelegate, ExecutionListener {
   @Override
   public void execute(DelegateExecution delegateExecution) throws Exception {
     log.info("work valid define: {}", delegateExecution.getProcessBusinessKey());
-    processChangeService.statusChange(delegateExecution, WorkStatus.VALID);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.VALID);
   }
 
   @Override
   public void notify(DelegateExecution delegateExecution) throws Exception {
-    processChangeService.statusChange(delegateExecution, WorkStatus.VALID);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.VALID);
   }
 }

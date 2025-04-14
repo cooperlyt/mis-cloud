@@ -18,4 +18,6 @@ public class WorkCreateMessage implements java.io.Serializable{
   private long workId;
 
   private Map<String,Object> data;
+
+  private String type;
 }

@@ -112,53 +112,97 @@ spring:
         # 服务注册标识，格式为：应用名称+服务器IP+端口
         instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
     function:
-      definition: processCreateChannel;signalEventChannel;eventEventChannel
+      definition: workCreate;workEvent
     stream:
       bindings:
-        processCreateChannel-in-0:
-          #RocketMQ Topic
-          destination: topic-work-create
-          content-type: application/json
-          group: group-camunda-create
-        signalEventChannel-in-0:
-          #RocketMQ Topic
-          destination: topic-work-signal
-          content-type: application/json
-          group: group-camunda-signal
-        eventEventChannel-in-0:
-          #RocketMQ Topic
+        workCreate-in-0:
+          destination: work #RabbitMq 消费和交换机无关
+          group: camunda.work.create #RabbitMQ 队列名
+#        signalEventChannel-in-0:
+#          destination: work
+#          group: camunda.work.signal
+
+        workEvent-in-0:
           destination: topic-work-event
-          content-type: application/json
-          group: group-camunda-event
-        processChangeChannel-out-0:
-          destination: topic-process-change
-          content-type: application/json
-          group: group-camunda-change
-        statusChangeChannel-out-0:
-          destination: topic-status-change
-          content-type: application/json
-          group: group-camunda-status
+          group: camunda.work.event
+
+        processChanged-out-0:
+          destination: work # Rabbit 交换机名
+        statusChanged-out-0:
+          destination: work
+
+      default-binder: rabbit
+      default:
+        content-type: application/json
+        producer:
+          error-channel-enabled: true
+        consumer:
+          maxAttempts: 10
+        #            backOffInitialInterval:
+        #            backOffMultipler:
+        #            backOffMaxInterval:
+        #            retryableExceptions:
+        #              java:
+        #                lang:
+        #                  IllegalStateException: true
+
+    binders:
+      rabbit:
+        type: rabbit
+        environment:
+          spring:
+            rabbitmq:
+              publisher-confirm-type: correlated
+              publisher-returns: true
+              host: 10.61.1.22
+              port: 5672
+              virtual-host: construction
+              username: app
+              password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
+              # / admin FeiPu@2024
 
 
-      rocketmq:
-        binder:
-          nameServer: ${MQ_ADDR:namesrv:9876}
+
+    rabbit:
+      default:
+        producer:
+          useConfirmHeader: true
+        consumer:
+          acknowledge-mode: manual
+          auto-bind-dlq: true
+          batch-mode: false
+          bindQueue: false
+          declareExchange: false
+          queueNameGroupOnly: true
         bindings:
-          processCreateChannel-in-0:
-            consumer:
-              subscription: sql:(type = 'RUNNING')
-          signalEventChannel-in-0:
-            consumer:
-              enabled: true
-          eventEventChannel-in-0:
-            consumer:
-              enabled: true
           processChangeChannel-out-0:
             producer:
-              group: group-camunda-change
+              #              useConfirmHeader: true
+              routingKeyExpression: "headers['type'] + '.work.process.changed'"
           statusChangeChannel-out-0:
             producer:
-              group: group-camunda-status
+              routingKeyExpression: "headers['type'] + '.work.status.changed'"
+
+
+#      rocketmq:
+#        binder:
+#          nameServer: ${MQ_ADDR:namesrv:9876}
+#        bindings:
+#          processCreateChannel-in-0:
+#            consumer:
+#              subscription: sql:(type = 'RUNNING')
+#          signalEventChannel-in-0:
+#            consumer:
+#              enabled: true
+#          eventEventChannel-in-0:
+#            consumer:
+#              enabled: true
+#          processChangeChannel-out-0:
+#            producer:
+#              group: group-camunda-change
+#          statusChangeChannel-out-0:
+#            producer:
+#              group: group-camunda-status
 
 #              transactionListener: processStatusChangeTransactionListener
 #              producerType: Trans

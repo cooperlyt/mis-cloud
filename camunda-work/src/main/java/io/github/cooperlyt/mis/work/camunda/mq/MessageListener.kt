@@ -1,92 +1,93 @@
-package io.github.cooperlyt.mis.work.camunda.mq;
+package io.github.cooperlyt.mis.work.camunda.mq
 
-import io.github.cooperlyt.mis.work.camunda.Constants;
-import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
-import io.github.cooperlyt.mis.work.message.WorkMessage;
-import io.github.cooperlyt.mis.work.message.WorkEventMessage;
-import lombok.extern.slf4j.Slf4j;
-import org.camunda.bpm.engine.MismatchingMessageCorrelationException;
-import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.impl.util.StringUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.Message;
+import io.github.cooperlyt.cloud.addons.rabbit.AcknowledgeConsumer
+import io.github.cooperlyt.mis.work.message.WorkCreateMessage
+import io.github.cooperlyt.mis.work.message.WorkEventMessage
+import org.camunda.bpm.engine.MismatchingMessageCorrelationException
+import org.camunda.bpm.engine.RuntimeService
+import org.camunda.bpm.engine.impl.util.StringUtil
+import org.springframework.context.annotation.Bean
+import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
-import java.util.Map;
-import java.util.function.Consumer;
+@Service
+class MessageListener(private val runtimeService: RuntimeService) {
 
-@Slf4j
-@Configuration
-public class MessageListener {
-
-  private final RuntimeService runtimeService;
-
-  public MessageListener(RuntimeService runtimeService) {
-    this.runtimeService = runtimeService;
-  }
-
-//  process_project_license
-  @Bean
-  public Consumer<Message<WorkCreateMessage>> processCreateChannel() {
-    return msg -> {
-      var arg = msg.getHeaders();
-      log.info(Thread.currentThread().getName() + " Receive New Create Messages: " + msg.getPayload()+ " ARG:"
-          + arg);
-      String define = msg.getHeaders().get(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, String.class);
-      String workId = String.valueOf(msg.getPayload().getWorkId());
-
-//      approval
-      runtimeService.startProcessInstanceByKey(define,workId,workId,msg.getPayload().getData());
-
-    };
-  }
+    companion object {
+        private val logger = org.slf4j.LoggerFactory.getLogger(MessageListener::class.java)
+    }
 
 
-  @Bean
-  public Consumer<Message<Map<String,Object>>> signalEventChannel() {
-    return msg -> {
-      var arg = msg.getHeaders();
-      log.info(Thread.currentThread().getName() + " Receive Signal Messages: " + msg.getPayload() + " ARG:"
-          + arg);
+    @Bean
+    fun workCreate() = createRequestConsumer.consumer()
 
-      String signal = arg.get(WorkMessage.MESSAGE_HEADER_SIGNAL, String.class);
-      if (StringUtil.hasText(signal)) {
-        Map<String,Object> vars = msg.getPayload();
-        if(vars.isEmpty()){
-          runtimeService.signalEventReceived(signal);
-        }else{
-          runtimeService.signalEventReceived(signal,vars);
+    @Bean
+    fun workEvent() = workEventMessageConsumer.consumer()
+
+    private val createRequestConsumer = object : AcknowledgeConsumer<WorkCreateMessage>() {
+        override fun processMessage(message: WorkCreateMessage): Mono<Void> {
+//            val arg: MessageHeaders = message.getHeaders()
+            logger.info(
+                Thread.currentThread().name + " Receive New Create Messages: " + message)
+//            val define: String =
+//                message.getHeaders().get<String>(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, String::class.java)
+            val businessKey: String = message.workId.toString()
+
+
+            //      approval
+
+            return Mono.fromCallable {
+                runtimeService.startProcessInstanceByKey(message.type, businessKey, businessKey, message.data)
+            }.then()
         }
-      }
-    };
-  }
+    }
 
-  @Bean
-  public Consumer<Message<WorkEventMessage>> eventEventChannel() {
-    return msg -> {
-      var arg = msg.getHeaders();
-      log.info(Thread.currentThread().getName() + " Receive Messages Event: " + msg.getPayload() + " ARG:"
-          + arg);
+//    val signalRequestConsumer = object : AcknowledgeConsumer<Map<String,Any>>() {
+//        override fun processMessage(message: Map<String,Any>): Mono<Void> {
+//            logger.info(
+//                Thread.currentThread().name + " Receive New Signal Messages: " + message)
+//            val businessKey: String = message.workId.toString()
+//            return Mono.fromCallable {
+//                val arg: MessageHeaders = msg.getHeaders()
+//                MessageListener.log.info(
+//                    Thread.currentThread().name + " Receive Signal Messages: " + msg.getPayload() + " ARG:"
+//                            + arg
+//                )
+//
+//                val signal = arg.get(WorkMessage.MESSAGE_HEADER_SIGNAL, String::class.java)
+//                if (StringUtil.hasText(signal)) {
+//                    val vars: Map<String, Any> = msg.getPayload()
+//                    if (vars.isEmpty()) {
+//                        runtimeService.signalEventReceived(signal)
+//                    } else {
+//                        runtimeService.signalEventReceived(signal, vars)
+//                    }
+//                }
+//            }.then()
+//        }
+//    }
 
-      String messageName = arg.get(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, String.class);
-      if (StringUtil.hasText(messageName)) {
-        WorkEventMessage event = msg.getPayload();
 
-        try {
-          if(event.getArgs().isEmpty()){
-            runtimeService.correlateMessage(messageName,event.getBusinessKey());
-          }else{
-            runtimeService.correlateMessage(messageName,event.getBusinessKey(),event.getArgs());
-          }
-        } catch (MismatchingMessageCorrelationException e){
-          log.error("MismatchingMessageCorrelationException",e);
+    private val workEventMessageConsumer = object : AcknowledgeConsumer<WorkEventMessage>() {
+        override fun processMessage(message: WorkEventMessage): Mono<Void> {
+            logger.info(
+                Thread.currentThread().name + " Receive New Event Messages: " + message)
+            return Mono.fromCallable {
+                //val messageName = arg.get(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, String::class.java)
+                if (StringUtil.hasText(message.name)) {
+                    try {
+                        if (message.args.isEmpty()) {
+                            runtimeService.correlateMessage(message.name, message.businessKey)
+                        } else {
+                            runtimeService.correlateMessage(message.name, message.businessKey, message.args)
+                        }
+                    } catch (e: MismatchingMessageCorrelationException) {
+                        //这里测试一下 ack 是仅确认消息到达， 还是确认消息被成功处理
+                        logger.error("MismatchingMessageCorrelationException", e)
+                        throw io.github.cooperlyt.cloud.addons.rabbit.InvalidMessageException("MismatchingMessageCorrelationException!", e)
+                    }
+                }
+            }.then()
         }
-
-      }
-
-      //runtimeService.correlateMessage();
-    };
-  }
-
-
+    }
 }

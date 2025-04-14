@@ -20,5 +20,6 @@ public class WorkEventMessage {
 
   private String businessKey;
 
+  private String name;
 
 }

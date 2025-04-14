@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
-import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeService;
+import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ImminentDelegate implements JavaDelegate, ExecutionListener {
 
   @Autowired
-  private ProcessChangeService processChangeService;
+  private ProcessChangeEventService processChangeEventService;
 
   public ImminentDelegate() {
     BeanInjectionHelper.autowireBean(this);
@@ -25,11 +25,11 @@ public class ImminentDelegate implements JavaDelegate, ExecutionListener {
 
   @Override
   public void execute(DelegateExecution delegateExecution) throws Exception {
-    processChangeService.statusChange(delegateExecution, WorkStatus.IMMINENT);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.IMMINENT);
   }
 
   @Override
   public void notify(DelegateExecution delegateExecution) throws Exception {
-    processChangeService.statusChange(delegateExecution, WorkStatus.IMMINENT);
+    processChangeEventService.statusChange(delegateExecution, WorkStatus.IMMINENT);
   }
 }

@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
-import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeService;
+import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
 import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -40,18 +40,18 @@ public class CamundaEventListener {
 
   private final RuntimeService runtimeService;
 
-  private final ProcessChangeService processChangeService;
+  private final ProcessChangeEventService processChangeEventService;
 
   private final RepositoryService repositoryService;
 
   private final IdentityService identityService;
 
   public CamundaEventListener(TaskService taskService,
-                              RuntimeService runtimeService, ProcessChangeService processChangeService,
+                              RuntimeService runtimeService, ProcessChangeEventService processChangeEventService,
                               RepositoryService repositoryService, IdentityService identityService) {
     this.taskService = taskService;
     this.runtimeService = runtimeService;
-    this.processChangeService = processChangeService;
+    this.processChangeEventService = processChangeEventService;
     this.repositoryService = repositoryService;
     this.identityService = identityService;
   }
@@ -83,7 +83,7 @@ public class CamundaEventListener {
         .orElse(true);
 
     try {
-      processChangeService.processChange(WorkChangeMessage.builder()
+      processChangeEventService.processChange(WorkChangeMessage.builder()
               .message((String) taskService.getVariable(taskEvent.getId(),"task_message"))
               //.message((String) taskService.getVariableLocal(taskEvent.getId(),"message"))
               .pass(pass)
@@ -118,7 +118,7 @@ public class CamundaEventListener {
       log.warn("process instance is ended: {}",taskEvent.getProcessInstanceId());
     }
     try {//          processInstance.isEnded() ? WorkStatus.DELETED : WorkStatus.ABORT,
-      processChangeService.statusChange(Long.parseLong(taskEvent.getCaseInstanceId()),
+      processChangeEventService.statusChange(Long.parseLong(taskEvent.getCaseInstanceId()),
           WorkStatus.ABORT,
           taskEvent.getProcessDefinitionId());
     } catch (Exception e) {
