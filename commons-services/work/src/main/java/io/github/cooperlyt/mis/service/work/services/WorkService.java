@@ -108,7 +108,6 @@ public class WorkService {
     return workAttachmentRepository.removeAttachmentFile(attachId,fileId);
   }
 
-  @Transactional
   public Mono<List<WorkFileInfo>> workFiles(long attachId){
     return workAttachmentRepository.listAttachmentFile(attachId)
         .map(WorkFileInfo.class::cast)

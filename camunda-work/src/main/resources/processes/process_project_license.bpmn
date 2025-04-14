@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1lhq1ck" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1lhq1ck" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
   <bpmn:collaboration id="Collaboration_14mc9d3">
     <bpmn:extensionElements />
     <bpmn:participant id="Participant_1ax7cfp" name="预销售许可" processRef="process_project_license" />
@@ -64,7 +64,7 @@
       <bpmn:incoming>Flow_0rj23th</bpmn:incoming>
       <bpmn:outgoing>Flow_0th211z</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0hg5bbz" name="制证" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.ImminentDelegate">
+    <bpmn:serviceTask id="Activity_0hg5bbz" name="公示" camunda:class="io.github.cooperlyt.mis.work.camunda.delegate.ImminentDelegate">
       <bpmn:incoming>Flow_0ermf96</bpmn:incoming>
       <bpmn:outgoing>Flow_1tly2al</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -140,7 +140,7 @@
     <bpmn:sequenceFlow id="Flow_1y89whv" sourceRef="Activity_0uru4zn" targetRef="Gateway_03j7k1h" />
     <bpmn:sequenceFlow id="Flow_0e3gdzw" sourceRef="StartEvent_1" targetRef="Activity_0uru4zn" />
     <bpmn:sequenceFlow id="Flow_1svb3li" sourceRef="Gateway_0ckdw7e" targetRef="Activity_0uru4zn">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'unaccepted'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${process_method == 'approval'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1skbira" sourceRef="Gateway_0ckdw7e" targetRef="Event_1irqvmy" />
     <bpmn:sequenceFlow id="Flow_0xaw44j" sourceRef="Gateway_0ckdw7e" targetRef="Activity_1kqwz0x">

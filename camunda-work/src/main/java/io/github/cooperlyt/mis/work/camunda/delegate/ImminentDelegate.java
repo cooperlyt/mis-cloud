@@ -8,6 +8,11 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * 即将生效
+ *
+ * 用于预售许可证公示期， 此状态业务并不生效， 公示后生效
+ */
 @Slf4j
 public class ImminentDelegate implements JavaDelegate, ExecutionListener {
 
