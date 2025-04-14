@@ -1,6 +1,7 @@
 package io.github.cooperlyt.mis.work.camunda.listener;
 
 import io.github.cooperlyt.mis.work.camunda.delegate.BeanInjectionHelper;
+import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CompleteListener implements ExecutionListener {
 
   @Autowired
-  private ProcessChangeService processChangeService;
+  private ProcessChangeEventService processChangeEventService;
 
 
   public CompleteListener() {
@@ -23,7 +24,7 @@ public class CompleteListener implements ExecutionListener {
   public void notify(DelegateExecution execution) throws Exception {
     log.info("complete listener process: {}", execution.getProcessBusinessKey());
     
-    processChangeService.statusChange(Long.parseLong(execution.getProcessBusinessKey()),
+    processChangeEventService.statusChange(Long.parseLong(execution.getProcessBusinessKey()),
         WorkStatus.COMPLETED, execution.getProcessDefinitionId());
   }
 }
