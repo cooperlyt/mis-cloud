@@ -11,8 +11,12 @@ import io.github.cooperlyt.mis.work.message.WorkCreateMessage
 import io.github.cooperlyt.mis.work.message.WorkEventMessage
 import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
 import org.springframework.http.MediaType
+import org.springframework.messaging.Message
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.publisher.Sinks
+import java.util.function.Supplier
 
 class WorkRemoteServiceImpl(private val webClient: WebClient, private val serverName: String): RemoteResponseService(), WorkRemoteService {
 
@@ -20,7 +24,7 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
         private val logger = org.slf4j.LoggerFactory.getLogger(WorkRemoteServiceImpl::class.java)
     }
 
-    class WorkEventMessagePublisher : ConfirmPublisher<WorkEventMessage>() {
+    private val workEventMessagePublisher = object : ConfirmPublisher<WorkEventMessage>() {
         fun sendWorkEventMessage(messageName: String, defineId: String,
                                  workId: Long, processData: Map<String,Any>): Mono<Boolean> {
             return sendMessage(
@@ -28,9 +32,11 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
                 MESSAGE_HEADER_WORK_DEFINE to defineId
             )
         }
+
+        fun workEventMessageSinks() = sinks()
     }
 
-    class WorkCreateMessagePublisher : ConfirmPublisher<WorkCreateMessage>() {
+    private val workCreateMessagePublisher = object : ConfirmPublisher<WorkCreateMessage>() {
         fun sendWorkCreateMessage(defineId: String,
                                   workId: Long, processData: Map<String,Any>): Mono<Boolean> {
             return sendMessage(
@@ -42,11 +48,9 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
                 MESSAGE_HEADER_WORK_DEFINE to defineId
             )
         }
+
+        fun workCreateMessageSinks() = sinks()
     }
-
-    protected val workEventMessagePublisher = WorkEventMessagePublisher()
-
-    protected val workCreateMessagePublisher = WorkCreateMessagePublisher()
 
     override fun sendWorkEventMessage(
         messageName: String,
@@ -59,6 +63,15 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
             .map { _ -> workId }
             .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()))
     }
+
+    override fun workCreateMessageSinks(): Supplier<Flux<Message<WorkCreateMessage>>> {
+        return workCreateMessagePublisher.workCreateMessageSinks()
+    }
+
+    override fun workEventMessageSinks(): Supplier<Flux<Message<WorkEventMessage>>> {
+        return workEventMessagePublisher.workEventMessageSinks()
+    }
+
 
     override fun sendWorkCreateMessage(
         defineId: String,

@@ -42,10 +42,10 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     }
 
     @Bean
-    fun statusChanged() = statusChangedMessagePublisher.statusChangedSinks()
+    fun statusChangedChannel() = statusChangedMessagePublisher.statusChangedSinks()
 
     @Bean
-    fun processChanged() = processChangedMessagePublisher.processChangedSinks()
+    fun processChangedChannel() = processChangedMessagePublisher.processChangedSinks()
 
     @Throws(java.lang.Exception::class)
     fun statusChange(delegateExecution: DelegateExecution, status: WorkStatus) {

@@ -19,10 +19,10 @@ class MessageListener(private val runtimeService: RuntimeService) {
 
 
     @Bean
-    fun workCreate() = createRequestConsumer.consumer()
+    fun workCreateChannel() = createRequestConsumer.consumer()
 
     @Bean
-    fun workEvent() = workEventMessageConsumer.consumer()
+    fun workEventChannel() = workEventMessageConsumer.consumer()
 
     private val createRequestConsumer = object : AcknowledgeConsumer<WorkCreateMessage>() {
         override fun processMessage(message: WorkCreateMessage): Mono<Void> {

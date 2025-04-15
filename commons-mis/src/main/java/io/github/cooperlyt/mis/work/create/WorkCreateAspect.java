@@ -62,12 +62,11 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
     @Builder
     public PrepareWorkDefine(WorkOperator operator,
                              WorkDefine define, Long workId,
-                             String binding, boolean optional,
+                             boolean optional,
                              WorkCreate.OperatorWay operatorWay,
                              String dataSource) {
       this.define = define;
       this.originalWorkId = workId;
-      this.binding = binding;
       this.optional = optional;
       this.operatorWay = operatorWay;
       this.operator = operator;
@@ -81,8 +80,6 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
 
     private final Long originalWorkId;
 
-    @Getter
-    private final String binding;
 
     @Getter
     private final boolean optional;
@@ -187,23 +184,10 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
       }
     }
 
-    String binding = workCreate.binding();
-    if (StringUtils.isBlank(binding)){
-      WorkMessageBinding workMessageBinding = methodSignature.getMethod().getDeclaringClass().getAnnotation(WorkMessageBinding.class);
-      if (workMessageBinding != null)
-        workMessageBinding = AnnotationUtils.getAnnotation(workMessageBinding,WorkMessageBinding.class);
-      if (workMessageBinding != null)
-        binding = workMessageBinding.binding();
-    }
-
-    if (StringUtils.isBlank(binding)){
-      throw new IllegalArgumentException("work message binding must be present");
-    }
-
     return Mono.just(PrepareWorkDefine.builder()
             .dataSource(workCreate.dataSource())
             .optional(workCreate.optional()).operatorWay(workCreate.operatorWay())
-            .binding(binding).workId(workId.orElse(null))
+            .workId(workId.orElse(null))
             .operator(operator.orElse(null)))
         .flatMap(builder -> Mono.justOrEmpty(builder.workId)
             .flatMap(id -> workRemoteService.define(workCreate.defineId())
@@ -229,8 +213,8 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
                 )
                 .then(((Mono<?>) joinPoint.proceed(args)))
                 .filter(r -> !define.isOptional() || !(r instanceof Boolean)  || ((Boolean) r))
-                .flatMap(r -> Mono.defer(() -> createWork(define, r, define.binding).thenReturn(r)))
-                .switchIfEmpty(define.isOptional() ? Mono.empty() : Mono.defer(() -> createWork(define, null, define.binding).then(Mono.empty())));
+                .flatMap(r -> Mono.defer(() -> createWork(define, r).thenReturn(r)))
+                .switchIfEmpty(define.isOptional() ? Mono.empty() : Mono.defer(() -> createWork(define, null).then(Mono.empty())));
 
             if (define.getWorkId().isPresent() && !workCreate.resultIsWorkId()){
               result = result.contextWrite(ctx -> ctx.put(Constant.WORK_ID_PARAM,define.getWorkId().get()));
@@ -271,7 +255,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
   }
 
   @SuppressWarnings("unchecked")
-  private Mono<Long> createWork(PrepareWorkDefine define,Object result, String bindingName){
+  private Mono<Long> createWork(PrepareWorkDefine define,Object result){
 
     final long workId = define.getWorkId().orElseGet(() -> {
       if (result instanceof Number) {

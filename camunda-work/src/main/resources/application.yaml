@@ -115,20 +115,20 @@ spring:
       definition: workCreate;workEvent
     stream:
       bindings:
-        workCreate-in-0:
-          destination: work #RabbitMq 消费和交换机无关
+        workCreateChannel-in-0:
+          destination: work-create #RabbitMq 消费和交换机无关
           group: camunda.work.create #RabbitMQ 队列名
 #        signalEventChannel-in-0:
 #          destination: work
 #          group: camunda.work.signal
 
-        workEvent-in-0:
-          destination: topic-work-event
+        workEventChannel-in-0:
+          destination: work-event
           group: camunda.work.event
 
-        processChanged-out-0:
+        processChangedChannel-out-0:
           destination: work # Rabbit 交换机名
-        statusChanged-out-0:
+        statusChangedChannel-out-0:
           destination: work
 
       default-binder: rabbit
@@ -146,42 +146,42 @@ spring:
         #                lang:
         #                  IllegalStateException: true
 
-    binders:
+        binders:
+          rabbit:
+            type: rabbit
+            environment:
+              spring:
+                rabbitmq:
+                  publisher-confirm-type: correlated
+                  publisher-returns: true
+                  host: 10.61.1.22
+                  port: 5672
+                  virtual-host: construction
+                  username: app
+                  password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
+                  # / admin FeiPu@2024
+
+
+
       rabbit:
-        type: rabbit
-        environment:
-          spring:
-            rabbitmq:
-              publisher-confirm-type: correlated
-              publisher-returns: true
-              host: 10.61.1.22
-              port: 5672
-              virtual-host: construction
-              username: app
-              password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
-              # / admin FeiPu@2024
-
-
-
-    rabbit:
-      default:
-        producer:
-          useConfirmHeader: true
-        consumer:
-          acknowledge-mode: manual
-          auto-bind-dlq: true
-          batch-mode: false
-          bindQueue: false
-          declareExchange: false
-          queueNameGroupOnly: true
-        bindings:
-          processChangeChannel-out-0:
-            producer:
-              #              useConfirmHeader: true
-              routingKeyExpression: "headers['define'] + '.work.process.changed'"
-          statusChangeChannel-out-0:
-            producer:
-              routingKeyExpression: "headers['define'] + '.work.status.changed'"
+        default:
+          producer:
+            useConfirmHeader: true
+          consumer:
+            acknowledge-mode: manual
+            auto-bind-dlq: true
+            batch-mode: false
+            bindQueue: false
+            declareExchange: false
+            queueNameGroupOnly: true
+          bindings:
+            processChangedChannel-out-0:
+              producer:
+                #              useConfirmHeader: true
+                routingKeyExpression: "headers['define'] + '.work.process.changed'"
+            statusChangedChannel-out-0:
+              producer:
+                routingKeyExpression: "headers['define'] + '.work.status.changed'"
 
 
 #      rocketmq:

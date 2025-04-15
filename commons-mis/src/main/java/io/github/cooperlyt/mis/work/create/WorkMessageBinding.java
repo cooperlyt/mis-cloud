@@ -10,14 +10,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WorkMessageBinding {
-
-  @AliasFor("binding")
-  String value() default "";
-
-  /**
-   *
-   *  @return spring stream binding name
-   */
-  @AliasFor("value")
-  String binding() default "";
 }
