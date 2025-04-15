@@ -1,8 +1,8 @@
 package io.github.cooperlyt.mis.work.camunda.mq
 
 import io.github.cooperlyt.cloud.addons.rabbit.ConfirmPublisher
-import io.github.cooperlyt.mis.work.message.StatusChangeMessage
-import io.github.cooperlyt.mis.work.message.WorkChangeMessage
+import io.github.cooperlyt.mis.work.message.WorkStatusChangedMessage
+import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage
 import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
 import io.github.cooperlyt.mis.work.message.WorkStatus
 import org.camunda.bpm.engine.RepositoryService
@@ -23,21 +23,21 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     }
 
 
-    private val statusChangedMessagePublisher = object: ConfirmPublisher<StatusChangeMessage>() {
+    private val statusChangedMessagePublisher = object: ConfirmPublisher<WorkStatusChangedMessage>() {
 
         fun statusChangedSinks() = sinks()
 
-        fun sendStatusChangedMessage(type: String, playLoad: StatusChangeMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to type)
+        fun sendStatusChangedMessage(playLoad: WorkStatusChangedMessage): Mono<Boolean> {
+            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to playLoad.define)
         }
     }
 
-    private val processChangedMessagePublisher = object: ConfirmPublisher<WorkChangeMessage>() {
+    private val processChangedMessagePublisher = object: ConfirmPublisher<WorkProcessChangedMessage>() {
 
         fun processChangedSinks() = sinks()
 
-        fun sendProcessChangedMessage(type: String, playLoad: WorkChangeMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to type)
+        fun sendProcessChangedMessage(playLoad: WorkProcessChangedMessage): Mono<Boolean> {
+            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to playLoad.define)
         }
     }
 
@@ -56,8 +56,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     fun statusChange(workId: Long, status: WorkStatus, processDefinitionId: String) {
 
         statusChangedMessagePublisher.sendStatusChangedMessage(
-            getDefineId(processDefinitionId),
-            StatusChangeMessage.builder().status(status).workId(workId).build())
+            WorkStatusChangedMessage.builder().define(getDefineId(processDefinitionId)).status(status).workId(workId).build())
             .subscribe(
                 { logger.info("status change mq is send: {} -> {}", workId, status) },
                 { throw Exception("message send fail!") }
@@ -65,10 +64,9 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     }
 
     @Throws(java.lang.Exception::class)
-    fun processChange(changeMessage: WorkChangeMessage, processDefinitionId: String) {
-        processChangedMessagePublisher.sendProcessChangedMessage(
-            getDefineId(processDefinitionId),
-            changeMessage)
+    fun processChange(changeMessage: WorkProcessChangedMessage, processDefinitionId: String) {
+        changeMessage.define = getDefineId(processDefinitionId)
+        processChangedMessagePublisher.sendProcessChangedMessage(changeMessage)
             .subscribe(
                 { logger.info("process change mq is send: {} -> {}", changeMessage.workId, changeMessage) },
                 { throw Exception("message send fail!") }

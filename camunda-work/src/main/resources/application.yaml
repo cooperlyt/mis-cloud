@@ -112,7 +112,7 @@ spring:
         # 服务注册标识，格式为：应用名称+服务器IP+端口
         instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
     function:
-      definition: workCreate;workEvent
+      definition: workCreateChannel;workEventChannel
     stream:
       bindings:
         workCreateChannel-in-0:

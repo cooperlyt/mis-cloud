@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>camunda-work-service</artifactId>
-    <version>snapshot</version>
+    <version>2.2.100-snapshot</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

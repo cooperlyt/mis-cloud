@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
 import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
-import io.github.cooperlyt.mis.work.message.WorkChangeMessage;
+import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
@@ -83,7 +83,7 @@ public class CamundaEventListener {
         .orElse(true);
 
     try {
-      processChangeEventService.processChange(WorkChangeMessage.builder()
+      processChangeEventService.processChange(WorkProcessChangedMessage.builder()
               .message((String) taskService.getVariable(taskEvent.getId(),"task_message"))
               //.message((String) taskService.getVariableLocal(taskEvent.getId(),"message"))
               .pass(pass)

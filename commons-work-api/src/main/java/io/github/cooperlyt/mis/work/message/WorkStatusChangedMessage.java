@@ -8,10 +8,12 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class StatusChangeMessage {
+public class WorkStatusChangedMessage {
 
   private WorkStatus status;
 
   private long workId;
+
+  private String define;
 
 }
