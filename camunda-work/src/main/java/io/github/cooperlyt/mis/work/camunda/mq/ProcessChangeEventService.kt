@@ -1,9 +1,10 @@
 package io.github.cooperlyt.mis.work.camunda.mq
 
 import io.github.cooperlyt.cloud.addons.rabbit.ConfirmPublisher
+import io.github.cooperlyt.mis.work.ProcessConstant
+import io.github.cooperlyt.mis.work.ProcessConstant.MESSAGE_HEADER_DEFINE_KEY
 import io.github.cooperlyt.mis.work.message.WorkStatusChangedMessage
 import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage
-import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
 import io.github.cooperlyt.mis.work.message.WorkStatus
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.delegate.DelegateExecution
@@ -28,7 +29,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun statusChangedSinks() = sinks()
 
         fun sendStatusChangedMessage(playLoad: WorkStatusChangedMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to playLoad.define)
+            return sendMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
         }
     }
 
@@ -37,7 +38,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun processChangedSinks() = sinks()
 
         fun sendProcessChangedMessage(playLoad: WorkProcessChangedMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to playLoad.define)
+            return sendMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
         }
     }
 

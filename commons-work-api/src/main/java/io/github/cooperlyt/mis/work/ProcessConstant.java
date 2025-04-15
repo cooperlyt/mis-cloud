@@ -16,4 +16,10 @@ public class ProcessConstant {
 
   public static final String SOURCE_VAR = "source";
 
+  public static final String MESSAGE_HEADER_DEFINE_KEY = "define";
+
+  public static String defineToRouterKey(String define) {
+    return define.replaceAll("_", ".").toLowerCase();
+  }
+
 }
