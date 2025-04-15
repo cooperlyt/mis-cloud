@@ -8,11 +8,11 @@ import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
 import io.github.cooperlyt.mis.work.impl.WorkDao;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -26,8 +26,9 @@ public class WorkCreateAutoConfigure {
   @Lazy
   @ConditionalOnMissingBean
   @ConditionalOnProperty("mis.internal.work.serverName")
-  public WorkRemoteService workRemoteService(WebClient.Builder builder, StreamBridge streamBridge){
-    return new WorkRemoteServiceImpl(builder.build(),streamBridge);
+  public WorkRemoteService workRemoteService(WebClient.Builder webClientBuilder,
+                                             @Value("${mis.internal.work.serverName}") String serverName) {
+    return new WorkRemoteServiceImpl(webClientBuilder.build(), serverName);
   }
 
   @Bean

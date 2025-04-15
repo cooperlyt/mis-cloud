@@ -3,6 +3,7 @@ package io.github.cooperlyt.mis.work.camunda.mq
 import io.github.cooperlyt.cloud.addons.rabbit.ConfirmPublisher
 import io.github.cooperlyt.mis.work.message.StatusChangeMessage
 import io.github.cooperlyt.mis.work.message.WorkChangeMessage
+import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
 import io.github.cooperlyt.mis.work.message.WorkStatus
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.delegate.DelegateExecution
@@ -18,7 +19,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     companion object {
         private val logger = LoggerFactory.getLogger(ProcessChangeEventService::class.java)
 
-        const val MESSAGE_HEADER_TYPE = "type"
+        //const val MESSAGE_HEADER_TYPE = "type"
     }
 
 
@@ -27,7 +28,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun statusChangedSinks() = sinks()
 
         fun sendStatusChangedMessage(type: String, playLoad: StatusChangeMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_TYPE to type)
+            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to type)
         }
     }
 
@@ -36,7 +37,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun processChangedSinks() = sinks()
 
         fun sendProcessChangedMessage(type: String, playLoad: WorkChangeMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_TYPE to type)
+            return sendMessage(playLoad, MESSAGE_HEADER_WORK_DEFINE to type)
         }
     }
 

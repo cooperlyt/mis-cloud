@@ -37,7 +37,7 @@ class MessageListener(private val runtimeService: RuntimeService) {
             //      approval
 
             return Mono.fromCallable {
-                runtimeService.startProcessInstanceByKey(message.type, businessKey, businessKey, message.data)
+                runtimeService.startProcessInstanceByKey(message.define, businessKey, businessKey, message.data)
             }.then()
         }
     }

@@ -2,7 +2,6 @@ package io.github.cooperlyt.mis;
 
 
 
-import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
 import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;

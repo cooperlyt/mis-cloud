@@ -1,238 +1,139 @@
-package io.github.cooperlyt.mis.work.impl;
+package io.github.cooperlyt.mis.work.impl
 
-import io.github.cooperlyt.mis.RemoteResponseService;
-import io.github.cooperlyt.mis.work.Constant;
-import io.github.cooperlyt.mis.work.WorkRemoteService;
-import io.github.cooperlyt.mis.work.data.WorkDefine;
-import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
-import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
-import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
-import io.github.cooperlyt.mis.work.message.WorkCreateType;
-import io.github.cooperlyt.mis.work.message.WorkEventMessage;
-import io.github.cooperlyt.mis.work.message.WorkMessage;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.http.MediaType;
-import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import io.github.cooperlyt.cloud.addons.rabbit.ConfirmPublisher
+import io.github.cooperlyt.mis.RemoteResponseService
+import io.github.cooperlyt.mis.work.Constant
+import io.github.cooperlyt.mis.work.WorkRemoteService
+import io.github.cooperlyt.mis.work.data.WorkDefine
+import io.github.cooperlyt.mis.work.data.WorkDefineForCreate
+import io.github.cooperlyt.mis.work.data.WorkDefineForProcess
+import io.github.cooperlyt.mis.work.message.WorkCreateMessage
+import io.github.cooperlyt.mis.work.message.WorkEventMessage
+import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
+import org.springframework.http.MediaType
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 
-import java.util.Map;
+class WorkRemoteServiceImpl(private val webClient: WebClient, private val serverName: String): RemoteResponseService(), WorkRemoteService {
 
-@Slf4j
-public class WorkRemoteServiceImpl extends RemoteResponseService implements WorkRemoteService {
+    companion object {
+        private val logger = org.slf4j.LoggerFactory.getLogger(WorkRemoteServiceImpl::class.java)
+    }
 
-  private final WebClient webClient;
+    class WorkEventMessagePublisher : ConfirmPublisher<WorkEventMessage>() {
+        fun sendWorkEventMessage(messageName: String, defineId: String,
+                                 workId: Long, processData: Map<String,Any>): Mono<Boolean> {
+            return sendMessage(
+                WorkEventMessage(messageName, workId.toString(), processData),
+                MESSAGE_HEADER_WORK_DEFINE to defineId
+            )
+        }
+    }
 
-  @Value("${mis.internal.work.serverName}")
-  private String serverName;
+    class WorkCreateMessagePublisher : ConfirmPublisher<WorkCreateMessage>() {
+        fun sendWorkCreateMessage(defineId: String,
+                                  workId: Long, processData: Map<String,Any>): Mono<Boolean> {
+            return sendMessage(
+                WorkCreateMessage.builder()
+                    .workId(workId)
+                    .define(defineId)
+                    .data(processData)
+                    .build(),
+                MESSAGE_HEADER_WORK_DEFINE to defineId
+            )
+        }
+    }
 
-  private final StreamBridge streamBridge;
+    protected val workEventMessagePublisher = WorkEventMessagePublisher()
 
+    protected val workCreateMessagePublisher = WorkCreateMessagePublisher()
 
-  public WorkRemoteServiceImpl(WebClient webClient, StreamBridge streamBridge) {
-    this.webClient = webClient;
-    this.streamBridge = streamBridge;
-  }
+    override fun sendWorkEventMessage(
+        messageName: String,
+        defineId: String,
+        workId: Long,
+        processData: Map<String, Any>
+    ): Mono<Long> {
+        return workEventMessagePublisher.sendWorkEventMessage(messageName,defineId, workId, processData)
+            .filter { ifSend -> ifSend }
+            .map { _ -> workId }
+            .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()))
+    }
 
-  @Override
-  public Mono<WorkDefineForCreate> prepareCreate(String defineId) {
-    log.debug("prepare create work {}" , defineId);
-    return webClient
-        .get()
-        .uri("http://" + serverName + "/internal/create/{defineId}", defineId)
-        .accept(MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(WorkDefineForCreate.class, response));
-  }
+    override fun sendWorkCreateMessage(
+        defineId: String,
+        workId: Long, processData: Map<String, Any>
+    ): Mono<Long> {
+        return workCreateMessagePublisher.sendWorkCreateMessage(defineId, workId, processData)
+            .filter { ifSend -> ifSend }
+            .map { _ -> workId }
+            .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()))
+    }
 
-  @Override
-  public Mono<WorkDefineForCreate> recreate(String defineId, long originalWorkId) {
-    log.debug("prepare create work {}" , defineId);
-    return webClient
-        .get()
-        .uri("http://" + serverName + "/internal/create/{defineId}/{workId}", defineId,originalWorkId)
-        .accept(MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(WorkDefineForCreate.class, response));
-  }
-
-  @Override
-  public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
-    return webClient
-        .get()
-        .uri("http://" + serverName + "/internal/create/process/{defineId}", defineId)
-        .accept(MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(WorkDefineForProcess.class, response));
-  }
-
-  @Override
-  public Mono<WorkDefine> define(String defineId) {
-    return webClient
-        .get()
-        .uri("http://" + serverName + "/internal/define/{defineId}", defineId)
-        .accept(MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(WorkDefine.class, response));
-  }
-
-  @Override
-  public Mono<Long> applyWorkId() {
-    return webClient
-        .get()
-        .uri("http://" + serverName + "/internal/id")
-        .accept(MediaType.APPLICATION_JSON)
-        .exchangeToMono(response -> sourceResponse(Long.class, response));
-  }
-
-
-//  @Override
-//  @Transactional
-//  public Mono<Long> runWork(String bindingName, String defineId, long orgId, long workId, Function<WorkDefine, Mono<Map<String,Object>>> dataProcess) {
-//    return defaultUidGenerator.getUID().flatMap(id ->
-//        define(defineId)
-//            .flatMap(workDefine -> workDefine.isEnabled() ? Mono.just(workDefine) : Mono.error(ErrorDefine.BUSINESS_IS_DISABLED.exception()))
-//            .flatMap(workDefine -> dataProcess.apply(workDefine)
-//                .flatMap(result -> ReactiveKeycloakSecurityContextHolder.getContext()
-//                    .map(context ->
-//                        sendMessage(bindingName, defineId, WorkCreateType.RUNNING, String.valueOf(workId) ,
-//                            WorkCreateMessage.builder()
-//                                .workId(workId)
-//                                .empId(context.getUserInfo().getId())
-//                                .empName(context.getUserInfo().getName())
-//                                .orgId(orgId)
-//                                .data(result)
-//                                .build())
-//                    )
-//                    .filter(ifSend -> ifSend)
-//                    .map(ifSend -> workId)
-//                    .switchIfEmpty(Mono.error(ErrorDefine.MESSAGE_SEND_FAIL.exception()))
-//                )
-//            )
-//    );
-//  }
 //
-//
-//  @Override
-//  public Mono<Void> createOptionalWork(String bindingName, String defineId, long orgId, WorkCreateType type, Function<WorkDefineForCreate, Mono<Boolean>> dataProcess) {
-//    return defaultUidGenerator.getUID().flatMap(id ->
-//        prepareCreate(defineId)
-//            .flatMap(workDefine -> workDefine.isEnabled() ? Mono.just(workDefine) : Mono.error(ErrorDefine.BUSINESS_IS_DISABLED.exception()))
-//            .flatMap(workDefine -> dataProcess.apply(workDefine)
-//                .filter(ifCreate -> ifCreate)
-//                .flatMap(ifCreate -> sendMessage(bindingName, defineId, orgId, type, workDefine))
-//            )
-//    );
-//  }
-//
-//  @Override
-//  @Transactional
-//  public <T> Mono<T> createWork(String bindingName, String defineId, long orgId,
-//                                WorkCreateType type, Function<WorkDefineForCreate, Mono<T>> dataProcess) {
-//    return defaultUidGenerator.getUID().flatMap(id ->
-//            prepareCreate(defineId)
-//            .flatMap(workDefine -> workDefine.isEnabled() ? Mono.just(workDefine) : Mono.error(ErrorDefine.BUSINESS_IS_DISABLED.exception()))
-//            .flatMap(workDefine -> dataProcess.apply(workDefine)
-//                .flatMap(result -> sendMessage(bindingName, defineId, orgId, type, workDefine).thenReturn(result))
-//                .switchIfEmpty(sendMessage(bindingName, defineId, orgId, type, workDefine).then(Mono.empty()))
-//            )
-//        );
-//  }
-//
-//  private Mono<Void> sendMessage(String bindingName, String defineId, long orgId, WorkCreateType type, WorkDefineForCreate workDefine) {
-//    return ReactiveKeycloakSecurityContextHolder.getContext()
-//        .map(context ->
-//            sendMessage(bindingName, defineId, type, String.valueOf(workDefine.getWorkId()),
-//                WorkMessage.builder()
-//                    .workId(workDefine.getWorkId())
-//                    .empId(context.getUserInfo().getId())
-//                    .empName(context.getUserInfo().getName())
-//                    .orgId(orgId)
-//                    .build())
-//        )
-//        .filter(ifSend -> ifSend)
-//        .switchIfEmpty(Mono.error(ErrorDefine.MESSAGE_SEND_FAIL.exception()))
-//        .then();
-//  }
+//    @Value("\${mis.internal.work.serverName}")
+//    private var serverName: String? = null
 
-//  @Override
-//  public Mono<Long> sendWorkMessage(String bindingName, String defineId, long workId){
-//       return ReactiveKeycloakSecurityContextHolder.getContext()
-//        .map(context ->
-//            sendMessage(bindingName, defineId, WorkCreateType.COMPLETED, String.valueOf(workId) ,
-//                WorkCreateMessage.builder()
-//                    .workId(workId)
-//                    .build())
-//        )
-//        .filter(ifSend -> ifSend)
-//        .map(ifSend -> workId)
-//        .switchIfEmpty(Mono.error(ErrorDefine.MESSAGE_SEND_FAIL.exception()));
-//  }
+    override fun prepareCreate(defineId: String): Mono<WorkDefineForCreate> {
+        logger.debug("prepare create work {}", defineId)
+        return webClient
+            .get()
+            .uri("http://$serverName/internal/create/{defineId}", defineId)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchangeToMono { response ->
+                sourceResponse(
+                    WorkDefineForCreate::class.java, response
+                )
+            }
+    }
 
+    override fun recreate(defineId: String, originalWorkId: Long): Mono<WorkDefineForCreate> {
+        logger.debug("prepare create work {}", defineId)
+        return webClient
+            .get()
+            .uri("http://$serverName/internal/create/{defineId}/{workId}", defineId, originalWorkId)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchangeToMono { response ->
+                sourceResponse(
+                    WorkDefineForCreate::class.java, response
+                )
+            }
+    }
 
-  public Mono<Long> sendWorkEventMessage(String bindingName, String defineId,
-                                         long workId, Map<String,Object> processData, String messageName ){
-    var msg = MessageBuilder.withPayload(new WorkEventMessage(String.valueOf(workId), processData))
-        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, defineId)
-        .setHeader(WorkMessage.MESSAGE_HEADER_DATA_ID, String.valueOf(workId))
-        .setHeader(WorkEventMessage.MESSAGE_HEADER_EVENT_MESSAGE, messageName)
-        .build();
-    return Mono.fromCallable(() -> streamBridge.send(bindingName, msg))
-        .filter(ifSend -> ifSend)
-        .map(ifSend -> workId)
-        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
-  }
+    override fun prepareProcess(defineId: String): Mono<WorkDefineForProcess> {
+        return webClient
+            .get()
+            .uri("http://$serverName/internal/create/process/{defineId}", defineId)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchangeToMono { response ->
+                sourceResponse(
+                    WorkDefineForProcess::class.java, response
+                )
+            }
+    }
 
-  @Override
-  public Mono<Long> sendWorkMessage(String bindingName, String defineId,
-                             long workId, Map<String,Object> processData){
+    override fun define(defineId: String): Mono<WorkDefine> {
+        return webClient
+            .get()
+            .uri("http://$serverName/internal/define/{defineId}", defineId)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchangeToMono { response ->
+                sourceResponse(
+                    WorkDefine::class.java, response
+                )
+            }
+    }
 
+    override fun applyWorkId(): Mono<Long> {
+        return webClient
+            .get()
+            .uri("http://$serverName/internal/id")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchangeToMono { response ->
+                sourceResponse(
+                    Long::class.java, response
+                )
+            }
+    }
 
-    return Mono.fromCallable(() -> sendMessage(bindingName, defineId, WorkCreateType.RUNNING, String.valueOf(workId) ,
-            WorkCreateMessage.builder()
-                .workId(workId)
-                .data(processData)
-                .build()))
-        .filter(ifSend -> ifSend)
-        .map(ifSend -> workId)
-        .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()));
-  }
-
-
-
-
-
-  /**
-   * 发送消息
-   * @param bindingName Spring streamBridge 绑定名称
-   * @param define 操作定义ID
-   * @param type 消息类型
-   * @param workId 数据ID 用与消息事务回查
-   * @param message 消息内容
-   * @return 是否发送成功
-   */
-
-  private boolean sendMessage(String bindingName, String define, WorkCreateType type, String workId, WorkCreateMessage message) {
-    log.info("send message {} {} {} {}", bindingName, define, type, workId);
-    var msg = MessageBuilder.withPayload(message)
-        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_TYPE, type.name())
-        .setHeader(WorkMessage.MESSAGE_HEADER_WORK_DEFINE, define)
-        .setHeader(WorkMessage.MESSAGE_HEADER_DATA_ID, workId)
-        .build();
-    return streamBridge.send(bindingName, msg);
-  }
-
-//  @Override
-//  public Mono<Long> runWork(long workId, long orgId, String defineId, String bindingName) {
-//
-//    return ReactiveKeycloakSecurityContextHolder.getContext()
-//        .map(context ->
-//            sendMessage(bindingName, defineId, WorkStatus.RUNNING,String.valueOf(workId),
-//                WorkMessage.builder()
-//                    .workId(workId)
-//                    .empId(context.getUserInfo().getId())
-//                    .empName(context.getUserInfo().getName())
-//                    .orgId(orgId)
-//                    .build())
-//        )
-//        .flatMap(ifSend -> ifSend ? Mono.just(workId) : Mono.error(ErrorDefine.MESSAGE_SEND_FAIL.exception()));
-//  }
 }

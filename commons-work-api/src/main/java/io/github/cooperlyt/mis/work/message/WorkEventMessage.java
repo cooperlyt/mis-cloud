@@ -11,7 +11,8 @@ public class WorkEventMessage {
 
   public static final String MESSAGE_HEADER_EVENT_MESSAGE = "message";
 
-  public WorkEventMessage(String businessKey, Map<String, Object> args) {
+  public WorkEventMessage(String name, String businessKey, Map<String, Object> args) {
+    this.name = name;
     this.args = args;
     this.businessKey = businessKey;
   }

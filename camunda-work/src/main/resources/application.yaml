@@ -178,10 +178,10 @@ spring:
           processChangeChannel-out-0:
             producer:
               #              useConfirmHeader: true
-              routingKeyExpression: "headers['type'] + '.work.process.changed'"
+              routingKeyExpression: "headers['define'] + '.work.process.changed'"
           statusChangeChannel-out-0:
             producer:
-              routingKeyExpression: "headers['type'] + '.work.status.changed'"
+              routingKeyExpression: "headers['define'] + '.work.status.changed'"
 
 
 #      rocketmq:

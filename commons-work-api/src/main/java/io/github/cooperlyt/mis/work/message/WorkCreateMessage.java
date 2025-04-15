@@ -1,6 +1,8 @@
 package io.github.cooperlyt.mis.work.message;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
@@ -19,5 +21,5 @@ public class WorkCreateMessage implements java.io.Serializable{
 
   private Map<String,Object> data;
 
-  private String type;
+  private String define;
 }
