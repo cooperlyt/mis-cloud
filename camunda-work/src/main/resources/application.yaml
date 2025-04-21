@@ -4,7 +4,10 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     io.github.cooperlyt: DEBUG
-
+#    org.camunda.bpm: DEBUG
+#    org.camunda.bpm.engine: TRACE
+#    org.mybatis: DEBUG
+#    org.springframework: DEBUG
 # # http://127.0.0.1:19005/camunda/app/welcome/default/
 server:
   port: 8080
@@ -31,7 +34,7 @@ camunda.bpm:
   database:
     jdbcBatchProcessing: false
     schema-update: drop-create
-    type: mariadb
+    type: mysql # 不支持 mariadb 使用 mysql
 #  webapp:
 #    index-redirect-enabled: true
   authorization:
@@ -146,20 +149,20 @@ spring:
         #                lang:
         #                  IllegalStateException: true
 
-        binders:
-          rabbit:
-            type: rabbit
-            environment:
-              spring:
-                rabbitmq:
-                  publisher-confirm-type: correlated
-                  publisher-returns: true
-                  host: 10.61.1.22
-                  port: 5672
-                  virtual-host: construction
-                  username: app
-                  password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
-                  # / admin FeiPu@2024
+      binders:
+        rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                publisher-confirm-type: correlated
+                publisher-returns: true
+                host: ${RABBIT_HOST:rabbit}
+                port: ${RABBIT_PORT:5672}
+                virtual-host: construction
+                username: app
+                password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
+                # / admin FeiPu@2024
 
 
 
@@ -239,22 +242,15 @@ spring:
   datasource:
     testWhileIdle: "true"
     validationQuery: "SELECT 1"
-    url: ${DB_URL:jdbc:mariadb://192.168.1.21:3306/camunda?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&nullDatabaseMeansCurrent=true&nullCatalogMeansCurrent=true}
+    url: ${DB_URL:jdbc:mariadb://db:3306/camunda?sessionVariables=transaction_isolation='READ-COMMITTED'&serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&nullDatabaseMeansCurrent=true&nullCatalogMeansCurrent=true}
     username: ${DB_USERNAME:root}
     password: ${DB_PWD:5257mq}
     driver-class-name: "org.mariadb.jdbc.Driver"
-
-#  jpa:
-#    database: "MYSQL"
-#    show-sql: "false"
-#    hibernate:
-#      naming:
-#        physical-strategy: "org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"
-#    properties:
-#      hibernate:
-#        ddl-auto: "none"
-#        enable_lazy_load_no_trans: true
-#        dialect: "org.hibernate.dialect.MySQL5Dialect"
+    hikari:
+      connection-init-sql: "SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED"
+# 在 MariaDB 10.3 及以上，transaction_isolation 可能被支持（与 MySQL 兼容），但您的 MariaDB 版本可能较低（如 10.2 或更早），仍使用 tx_isolation。
+#  实测在 mariadb 10.10 docker 版中依然不好使， 如果更新mariadb 版本可以测试一下  https://github.com/sameersbn/docker-redmine/issues/531
+# 注意，这是JDBC! , R2DBC 有自已的参数 isolationLevel
 
 ---
 
@@ -289,6 +285,8 @@ spring:
     username: "root"
     password: "5257mq"
 
+
+
 ---
 
 spring:
@@ -309,7 +307,7 @@ spring:
 camunda.bpm:
   database:
     schema-update: false
-
+#    skipIsolationLevelCheck: true
 logging:
   level:
     com.netflix: WARN
