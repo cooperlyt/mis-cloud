@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.work.camunda.delegate;
 
 import io.github.cooperlyt.mis.work.camunda.mq.ProcessChangeEventService;
-import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage;
+import io.github.cooperlyt.mis.work.message.WorkStageChangedMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.IdentityService;
@@ -18,9 +18,7 @@ import org.camunda.bpm.model.bpmn.instance.BaseElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 import org.camunda.bpm.spring.boot.starter.event.ExecutionEvent;
-import org.camunda.bpm.spring.boot.starter.event.TaskEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -65,12 +63,18 @@ public class CamundaEventListener {
   @EventListener
   public void onTaskEvent(DelegateTask taskDelegate) {
     log.debug("mutable task event by taskDelegate: {}", taskDelegate.getEventName());
+    if ("complete".equals(taskDelegate.getEventName())) {
+      onTaskCompleteEvent(taskDelegate);
+    }else if ("delete".equals(taskDelegate.getEventName())) {
+      onTaskDeleteEvent(taskDelegate);
+    }
     // handle mutable task event
   }
 
-  @Order(1)
-  @EventListener(condition="#taskEvent.eventName=='complete'")
-  public void onTaskCompleteEvent(TaskEvent taskEvent) {
+  //on 7.23.0 fail
+//  @Order(1)
+//  @EventListener(condition="#taskEvent != null && #taskEvent.eventName=='complete'")
+  public void onTaskCompleteEvent(DelegateTask taskEvent) {
     log.debug("immutable task complete event: {} by TaskEvent", taskEvent.getEventName());
 
 
@@ -83,7 +87,7 @@ public class CamundaEventListener {
         .orElse(true);
 
     try {
-      processChangeEventService.processChange(WorkProcessChangedMessage.builder()
+      processChangeEventService.stageChange(WorkStageChangedMessage.builder()
               .message((String) taskService.getVariable(taskEvent.getId(),"task_message"))
               //.message((String) taskService.getVariableLocal(taskEvent.getId(),"message"))
               .pass(pass)
@@ -106,9 +110,9 @@ public class CamundaEventListener {
   }
 
   //TODO 两件事 1. 如果终止业务时，并不存在UserTask, 2, 取 jwt 中的用户信息 发送 workChangeMessage
-  @Order(2)
-  @EventListener(condition="#taskEvent.eventName=='delete'")
-  public void onTaskDeleteEvent(TaskEvent taskEvent){
+//  @Order(2)
+//  @EventListener(condition="#taskEvent != null && #taskEvent.eventName=='delete'")
+  public void onTaskDeleteEvent(DelegateTask taskEvent){
     log.debug("immutable task delete event: {} by TaskEvent", taskEvent.getEventName());
 
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()

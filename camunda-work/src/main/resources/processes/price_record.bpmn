@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1v9xo9w" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1v9xo9w" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
   <bpmn:collaboration id="Collaboration_026q4qp">
     <bpmn:participant id="Participant_0x1fdfj" name="房价备案" processRef="process_fixed_price" />
   </bpmn:collaboration>
@@ -21,7 +21,7 @@
       <bpmn:outgoing>Flow_0pf74q0</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Activity_1jn0ppi" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-price-record-first">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:incoming>Flow_0pf74q0</bpmn:incoming>
       <bpmn:outgoing>Flow_1o76ukx</bpmn:outgoing>
     </bpmn:userTask>
@@ -31,7 +31,7 @@
       <bpmn:outgoing>Flow_0vgdsgp</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_1mcdfjx" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-price-record-last">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:incoming>Flow_08e08n1</bpmn:incoming>
       <bpmn:outgoing>Flow_198o7pn</bpmn:outgoing>
     </bpmn:userTask>

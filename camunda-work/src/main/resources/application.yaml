@@ -4,6 +4,9 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
     io.github.cooperlyt: DEBUG
+    org.springframework.integration: DEBUG
+    org.springframework.integration.amqp: DEBUG
+    org.springframework.amqp: DEBUG
 #    org.camunda.bpm: DEBUG
 #    org.camunda.bpm.engine: TRACE
 #    org.mybatis: DEBUG
@@ -33,7 +36,7 @@ camunda.bpm:
   historyLevel: audit
   database:
     jdbcBatchProcessing: false
-    schema-update: drop-create
+    schema-update: false
     type: mysql # 不支持 mariadb 使用 mysql
 #  webapp:
 #    index-redirect-enabled: true
@@ -81,6 +84,11 @@ spring:
     name: camunda
   profiles:
     active: local
+  jackson:
+    mapper:
+      default-view-inclusion: true
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
   cloud:
     loadbalancer:
       cache:
@@ -115,25 +123,8 @@ spring:
         # 服务注册标识，格式为：应用名称+服务器IP+端口
         instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
     function:
-      definition: workCreateChannel;workEventChannel
+      definition: workCreateChannel;workEventChannel;stageChangedChannel;statusChangedChannel
     stream:
-      bindings:
-        workCreateChannel-in-0:
-          destination: work-create #RabbitMq 消费和交换机无关
-          group: camunda.work.create #RabbitMQ 队列名
-#        signalEventChannel-in-0:
-#          destination: work
-#          group: camunda.work.signal
-
-        workEventChannel-in-0:
-          destination: work-event
-          group: camunda.work.event
-
-        processChangedChannel-out-0:
-          destination: work # Rabbit 交换机名
-        statusChangedChannel-out-0:
-          destination: work
-
       default-binder: rabbit
       default:
         content-type: application/json
@@ -155,21 +146,19 @@ spring:
           environment:
             spring:
               rabbitmq:
-                publisher-confirm-type: correlated
-                publisher-returns: true
+#                publisher-confirm-type: correlated
+#                publisher-returns: true
                 host: ${RABBIT_HOST:rabbit}
                 port: ${RABBIT_PORT:5672}
                 virtual-host: construction
                 username: app
                 password: onqbMBU4NVoEJlM2EabSlh3o1PWMrXa7
                 # / admin FeiPu@2024
-
-
-
       rabbit:
         default:
-          producer:
-            useConfirmHeader: true
+# 无需确认消息发送，因为是监听到工作流事件后发消息，即使消息发送失败抛出异常，也不会影响工作流操作
+#          producer:
+#            useConfirmHeader: true
           consumer:
             acknowledge-mode: manual
             auto-bind-dlq: true
@@ -177,15 +166,32 @@ spring:
             bindQueue: false
             declareExchange: false
             queueNameGroupOnly: true
-          bindings:
-            processChangedChannel-out-0:
-              producer:
-                #              useConfirmHeader: true
-                routingKeyExpression: "headers['define'] + '.work.process.changed'"
-            statusChangedChannel-out-0:
-              producer:
-                routingKeyExpression: "headers['define'] + '.work.status.changed'"
+        bindings:
+          stageChangedChannel-out-0:
+            producer:
+              routingKeyExpression: "headers['define'] + '.work.stage.changed'"
+          statusChangedChannel-out-0:
+            producer:
+              routingKeyExpression: "headers['define'] + '.work.status.changed'"
+      bindings:
+        workCreateChannel-in-0:
+          destination: work-create #RabbitMq 消费和交换机无关
+          group: camunda.work.create #RabbitMQ 队列名
+        #        signalEventChannel-in-0:
+        #          destination: work
+        #          group: camunda.work.signal
 
+        workEventChannel-in-0:
+          destination: work-event
+          group: camunda.work.event
+
+        stageChangedChannel-out-0:
+          destination: work # Rabbit 交换机名
+        statusChangedChannel-out-0:
+          destination: work
+
+        consulRawClientBuilderSupplier-out-0:
+          destination: consul
 
 #      rocketmq:
 #        binder:
@@ -285,7 +291,9 @@ spring:
     username: "root"
     password: "5257mq"
 
-
+camunda.bpm:
+  database:
+    schema-update: drop-create
 
 ---
 
@@ -305,6 +313,8 @@ spring:
       on-profile: prod
 
 camunda.bpm:
+  webapp:
+    enabled: false
   database:
     schema-update: false
 #    skipIsolationLevelCheck: true

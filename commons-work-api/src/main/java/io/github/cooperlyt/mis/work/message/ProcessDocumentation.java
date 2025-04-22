@@ -1,16 +1,21 @@
 package io.github.cooperlyt.mis.work.message;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ProcessDocumentation {
+@NoArgsConstructor
+public class ProcessDocumentation implements Serializable {
 
   public static ProcessDocumentationBuilder builder() {
     return new ProcessDocumentationBuilder();
@@ -81,6 +86,15 @@ public class ProcessDocumentation {
   private String keywords;
 
   private Integer districtCode;
+
+  @Deprecated
+  public String toJSONString(){
+    try {
+      return new ObjectMapper().writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException("Failed to convert ProcessDocumentation to JSON", e);
+    }
+  }
 
 
 

@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class WorkProcessChangedMessage extends WorkMessage implements java.io.Serializable{
+public class WorkStageChangedMessage extends WorkMessage implements java.io.Serializable{
 
 
   private String message;

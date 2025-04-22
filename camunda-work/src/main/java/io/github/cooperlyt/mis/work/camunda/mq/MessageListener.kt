@@ -1,6 +1,9 @@
 package io.github.cooperlyt.mis.work.camunda.mq
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.cooperlyt.cloud.addons.rabbit.AcknowledgeConsumer
+import io.github.cooperlyt.mis.work.message.ProcessDocumentation
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage
 import io.github.cooperlyt.mis.work.message.WorkEventMessage
 import org.camunda.bpm.engine.MismatchingMessageCorrelationException
@@ -11,7 +14,7 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
-class MessageListener(private val runtimeService: RuntimeService) {
+class MessageListener(private val runtimeService: RuntimeService, private val objectMapper: ObjectMapper) {
 
     companion object {
         private val logger = org.slf4j.LoggerFactory.getLogger(MessageListener::class.java)
@@ -34,10 +37,39 @@ class MessageListener(private val runtimeService: RuntimeService) {
             val businessKey: String = message.workId.toString()
 
 
+
+            val documentation = message.documentation ?: run {
+                message.data["documentation"]?.takeIf { it is Map<*, *> }?.let { documentationMap ->
+                    try {
+                        // 把 map 转成 json 字符串 后再转成 ProcessDocumentation，兼容旧方式
+                        val jsonString = objectMapper.writeValueAsString(documentationMap)
+                        objectMapper.readValue(jsonString, ProcessDocumentation::class.java)
+                    } catch (e: JsonProcessingException) {
+                        logger.error("Failed to convert documentation Map to ProcessDocumentation", e)
+                        null
+                    }
+                }
+            }
+
+
+            val variables = documentation?.let {
+                message.data.toMutableMap().also {
+                    if (it.contains("documentation"))
+                        it.put("documentation", documentation)
+                    //put("documentation", documentation) //兼容旧业务流，新版本以后都用 documentation_json
+                    it.put("documentation_json", objectMapper.writeValueAsString(documentation))
+                }
+            } ?: message.data
+
+
             //      approval
 
             return Mono.fromCallable {
-                runtimeService.startProcessInstanceByKey(message.define, businessKey, businessKey, message.data)
+                runtimeService.startProcessInstanceByKey(
+                    message.define,
+                    businessKey,
+                    businessKey,
+                    variables)
             }.then()
         }
     }

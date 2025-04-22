@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0p0lvd8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0p0lvd8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
   <bpmn:collaboration id="Collaboration_0vpblev">
     <bpmn:participant id="Participant_1yh8e7t" name="查封备案" processRef="limit_seizure_create" />
   </bpmn:collaboration>
@@ -16,7 +16,7 @@
       <bpmn:outgoing>Flow_0zwv3er</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0cbncm7" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-seizure-last">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="task_message">审批意见</camunda:inputParameter>
@@ -32,7 +32,7 @@
       <bpmn:outgoing>Flow_12a8ocn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0q87g0p" name="更正" camunda:formKey="correct/seizure-record" camunda:candidateGroups="camunda-seizure-accept">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
@@ -48,7 +48,7 @@
       <bpmn:outgoing>Flow_1qbby57</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_1ydzqkw" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-seizure-first">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="task_message">初审意见</camunda:inputParameter>

@@ -4,7 +4,7 @@ import io.github.cooperlyt.cloud.addons.rabbit.ConfirmPublisher
 import io.github.cooperlyt.mis.work.ProcessConstant
 import io.github.cooperlyt.mis.work.ProcessConstant.MESSAGE_HEADER_DEFINE_KEY
 import io.github.cooperlyt.mis.work.message.WorkStatusChangedMessage
-import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage
+import io.github.cooperlyt.mis.work.message.WorkStageChangedMessage
 import io.github.cooperlyt.mis.work.message.WorkStatus
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.delegate.DelegateExecution
@@ -28,17 +28,17 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
 
         fun statusChangedSinks() = sinks()
 
-        fun sendStatusChangedMessage(playLoad: WorkStatusChangedMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+        fun sendStatusChangedMessage(playLoad: WorkStatusChangedMessage) {
+            return sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
         }
     }
 
-    private val processChangedMessagePublisher = object: ConfirmPublisher<WorkProcessChangedMessage>() {
+    private val stageChangedMessagePublisher = object: ConfirmPublisher<WorkStageChangedMessage>() {
 
-        fun processChangedSinks() = sinks()
+        fun stageChangedSinks() = sinks()
 
-        fun sendProcessChangedMessage(playLoad: WorkProcessChangedMessage): Mono<Boolean> {
-            return sendMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+        fun sendStageChangedMessage(playLoad: WorkStageChangedMessage) {
+            return sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
         }
     }
 
@@ -46,7 +46,7 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
     fun statusChangedChannel() = statusChangedMessagePublisher.statusChangedSinks()
 
     @Bean
-    fun processChangedChannel() = processChangedMessagePublisher.processChangedSinks()
+    fun stageChangedChannel() = stageChangedMessagePublisher.stageChangedSinks()
 
     @Throws(java.lang.Exception::class)
     fun statusChange(delegateExecution: DelegateExecution, status: WorkStatus) {
@@ -58,20 +58,13 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
 
         statusChangedMessagePublisher.sendStatusChangedMessage(
             WorkStatusChangedMessage.builder().define(getDefineId(processDefinitionId)).status(status).workId(workId).build())
-            .subscribe(
-                { logger.info("status change mq is send: {} -> {}", workId, status) },
-                { throw Exception("message send fail!") }
-            )
+
     }
 
     @Throws(java.lang.Exception::class)
-    fun processChange(changeMessage: WorkProcessChangedMessage, processDefinitionId: String) {
+    fun stageChange(changeMessage: WorkStageChangedMessage, processDefinitionId: String) {
         changeMessage.define = getDefineId(processDefinitionId)
-        processChangedMessagePublisher.sendProcessChangedMessage(changeMessage)
-            .subscribe(
-                { logger.info("process change mq is send: {} -> {}", changeMessage.workId, changeMessage) },
-                { throw Exception("message send fail!") }
-            )
+        stageChangedMessagePublisher.sendStageChangedMessage(changeMessage)
     }
 
     private fun getDefineId(processDefinitionId: String): String {

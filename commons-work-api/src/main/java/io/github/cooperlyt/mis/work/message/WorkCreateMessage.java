@@ -22,4 +22,6 @@ public class WorkCreateMessage implements java.io.Serializable{
   private Map<String,Object> data;
 
   private String define;
+
+  private ProcessDocumentation documentation;
 }

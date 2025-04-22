@@ -10,7 +10,7 @@ import io.github.cooperlyt.mis.work.impl.model.WorkTaskModel;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkApplicantRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkOperatorRepository;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkTaskRepository;
-import io.github.cooperlyt.mis.work.message.WorkProcessChangedMessage;
+import io.github.cooperlyt.mis.work.message.WorkStageChangedMessage;
 import io.github.cooperlyt.mis.work.message.WorkStatus;
 import io.github.cooperlyt.mis.work.impl.repositories.WorkRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +103,7 @@ public class WorkDao implements WorkOperatorPersistableHandler {
   }
 
   @Transactional
-  public Mono<Void> workChange(WorkProcessChangedMessage message){
+  public Mono<Void> workChange(WorkStageChangedMessage message){
     return
         workOperatorRepository.save(WorkActionModel.actionBuilder()
                 .id(UUID.randomUUID().toString().replace("-","").toLowerCase())

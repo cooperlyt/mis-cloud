@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1lhq1ck" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1lhq1ck" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
   <bpmn:collaboration id="Collaboration_14mc9d3">
     <bpmn:extensionElements />
     <bpmn:participant id="Participant_1ax7cfp" name="预销售许可" processRef="process_project_license" />
@@ -30,7 +30,7 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:userTask id="Activity_1rdz8jz" name="审批" camunda:formKey="check" camunda:candidateGroups="camunda-project-license-last">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="CHECKED" />
@@ -49,7 +49,7 @@
       <bpmn:outgoing>Flow_0ermf96</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_15ber4w" name="缮证" camunda:formKey="project-license-print" camunda:candidateGroups="camunda-project-license-print">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="VALID" />
@@ -59,7 +59,7 @@
       <bpmn:outgoing>Flow_0rj23th</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Activity_0ueavhr" name="发证" camunda:formKey="project-license-print" camunda:candidateGroups="camunda-project-license-print">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements />
       <bpmn:incoming>Flow_0rj23th</bpmn:incoming>
       <bpmn:outgoing>Flow_0th211z</bpmn:outgoing>
@@ -78,7 +78,7 @@
     <bpmn:sequenceFlow id="Flow_0rj23th" sourceRef="Activity_15ber4w" targetRef="Activity_0ueavhr" />
     <bpmn:sequenceFlow id="Flow_0th211z" sourceRef="Activity_0ueavhr" targetRef="Event_0mxy1v1" />
     <bpmn:userTask id="Activity_00sbvta" name="更正" camunda:formKey="correct/recreate" camunda:candidateGroups="camunda-project-license-accept">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="before_message">${message}</camunda:inputParameter>
@@ -94,7 +94,7 @@
       <bpmn:outgoing>Flow_12jn0nu</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Activity_0uru4zn" name="初审" camunda:formKey="check" camunda:candidateGroups="camunda-project-license-first">
-      <bpmn:documentation>${documentation.toJSONString()}</bpmn:documentation>
+      <bpmn:documentation>${documentation_json}</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:properties>
           <camunda:property name="type" value="FIRST_CHECK" />

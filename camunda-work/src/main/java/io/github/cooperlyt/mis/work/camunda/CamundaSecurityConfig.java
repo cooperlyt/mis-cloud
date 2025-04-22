@@ -153,58 +153,37 @@ public class CamundaSecurityConfig {
    * {@inheritDoc}
    */
 
-//  @Bean
-//  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//    String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
-//        "spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
-//
-//    return http
-//        .csrf(csrf -> csrf
-//            .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
-//        .authorizeHttpRequests(authorize -> authorize
-//            .requestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**"))
-//            .authenticated())
-//        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)))
-//        .authorizeHttpRequests(authorize -> authorize
-//            .requestMatchers(antMatcher("/app/**"),antMatcher("/api/**"), antMatcher("/lib/**"))
-//            .authenticated()
-//            .anyRequest().permitAll())
-//        .oauth2Login(Customizer.withDefaults())
-//        .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))
-//            .logoutSuccessHandler(keycloakLogoutHandler))
-//        .build();
-//
-//  }
-
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     String jwkSetUri = applicationContext.getEnvironment().getRequiredProperty(
         "spring.security.oauth2.client.provider." + configProps.getProvider() + ".jwk-set-uri");
 
     return http
-        .securityMatcher("/api/**", "/engine-rest/**", "/app/**")
         .csrf(csrf -> csrf
             .ignoringRequestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**")))
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**"), antMatcher("/app/**"))
+            .requestMatchers(antMatcher("/api/**"), antMatcher("/engine-rest/**"))
+            .authenticated())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)))
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers(antMatcher("/app/**"),antMatcher("/api/**"), antMatcher("/lib/**"))
             .authenticated()
             .anyRequest().permitAll())
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwkSetUri(jwkSetUri)))
         .oauth2Login(Customizer.withDefaults())
-        .logout(logout -> logout
-            .logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))
+        .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))
             .logoutSuccessHandler(keycloakLogoutHandler))
         .build();
+
   }
 
-  @Bean
-  public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception{
-    return http.securityMatcher(AUTH_LIST)
-        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
-        .csrf(AbstractHttpConfigurer::disable)
-        .build();
-  }
+// Due .anyRequest().permitAll()
+//  @Bean
+//  public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception{
+//    return http.securityMatcher(AUTH_LIST)
+//        .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
+//        .csrf(AbstractHttpConfigurer::disable)
+//        .build();
+//  }
 
   /**
    * Create a JWT decoder with issuer and audience claim validation.
