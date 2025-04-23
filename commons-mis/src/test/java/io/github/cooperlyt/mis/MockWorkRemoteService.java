@@ -6,9 +6,11 @@ import io.github.cooperlyt.mis.work.WorkRemoteService;
 import io.github.cooperlyt.mis.work.data.WorkDefine;
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate;
 import io.github.cooperlyt.mis.work.data.WorkDefineForProcess;
+import io.github.cooperlyt.mis.work.message.ProcessDocumentation;
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage;
 import io.github.cooperlyt.mis.work.message.WorkEventMessage;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -55,13 +57,6 @@ public class MockWorkRemoteService implements WorkRemoteService {
 
   @NotNull
   @Override
-  public Mono<Long> sendWorkCreateMessage(@NotNull String defineId, long workId, @NotNull Map<String, ?> processData) {
-    return Mono.just(workId)
-        .doOnNext(id -> System.out.println("--------------> send work create message " + id + " with define :" + defineId));
-  }
-
-  @NotNull
-  @Override
   public Mono<Long> sendWorkEventMessage(@NotNull String messageName, @NotNull String defineId, long workId, @NotNull Map<String, ?> processData) {
     return Mono.just(workId)
         .doOnNext(id -> System.out.println("--------------> send work event message " + id + " with define :" + defineId));
@@ -77,5 +72,11 @@ public class MockWorkRemoteService implements WorkRemoteService {
   @Override
   public Supplier<Flux<Message<WorkEventMessage>>> workEventMessageSinks() {
     return null;
+  }
+
+  @Override
+  public @NotNull Mono<@NotNull Long> sendWorkCreateMessage(@NotNull String defineId, long workId, @NotNull Map<@NotNull String, ?> processData, @Nullable ProcessDocumentation documentation) {
+    return Mono.just(workId)
+        .doOnNext(id -> System.out.println("--------------> send work create message " + id + " with define :" + defineId));
   }
 }

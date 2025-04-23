@@ -7,6 +7,7 @@ import io.github.cooperlyt.mis.work.WorkRemoteService
 import io.github.cooperlyt.mis.work.data.WorkDefine
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate
 import io.github.cooperlyt.mis.work.data.WorkDefineForProcess
+import io.github.cooperlyt.mis.work.message.ProcessDocumentation
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage
 import io.github.cooperlyt.mis.work.message.WorkEventMessage
 import io.github.cooperlyt.mis.work.message.WorkMessage.MESSAGE_HEADER_WORK_DEFINE
@@ -38,13 +39,11 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
 
     private val workCreateMessagePublisher = object : ConfirmPublisher<WorkCreateMessage>() {
         fun sendWorkCreateMessage(defineId: String,
-                                  workId: Long, processData: Map<String,Any>): Mono<Boolean> {
+                                  workId: Long,
+                                  variables: Map<String,Any>,
+                                  documentation: ProcessDocumentation?): Mono<Boolean> {
             return sendMessage(
-                WorkCreateMessage.builder()
-                    .workId(workId)
-                    .define(defineId)
-                    .data(processData)
-                    .build(),
+                WorkCreateMessage(defineId, workId, documentation, variables),
                 MESSAGE_HEADER_WORK_DEFINE to defineId
             )
         }
@@ -75,9 +74,11 @@ class WorkRemoteServiceImpl(private val webClient: WebClient, private val server
 
     override fun sendWorkCreateMessage(
         defineId: String,
-        workId: Long, processData: Map<String, Any>
+        workId: Long,
+        variables: Map<String, Any>,
+        documentation: ProcessDocumentation?
     ): Mono<Long> {
-        return workCreateMessagePublisher.sendWorkCreateMessage(defineId, workId, processData)
+        return workCreateMessagePublisher.sendWorkCreateMessage(defineId, workId, variables, documentation)
             .filter { ifSend -> ifSend }
             .map { _ -> workId }
             .switchIfEmpty(Mono.error(Constant.ErrorDefine.MESSAGE_SEND_FAIL.exception()))

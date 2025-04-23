@@ -3,6 +3,7 @@ package io.github.cooperlyt.mis.work
 import io.github.cooperlyt.mis.work.data.WorkDefine
 import io.github.cooperlyt.mis.work.data.WorkDefineForCreate
 import io.github.cooperlyt.mis.work.data.WorkDefineForProcess
+import io.github.cooperlyt.mis.work.message.ProcessDocumentation
 import io.github.cooperlyt.mis.work.message.WorkCreateMessage
 import io.github.cooperlyt.mis.work.message.WorkEventMessage
 import org.springframework.messaging.Message
@@ -22,7 +23,9 @@ interface WorkRemoteService {
 
     fun sendWorkCreateMessage(
         defineId: String,
-        workId: Long, processData: Map<String, Any>
+        workId: Long,
+        processData: Map<String, Any>,
+        documentation: ProcessDocumentation? = null,
     ): Mono<Long>
 
 

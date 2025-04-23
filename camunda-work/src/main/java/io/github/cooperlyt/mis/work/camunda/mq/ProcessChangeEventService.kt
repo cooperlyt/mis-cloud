@@ -29,7 +29,10 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun statusChangedSinks() = sinks()
 
         fun sendStatusChangedMessage(playLoad: WorkStatusChangedMessage) {
-            return sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+            val isSend = sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+            if (!isSend) {
+                throw IllegalStateException("Status Changed Message send fail!")
+            }
         }
     }
 
@@ -38,7 +41,10 @@ class ProcessChangeEventService(private val repositoryService: RepositoryService
         fun stageChangedSinks() = sinks()
 
         fun sendStageChangedMessage(playLoad: WorkStageChangedMessage) {
-            return sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+            val isSend =  sendNoConfirmMessage(playLoad, MESSAGE_HEADER_DEFINE_KEY to ProcessConstant.defineToRouterKey(playLoad.define))
+            if (!isSend) {
+                throw IllegalStateException("Stage Changed Message send fail!")
+            }
         }
     }
 

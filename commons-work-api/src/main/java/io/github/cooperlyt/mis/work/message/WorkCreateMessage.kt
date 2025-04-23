@@ -1,27 +1,16 @@
-package io.github.cooperlyt.mis.work.message;
+package io.github.cooperlyt.mis.work.message
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import java.io.Serial
 
-import java.io.Serial;
-import java.util.Map;
+data class WorkCreateMessage(
+    val define: String,
+    val workId: Long,
+    val documentation: ProcessDocumentation?,
+    val variables: Map<String, Any>
+) : java.io.Serializable {
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@SuperBuilder
-public class WorkCreateMessage implements java.io.Serializable{
-
-  @Serial
-  private static final long serialVersionUID = 1L;
-
-  private long workId;
-
-  private Map<String,Object> data;
-
-  private String define;
-
-  private ProcessDocumentation documentation;
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 1L
+    }
 }

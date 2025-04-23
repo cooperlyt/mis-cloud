@@ -300,7 +300,7 @@ public class WorkCreateAspect implements ApplicationContextAware, Ordered {
               })
               .doOnNext(createData -> log.info("work create method process data: {}",createData))
           ).flatMap(data -> prepare
-              .flatMap(wid -> workRemoteService.sendWorkCreateMessage(define.getDefineId(),workId,data))
+              .flatMap(wid -> workRemoteService.sendWorkCreateMessage(define.getDefineId(),workId,data,null))
           );
     }
     return prepare;

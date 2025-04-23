@@ -39,7 +39,7 @@ class MessageListener(private val runtimeService: RuntimeService, private val ob
 
 
             val documentation = message.documentation ?: run {
-                message.data["documentation"]?.takeIf { it is Map<*, *> }?.let { documentationMap ->
+                message.variables["documentation"]?.takeIf { it is Map<*, *> }?.let { documentationMap ->
                     try {
                         // 把 map 转成 json 字符串 后再转成 ProcessDocumentation，兼容旧方式
                         val jsonString = objectMapper.writeValueAsString(documentationMap)
@@ -53,13 +53,13 @@ class MessageListener(private val runtimeService: RuntimeService, private val ob
 
 
             val variables = documentation?.let {
-                message.data.toMutableMap().also {
+                message.variables.toMutableMap().also {
                     if (it.contains("documentation"))
                         it.put("documentation", documentation)
                     //put("documentation", documentation) //兼容旧业务流，新版本以后都用 documentation_json
                     it.put("documentation_json", objectMapper.writeValueAsString(documentation))
                 }
-            } ?: message.data
+            } ?: message.variables
 
 
             //      approval
