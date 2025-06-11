@@ -10,11 +10,25 @@ import lombok.NoArgsConstructor;
 public class WorkDefineForCreate extends WorkDefine{
 
   public WorkDefineForCreate(WorkDefine workDefine) {
-    super(workDefine.getDefineId(),workDefine.getWorkName(), workDefine.getType(), workDefine.isProcess(),workDefine.isEnabled());
+    super(
+        workDefine.getDefineId(),
+        workDefine.getWorkName(),
+        workDefine.getType(),
+        workDefine.isProcess(),
+        workDefine.isEnabled(),
+        workDefine.getTags()
+    );
   }
 
   public WorkDefineForCreate(long workId,WorkDefine workDefine) {
-    super(workDefine.getDefineId(),workDefine.getWorkName(),workDefine.getType(),workDefine.isProcess(),workDefine.isEnabled());
+    super(
+        workDefine.getDefineId(),
+        workDefine.getWorkName(),
+        workDefine.getType(),
+        workDefine.isProcess(),
+        workDefine.isEnabled(),
+        workDefine.getTags()
+    );
     this.workId = workId;
   }
 

@@ -13,6 +13,7 @@ import java.util.function.Supplier
 
 interface WorkRemoteService {
 
+    @Deprecated("use prepareProcess")
     fun prepareCreate(defineId: String): Mono<WorkDefineForCreate>
 
     fun recreate(defineId: String, originalWorkId: Long): Mono<WorkDefineForCreate>
@@ -24,8 +25,10 @@ interface WorkRemoteService {
     fun sendWorkCreateMessage(
         defineId: String,
         workId: Long,
-        processData: Map<String, Any>,
+        tags: Set<String>,
+        isProcess: Boolean = false,
         documentation: ProcessDocumentation? = null,
+        variables: Map<String, Any> = emptyMap()
     ): Mono<Long>
 
 
@@ -33,8 +36,9 @@ interface WorkRemoteService {
         messageName: String,
         defineId: String,
         workId: Long,
-        processData: Map<String, Any>
+        variables: Map<String, Any> = emptyMap()
     ): Mono<Long>
+
 
     fun workCreateMessageSinks(): Supplier<Flux<Message<WorkCreateMessage>>>
 

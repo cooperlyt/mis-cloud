@@ -1,14 +1,34 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
 
-import com.fasterxml.jackson.annotation.JsonRawValue;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonRawValue
+import io.github.cooperlyt.mis.work.message.WorkStatus
+import java.time.LocalDateTime
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-public class HistoryWork extends WorkImpl {
+data class HistoryWork(
+  override val workId: Long,
+  override val dataSource: String,
+  override val createdAt: LocalDateTime?,
+  override val updatedAt: LocalDateTime?,
+  override val completedAt: LocalDateTime?,
+  override val validatedAt: LocalDateTime?,
+  override val historyAt: LocalDateTime?,
+  override val workName: String,
+  override val status: WorkStatus,
+  override val type: String?,
+  override val process: Boolean,
+  override val defineId: String,
+  val category: Category,
+  val workType: WorkOperateType?,
+  @JsonRawValue
+  val operators: String? = null,
+//  val infoId: Long,
+  val beforeInfoId: Long? ,
+  @JsonRawValue
+  val description: String? = null
 
-  public enum Category{
+): WorkInfo {
+
+  enum class Category {
     PROJECT,
     BUILD,
     HOUSE,
@@ -18,23 +38,5 @@ public class HistoryWork extends WorkImpl {
     CORP_RECORD,
   }
 
-  private Category category;
-
-  public HistoryWork updateCategory(Category category){
-    this.category = category;
-    return this;
-  }
-
-  private WorkOperateType workType;
-
-  @JsonRawValue
-  private String operators;
-
-  private long infoId;
-
-  private Long beforeInfoId;
-
-  @JsonRawValue
-  private String description;
 
 }

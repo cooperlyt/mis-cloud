@@ -4,6 +4,7 @@ import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakAuthentic
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -58,6 +59,13 @@ public class ResourceServerConfiguration {
         .externalDocs(new ExternalDocumentation()
             .description("SpringDoc Wiki Documentation")
             .url("https://springdoc.org/v2"));
+  }
+
+  @Bean
+  public CaffeineCacheManager cacheManager() {
+    CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+    cacheManager.setAsyncCacheMode(true); // 启用异步缓存
+    return cacheManager;
   }
 
 }

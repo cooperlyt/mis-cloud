@@ -1,24 +1,19 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import io.github.cooperlyt.mis.work.data.WorkInfo
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-public abstract class WorkInstance<T> extends WorkImpl{
+interface WorkInstance<T>: WorkInfo {
 
-  public WorkInstance(WorkInfo workInfo, T instance) {
-    super(workInfo.getDefineId(), workInfo.getType(),
-        workInfo.isProcess(), workInfo.getWorkId(),
-        workInfo.getWorkName(), workInfo.getStatus(),
-        workInfo.getDataSource(), workInfo.getCreatedAt(),
-        workInfo.getUpdatedAt(), workInfo.getCompletedAt(), workInfo.getValidateAt());
-    this.instance = instance;
+  val instance: T
+  
+  val description: String
+
+
+  data class SimpleWorkInfo(
+    private val workInfo: WorkInfo,
+    override val instance: String
+  ): WorkInstance<String>, WorkInfo by workInfo {
+    override val description: String = instance
   }
 
-  private T instance;
-
-  public abstract String getDescription();
 }

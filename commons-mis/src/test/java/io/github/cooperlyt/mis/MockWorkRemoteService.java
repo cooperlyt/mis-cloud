@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 @Service
@@ -75,7 +77,7 @@ public class MockWorkRemoteService implements WorkRemoteService {
   }
 
   @Override
-  public @NotNull Mono<@NotNull Long> sendWorkCreateMessage(@NotNull String defineId, long workId, @NotNull Map<@NotNull String, ?> processData, @Nullable ProcessDocumentation documentation) {
+  public @NotNull Mono<@NotNull Long> sendWorkCreateMessage(@NotNull String defineId, long workId, @NotNull Set<@NotNull String> tags, boolean isProcess, @Nullable ProcessDocumentation documentation, @NotNull Map<@NotNull String, ?> variables) {
     return Mono.just(workId)
         .doOnNext(id -> System.out.println("--------------> send work create message " + id + " with define :" + defineId));
   }

@@ -1,38 +1,40 @@
-package io.github.cooperlyt.commons.data;
+package io.github.cooperlyt.commons.data
 
-import lombok.Getter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
+@JsonSerialize(`as` = Person::class)
+@JsonDeserialize(`as` = Person.Sample::class)
+interface Person : PowerBody {
 
-public interface Person extends PowerBody{
-
-  @Getter
-  enum Sex {
+  enum class Sex(val label: String) {
     MALE("男"),
     FEMALE("女");
-
-    private final String label;
-
-    Sex(String label) {
-      this.label = label;
-    }
   }
 
-  Sex getSex();
+  val sex: Sex
 
-  LocalDateTime getBirthday();
+  val birthday: LocalDateTime?
 
-  String getNation();
+  val nation: String?
 
-  int getEthnicity();
+  val ethnicity: Int?
 
-  String getAddress();
+  val address: String?
 
-  @Deprecated
-  String getPhoto();
+  val email: String?
 
-  String getEmail();
-
-
-
+  data class Sample(
+    override val sex: Sex,
+    override val birthday: LocalDateTime?,
+    override val nation: String?,
+    override val ethnicity: Int?,
+    override val address: String?,
+    override val email: String?,
+    override val name: String,
+    override val idType: IdentityType,
+    override val idNumber: String,
+    override val tel: String?
+  ): Person
 }

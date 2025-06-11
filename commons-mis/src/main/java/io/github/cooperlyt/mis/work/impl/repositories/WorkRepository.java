@@ -15,6 +15,6 @@ public interface WorkRepository extends ReactiveCrudRepository<WorkModel,Long> {
 
   @Modifying
   @Query("UPDATE work SET status = :status WHERE work_id = :workId")
-  Mono<Void> updateWorkStatus(@Param("workId") long workId, @Param("status") WorkStatus status);
+  Mono<Long> updateWorkStatus(@Param("workId") long workId, @Param("status") WorkStatus status);
 
 }

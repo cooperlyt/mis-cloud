@@ -16,10 +16,12 @@ spring:
     time-zone: UTC
     dateFormat: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
   cache:
-    cache-names: district
+    cache-names:
+      - district
+      - districts
     type: CAFFEINE
     caffeine:
-      spec: maximumSize=500,expireAfterAccess=600s
+      spec: maximumSize=500,expireAfterAccess=600s,recordStats
   cloud:
     consul:
       ribbon:

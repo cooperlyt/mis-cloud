@@ -1,34 +1,21 @@
-package io.github.cooperlyt.mis.work.impl.model;
+package io.github.cooperlyt.mis.work.impl.model
 
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import io.github.cooperlyt.mis.work.data.WorkTask
+import org.springframework.data.annotation.Id
+import org.springframework.data.domain.Persistable
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.Table
 
 @Table("work_task")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class WorkTaskModel implements Persistable<String> {
-
+data class WorkTaskModel(
   @Id
   @Column("task_id")
-  private String id;
+  override val taskId: String,
+  override val taskName: String,
+  override val message: String?,
+  override val pass: Boolean
+): WorkTask, Persistable<String> {
+  override fun getId(): String? = taskId
 
-  private String message;
-
-  private String taskName;
-
-  private boolean pass;
-
-  @Override
-  public boolean isNew() {
-    return true;
-  }
+  override fun isNew(): Boolean = true
 }

@@ -1,62 +1,120 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
+
+import java.time.LocalDateTime
+
+enum class WorkActionType(val label: String) {
+  CREATE("录入"),
+  TASK(""),
+  APPLY("申请")
+}
 
 
-import io.github.cooperlyt.mis.work.message.WorkMessage;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+interface WorkTaskBase {
+  val taskName: String?
+}
 
-import java.time.LocalDateTime;
+interface WorkTask: WorkTaskBase {
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@SuperBuilder
-public class WorkAction extends WorkMessage implements WorkOperator {
+  val taskId: String
 
-  public WorkAction(long workId, String userId, String userName,
-                    ActionType type, Long corpInfoId, Long employeeInfoId, String orgName) {
-    super(workId, userId, userName);
-    this.type = type;
-    this.employeeInfoId = employeeInfoId;
-    this.corpInfoId = corpInfoId;
-    this.orgName = orgName;
-    this.workTime = LocalDateTime.now();
-  }
+  val message: String?
 
-  public WorkAction(WorkOperator operator, long workId, ActionType type) {
-    super(workId, operator.getUserId(), operator.getUserName());
-    this.type = type;
-    this.corpInfoId = operator.getCorpInfoId();
-    this.employeeInfoId = operator.getEmployeeInfoId();
-    this.orgName = operator.getOrgName();
-    this.workTime = LocalDateTime.now();
-    this.type = type;
-  }
+  val pass: Boolean?
 
-  public WorkAction(WorkAction action) {
-    super(action.getWorkId(), action.getUserId(), action.getUserName());
-    this.type = action.getType();
-    this.corpInfoId = action.getCorpInfoId();
-    this.employeeInfoId = action.getEmployeeInfoId();
-    this.orgName = action.getOrgName();
-    this.workTime = action.getWorkTime();
-  }
+}
 
-  public enum ActionType {
-    CREATE,
-    TASK,
 
-    APPLY,
-  }
+interface WorkOperatorBase {
 
-  private ActionType type;
+  val userId: String
 
-  private Long corpInfoId;
-  private Long employeeInfoId;
-  private String orgName;
-  private LocalDateTime workTime;
+  val userName: String
+
+  val orgName: String?
+
+}
+
+interface WorkOperatorBasic: WorkOperatorBase {
+
+  val type: WorkActionType
+
+  val workTime: LocalDateTime
+
+}
+
+interface WorkOperatorSupplier: WorkOperatorBase {
+
+  val corpInfoId: Long?
+
+  val employeeInfoId: Long?
+
+  data class Sample(
+    override val userId: String,
+    override val userName: String,
+    override val orgName: String? = null,
+    override val corpInfoId: Long? = null,
+    override val employeeInfoId: Long? = null
+  ): WorkOperatorSupplier
+}
+
+interface WorkOperator: WorkOperatorSupplier, WorkOperatorBasic {
+
+}
+
+interface WorkActionBasic: WorkOperatorBasic, WorkTask {
+
+  data class Sample(
+    override val type: WorkActionType,
+    override val workTime: LocalDateTime,
+    override val userId: String,
+    override val userName: String,
+    override val orgName: String?,
+    override val taskId: String,
+    override val message: String?,
+    override val pass: Boolean?,
+    override val taskName: String?
+  ): WorkActionBasic
+}
+
+interface WorkAction: WorkActionBasic, WorkOperator {
+
+  data class Sample(
+    override val type: WorkActionType,
+    override val workTime: LocalDateTime,
+    override val userId: String,
+    override val userName: String,
+    override val orgName: String?,
+    override val taskId: String,
+    override val taskName: String?,
+    override val message: String?,
+    override val pass: Boolean?,
+    override val corpInfoId: Long?,
+    override val employeeInfoId: Long?
+  ): WorkAction
+}
+
+
+interface WorkActionSummary: WorkOperatorBasic, WorkTaskBase {
+
+  val actionName: String
+    get() = if (type == WorkActionType.TASK) taskName!! else type.label
+
+  data class Sample(
+    override val type: WorkActionType,
+    override val workTime: LocalDateTime,
+    override val userId: String,
+    override val userName: String,
+    override val orgName: String?,
+    override val taskName: String?
+  ): WorkActionSummary
+
+}
+
+interface WorkSummary: WorkIdentify {
+
+  val workName: String
+
+  val actions: List<WorkActionSummary>
+
+
 }

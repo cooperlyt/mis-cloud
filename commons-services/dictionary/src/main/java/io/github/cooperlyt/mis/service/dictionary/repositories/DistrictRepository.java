@@ -19,6 +19,14 @@ public interface DistrictRepository extends ReactiveCrudRepository<District,Inte
 
     @Query("SELECT id,level,name,address FROM district WHERE (SELECT level + 1 FROM district WHERE id = :code) = level and id like :parent")
     Flux<District> findChildren(@Param("code") int code, @Param("parent") String parent);
+
+
+    @Query(
+        "SELECT id,level,name,address FROM district WHERE id IN " +
+            "(SELECT id FROM district WHERE id = LEFT(:id, LENGTH(id)) AND level <= (SELECT level FROM district  WHERE id = :id) ) "
+    )
+    Flux<District> getFullDistrict(int id);
+
 //
 ////    @Query("SELECT ")
 ////    Mono<String> getName(int id);

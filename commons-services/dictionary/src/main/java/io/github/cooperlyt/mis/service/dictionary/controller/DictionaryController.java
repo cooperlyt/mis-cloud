@@ -70,6 +70,12 @@ public class DictionaryController {
        return  districtService.districts(level);
     }
 
+    @Operation(summary = "行政区地址(JSON)", parameters = {@Parameter(name = "code",description = "区划代码", in = ParameterIn.PATH)})
+    @GetMapping("/district/{code}/names")
+    public Mono<List<String>> fullDistrictName(@PathVariable("code") int code){
+        return districtService.fullDistrictName(code);
+    }
+
     @Operation(summary = "行政区地址", parameters = {@Parameter(name = "code",description = "区划代码", in = ParameterIn.PATH)})
     @ApiResponses({@ApiResponse(responseCode = "2xx",description = "成功"),@ApiResponse(responseCode = "202", description = "区划代码不存在")})
     @RequestMapping(value = "/district/{code}", method = RequestMethod.GET,produces= {MediaType.TEXT_PLAIN_VALUE , MediaType.APPLICATION_JSON_VALUE})

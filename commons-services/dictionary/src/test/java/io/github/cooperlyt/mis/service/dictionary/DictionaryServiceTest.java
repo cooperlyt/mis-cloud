@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.service.dictionary;
 
 import io.github.cooperlyt.mis.service.dictionary.services.DictionaryService;
-import io.github.cooperlyt.mis.service.dictionary.services.DistrictService;
+import io.github.cooperlyt.mis.service.dictionary.services.DistrictDao;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class DictionaryServiceTest {
     public DictionaryService dictionaryService;
 
     @Autowired
-    public DistrictService districtService;
+    public DistrictDao districtService;
 
     @Test
     public void testWords(){

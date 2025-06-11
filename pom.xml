@@ -10,7 +10,7 @@
     <version>2.2.1</version>
     <modules>
         <module>commons-cloud</module>
-        <module>camunda-work</module>
+        <module>camunda-process</module>
         <module>commons-elasticsearch-utils</module>
         <module>commons-work-api</module>
         <module>commons-mis</module>
@@ -51,6 +51,7 @@
 <!--        <caffeine.version>3.1.8</caffeine.version>-->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>2.1.20</kotlin.version>
+        <springdoc.version>2.6.0</springdoc.version>
     </properties>
 
     <dependencyManagement>
@@ -208,7 +209,18 @@
                 </executions>
                 <configuration>
                     <jvmTarget>${maven.compiler.target}</jvmTarget>
+                    <compilerPlugins>
+                        <plugin>lombok</plugin>
+                    </compilerPlugins>
                 </configuration>
+                <dependencies>
+                    <!-- Kotlin Lombok 插件 -->
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-lombok</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

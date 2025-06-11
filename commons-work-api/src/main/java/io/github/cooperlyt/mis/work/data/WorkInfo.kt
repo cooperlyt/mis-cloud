@@ -1,45 +1,43 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
 
+import io.github.cooperlyt.mis.work.message.WorkStatus
+import java.time.LocalDateTime
 
-import io.github.cooperlyt.mis.work.message.WorkStatus;
+interface WorkInfo: WorkIdentify {
 
-import java.time.LocalDateTime;
+  companion object {
+    @Deprecated("")
+    const val SOURCE_FROM_SYSTEM: String = "SYS"
 
-public interface WorkInfo extends java.io.Serializable {
+    const val SOURCE_FROM_JOINT: String = "JOINT"
 
-  /**
-   * @deprecated use {@link #SOURCE_FROM_PATCH} instead
-   */
-  @Deprecated
-  String SOURCE_FROM_SYSTEM = "SYS";
+    const val SOURCE_FROM_OFFICE: String = "OFFICE"
 
-  String SOURCE_FROM_JOINT = "JOINT";
+    const val SOURCE_FROM_PATCH: String = "PATCH"
+  }
 
-  String SOURCE_FROM_OFFICE = "OFFICE";
+  val dataSource: String
 
-  String SOURCE_FROM_PATCH = "PATCH";
+  val createdAt: LocalDateTime?
 
-  long getWorkId();
+  val updatedAt: LocalDateTime?
 
-  String getDataSource();
+  val completedAt: LocalDateTime?
 
-  LocalDateTime getCreatedAt();
+  val validatedAt: LocalDateTime?
 
-  LocalDateTime getUpdatedAt();
+  val historyAt: LocalDateTime?
 
-  LocalDateTime getCompletedAt();
+  val workName: String
 
-  LocalDateTime getValidateAt();
+  val status: WorkStatus
 
-  String getWorkName();
+  val type: String?
 
-  WorkStatus getStatus();
+  val process: Boolean
 
-  String getType();
+  val defineId: String
 
-  boolean isProcess();
-
-  String getDefineId();
-
-
+  val history: Boolean
+    get() = historyAt != null
 }

@@ -6,11 +6,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @SpringBootApplication(
-//  scanBasePackages = "cc.coopersoft.common.cloud",
+  scanBasePackages = "io.github.cooperlyt.mis.work",
     exclude = {
         org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationAutoConfiguration.class,
     org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-    org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration.class
+    org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration.class,
 })
 
 public class TestApplication {

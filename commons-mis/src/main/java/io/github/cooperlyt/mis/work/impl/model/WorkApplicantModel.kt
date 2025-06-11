@@ -1,42 +1,35 @@
-package io.github.cooperlyt.mis.work.impl.model;
+package io.github.cooperlyt.mis.work.impl.model
 
-import io.github.cooperlyt.commons.data.PowerBody;
-import io.github.cooperlyt.commons.data.PowerBodyImpl;
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.Table;
+import io.github.cooperlyt.commons.data.IdentityType
+import io.github.cooperlyt.commons.data.PowerBody
+import org.springframework.data.annotation.Id
+import org.springframework.data.domain.Persistable
+import org.springframework.data.relational.core.mapping.Table
 
-@EqualsAndHashCode(callSuper = true)
 @Table("work_applicant")
-@NoArgsConstructor
-public class WorkApplicantModel extends PowerBodyImpl implements Persistable<Long> {
-
-
-  @Transient
-  private boolean _new = false;
-
-  public WorkApplicantModel(boolean _new, PowerBody powerBody, long workId) {
-    super(powerBody);
-    this.workId = workId;
-    this._new = _new;
-  }
-
-
-  @Getter
-  @Setter
+data class WorkApplicantModel(
   @Id
-  private Long workId;
+  val workId: Long,
+
+  override val name: String,
+  override val idType: IdentityType,
+  override val idNumber: String,
+  override val tel: String?,
+  private val _new: Boolean = false,
+): PowerBody,Persistable<Long>{
+
+  constructor(workId: Long, powerBody: PowerBody, isNew: Boolean = true) : this(
+    workId,
+    powerBody.name,
+    powerBody.idType,
+    powerBody.idNumber,
+    powerBody.tel,
+    isNew,
+  )
+
+  override fun getId(): Long? = workId
+
+  override fun isNew(): Boolean = _new
 
 
-  @Override
-  public Long getId() {
-    return workId;
-  }
-
-  @Override
-  public boolean isNew() {
-    return _new;
-  }
 }
