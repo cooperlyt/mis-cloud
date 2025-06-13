@@ -2,6 +2,7 @@ package io.github.cooperlyt.mis;
 
 
 import io.github.cooperlyt.mis.dictionary.DictionaryRemoteService;
+import io.github.cooperlyt.mis.dictionary.DistrictName;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -11,6 +12,11 @@ public class MockDictionaryRemoteService implements DictionaryRemoteService {
   @Override
   public Mono<String> districtAddress(int id, boolean must) {
     return Mono.just("test");
+  }
+
+  @Override
+  public Mono<DistrictName> districtName(int id, boolean must) {
+    return null;
   }
 
   @Override

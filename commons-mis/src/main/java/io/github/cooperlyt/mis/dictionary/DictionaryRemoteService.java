@@ -10,6 +10,10 @@ public interface DictionaryRemoteService {
         return districtAddress(id, true);
     }
 
+    Mono<DistrictName> districtName(int id, boolean must);
+
+    default Mono<DistrictName> districtName(int id) { return districtName(id, true); }
+
     Mono<String> dictionaryLabel(String category, int key, boolean must);
 
     default Mono<String> dictionaryLabel(String category, int key){

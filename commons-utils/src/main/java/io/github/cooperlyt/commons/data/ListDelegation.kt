@@ -1,7 +1,9 @@
 package io.github.cooperlyt.commons.data
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
+@JsonSerialize(`as` = List::class)
 interface ListDelegation<T>: List<T> {
 
   @get:JsonIgnore

@@ -2,6 +2,7 @@ package io.github.cooperlyt.mis.dictionary.impl;
 
 import io.github.cooperlyt.mis.RemoteResponseService;
 import io.github.cooperlyt.mis.dictionary.DictionaryRemoteService;
+import io.github.cooperlyt.mis.dictionary.DistrictName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.github.cooperlyt.mis.MisCommonsErrorDefine.DICTIONARY_NOT_FOUND;
@@ -50,6 +52,17 @@ public class DictionaryRemoteServiceImpl extends RemoteResponseService implement
       return Mono.just(districtAddressCache.get(id));
     }
     return getRemoteDistrictAddress(id, must).doOnNext(r -> districtAddressCache.put(id,r));
+  }
+
+  @Override
+  public Mono<DistrictName> districtName(int id, boolean must) {
+    return webClient
+        .get()
+        .uri("http://" + serverName + "/public/district/{code}/names", id)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchangeToMono(response -> sourceResponse(new ParameterizedTypeReference<List<String>>() {}, response))
+        .map(DistrictName::new)
+        .switchIfEmpty(must ? Mono.error(DISTRICT_NOT_FOUND.exception()) : Mono.empty());
   }
 
   private Mono<Map<Integer,String>> getDictionary(String category, boolean must) {
