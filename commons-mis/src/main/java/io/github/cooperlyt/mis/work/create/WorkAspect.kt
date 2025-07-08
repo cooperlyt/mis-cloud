@@ -136,16 +136,16 @@ class WorkAspect(private val workService: WorkService, private val workRemoteSer
       .flatMap { workId ->
         workRemoteService.define(workCreate.defineId)
           .map {
-            WorkDefineForCreate(
+            WorkDefineForCreate.of(
+              it,
               workId,
-              it
-            )
+              )
           }
       }
       .switchIfEmpty(workRemoteService.prepareProcess(workCreate.defineId))
-      .filter { it.isEnabled }
+      .filter { it.enabled }
       .switchIfEmpty(Mono.error { Constant.ErrorDefine.WORK_IS_DISABLED.exception() })
-      .filter { !it.isProcess || WorkCreateResult::class.java.isAssignableFrom(actionContext.resultType) }
+      .filter { !it.process || WorkCreateResult::class.java.isAssignableFrom(actionContext.resultType) }
       .switchIfEmpty(Mono.error { IllegalStateException("process work must return a WorkCreateResult!") })
       .flatMap { define ->
         workService.createWork(
@@ -276,9 +276,9 @@ class WorkAspect(private val workService: WorkService, private val workRemoteSer
     return workService.workInfo(workId)
       .flatMap { workInfo ->
         workRemoteService.prepareProcess(workInfo.defineId)
-          .filter { it.isEnabled }
+          .filter { it.enabled }
           .switchIfEmpty(Mono.error { Constant.ErrorDefine.WORK_IS_DISABLED.exception() })
-          .filter { !it.isProcess || WorkCreateResult::class.java.isAssignableFrom(actionContext.resultType) }
+          .filter { !it.process || WorkCreateResult::class.java.isAssignableFrom(actionContext.resultType) }
           .switchIfEmpty(Mono.error { IllegalStateException("process work must return a WorkCreateResult!") })
           .flatMap { define ->
 
@@ -338,8 +338,8 @@ class WorkAspect(private val workService: WorkService, private val workRemoteSer
             workRemoteService.sendWorkCreateMessage(
               define.defineId,
               define.workId,
-              define.tags,
-              define.isProcess,
+              define.tags.toSet(),
+              define.process,
               it!!.documentation,
               actionContext.createProcessVariables(it.variables)
             )
@@ -348,7 +348,7 @@ class WorkAspect(private val workService: WorkService, private val workRemoteSer
             workRemoteService.sendWorkCreateMessage(
               define.defineId,
               define.workId,
-              define.tags,
+              define.tags.toSet(),
             )
           )
           .then(Mono.justOrEmpty(result))

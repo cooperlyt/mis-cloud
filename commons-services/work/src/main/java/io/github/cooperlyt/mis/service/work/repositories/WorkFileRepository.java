@@ -1,12 +1,8 @@
 package io.github.cooperlyt.mis.service.work.repositories;
 
-import io.github.cooperlyt.mis.service.work.model.WorkFileModel;
-import org.springframework.data.r2dbc.repository.Modifying;
-import org.springframework.data.r2dbc.repository.Query;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkFileModel;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Repository
 public interface WorkFileRepository extends ReactiveCrudRepository<WorkFileModel,String> {

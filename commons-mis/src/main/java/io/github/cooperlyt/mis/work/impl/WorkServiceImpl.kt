@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.server.ResponseStatusException
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 import java.util.Comparator
@@ -61,6 +62,11 @@ open class WorkServiceImpl(
     return workRepository.findById(workId)
       .switchIfEmpty(Mono.error(Constant.ErrorDefine.WORK_NOT_EXISTS.exception()))
       .cast(WorkInfo::class.java)
+  }
+
+  override fun workActionBasic(workId: Long): Flux<WorkActionBasic> {
+    return workOperatorRepository.findWorkOperatorBasics(workId)
+      .cast(WorkActionBasic::class.java)
   }
 
   override fun createWorkApplicant(workId: Long, applicant: PowerBody): Mono<Long> {
@@ -203,7 +209,7 @@ open class WorkServiceImpl(
       WorkModel(
         define,
         workId,
-        if (define.isProcess) WorkStatus.RUNNING else WorkStatus.COMPLETED,
+        if (define.process) WorkStatus.RUNNING else WorkStatus.COMPLETED,
         dataSource,
         historyDateTime
       )

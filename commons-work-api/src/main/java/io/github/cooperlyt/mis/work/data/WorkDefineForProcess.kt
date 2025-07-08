@@ -1,26 +1,41 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
-import java.util.List;
+@JsonSerialize( `as` = WorkDefineForProcess::class)
+@JsonDeserialize( `as` = WorkDefineForProcess.Sample::class )
+interface WorkDefineForProcess: WorkDefineForCreate {
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class WorkDefineForProcess extends WorkDefineForCreate implements java.io.Serializable{
-
-  @Builder
-  public WorkDefineForProcess(long workId, WorkDefine workDefine, List<WorkAttachmentInfo> attachments) {
-    super(workId,workDefine);
-    this.attachments = attachments;
+  companion object {
+    fun of(define: WorkDefine, workId: Long, attachments: List<WorkAttachmentInfo>): WorkDefineForProcess = DefaultImpl(
+      define,
+      workId,
+      attachments
+    )
   }
 
-  @JsonSerialize(contentAs = WorkAttachmentInfo.class)
-  @JsonDeserialize(contentAs = WorkAttachmentImpl.class)
-  private List<WorkAttachmentInfo> attachments;
+  val attachments: List<WorkAttachmentInfo>
+
+  private data class DefaultImpl(
+    private val define: WorkDefine,
+    override val workId: Long,
+    @JsonSerialize(contentAs = WorkAttachmentInfo::class)
+    @JsonDeserialize(contentAs = WorkAttachmentImpl::class)
+    override val attachments: List<WorkAttachmentInfo>
+  ): WorkDefineForProcess, WorkDefine by define
 
 
+  data class Sample(
+    @JsonSerialize(contentAs = WorkAttachmentInfo::class)
+    @JsonDeserialize(contentAs = WorkAttachmentImpl::class)
+    override val attachments: List<WorkAttachmentInfo>,
+    override val defineId: String,
+    override val workName: String,
+    override val type: String,
+    override val process: Boolean,
+    override val enabled: Boolean,
+    override val tags: List<String>,
+    override val workId: Long
+  ): WorkDefineForProcess
 }

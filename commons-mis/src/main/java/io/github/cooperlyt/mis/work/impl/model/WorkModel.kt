@@ -44,7 +44,7 @@ data class WorkModel(
     status = status,
     historyAt = historyAt,
     type = define.type,
-    process = define.isProcess,
+    process = define.process,
     defineId = define.defineId,
   )
 }

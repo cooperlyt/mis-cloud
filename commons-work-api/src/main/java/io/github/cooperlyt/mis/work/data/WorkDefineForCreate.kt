@@ -1,41 +1,30 @@
-package io.github.cooperlyt.mis.work.data;
+package io.github.cooperlyt.mis.work.data
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
-@EqualsAndHashCode(callSuper = true)
-@Data
-@NoArgsConstructor
-public class WorkDefineForCreate extends WorkDefine{
+@JsonSerialize( `as` = WorkDefineForCreate::class)
+@JsonDeserialize( `as` = WorkDefineForCreate.Sample::class )
+interface WorkDefineForCreate: WorkDefine, WorkIdentify {
 
-  public WorkDefineForCreate(WorkDefine workDefine) {
-    super(
-        workDefine.getDefineId(),
-        workDefine.getWorkName(),
-        workDefine.getType(),
-        workDefine.isProcess(),
-        workDefine.isEnabled(),
-        workDefine.getTags()
-    );
+  companion object {
+    fun of(define: WorkDefine, workId: Long): WorkDefineForCreate = DefaultImpl(define, workId)
   }
 
-  public WorkDefineForCreate(long workId,WorkDefine workDefine) {
-    super(
-        workDefine.getDefineId(),
-        workDefine.getWorkName(),
-        workDefine.getType(),
-        workDefine.isProcess(),
-        workDefine.isEnabled(),
-        workDefine.getTags()
-    );
-    this.workId = workId;
-  }
 
-  private long workId;
+  private data class DefaultImpl(
+    private val define: WorkDefine,
+    override val workId: Long
+  ): WorkDefineForCreate, WorkDefine by define
 
-  public WorkDefineForCreate setPrepareWorkId(long workId){
-    this.workId = workId;
-    return this;
-  }
+
+  data class Sample(
+    override val defineId: String,
+    override val workName: String,
+    override val type: String,
+    override val process: Boolean,
+    override val enabled: Boolean,
+    override val tags: List<String>,
+    override val workId: Long
+  ): WorkDefineForCreate
 }

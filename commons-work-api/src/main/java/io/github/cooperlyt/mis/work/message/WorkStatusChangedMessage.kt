@@ -1,23 +1,9 @@
-package io.github.cooperlyt.mis.work.message;
+package io.github.cooperlyt.mis.work.message
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+data class WorkStatusChangedMessage(
+  val status: WorkStatus,
 
-/**
- * 工作状态变更消息，用于通知工作状态变更，变更可能没有操作人
- */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class WorkStatusChangedMessage {
+  val workId: Long ,
 
-  private WorkStatus status;
-
-  private long workId;
-
-  private String define;
-
-}
+  val define: String,
+)

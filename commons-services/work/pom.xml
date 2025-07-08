@@ -10,7 +10,6 @@
     </parent>
 
     <artifactId>work</artifactId>
-    <version>2.1.10</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -29,6 +28,13 @@
         <dependency>
             <groupId>io.github.cooperlyt</groupId>
             <artifactId>uid-reactive-generator-spring-cloud-starter-discovery</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.github.cooperlyt.mis</groupId>
+            <artifactId>commons-utils</artifactId>
+            <version>2.2.1</version>
         </dependency>
 
     </dependencies>
@@ -96,30 +102,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jvmTarget>${maven.compiler.target}</jvmTarget>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

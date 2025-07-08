@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,12 +27,15 @@ public class MockWorkRemoteService implements WorkRemoteService {
   @Override
   public Mono<WorkDefineForCreate> prepareCreate(String defineId) {
     System.out.println("--------------> prepare create work " + defineId);
-    var define = new WorkDefineForCreate();
-    define.setWorkId(99L);
-    define.setDefineId(defineId);
-    define.setWorkName("test");
-    define.setEnabled(true);
-    define.setProcess(true);
+    var define = new WorkDefineForCreate.Sample(
+        defineId,
+        "test",
+        "",
+        true,
+        true,
+        Collections.emptyList(),
+        99L
+    );
     return Mono.just(define);
   }
 

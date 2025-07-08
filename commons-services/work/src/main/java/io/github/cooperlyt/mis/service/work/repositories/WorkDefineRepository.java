@@ -1,6 +1,6 @@
 package io.github.cooperlyt.mis.service.work.repositories;
 
-import io.github.cooperlyt.mis.service.work.model.WorkDefineModel;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkDefineModel;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

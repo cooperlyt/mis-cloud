@@ -1,4 +1,4 @@
-package io.github.cooperlyt.mis.service.work.model;
+package io.github.cooperlyt.mis.service.work.domain.model;
 
 import io.github.cooperlyt.mis.work.data.WorkAttachmentBase;
 import lombok.AllArgsConstructor;

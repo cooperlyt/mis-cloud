@@ -1,7 +1,7 @@
 package io.github.cooperlyt.mis.service.work.repositories;
 
-import io.github.cooperlyt.mis.service.work.model.WorkAttachmentModel;
-import io.github.cooperlyt.mis.service.work.model.WorkFileModel;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkAttachmentModel;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkFileModel;
 import io.github.cooperlyt.mis.work.data.WorkAttachment;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;

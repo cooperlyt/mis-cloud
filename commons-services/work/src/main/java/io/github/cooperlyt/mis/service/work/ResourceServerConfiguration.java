@@ -1,14 +1,24 @@
 package io.github.cooperlyt.mis.service.work;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cooperlyt.commons.cloud.keycloak.auth.ReactiveKeycloakAuthenticationConverter;
+import io.github.cooperlyt.commons.cloud.serialize.IntegerToBooleanConverter;
+import io.github.cooperlyt.commons.data.StringListReadingConverter;
+import io.github.cooperlyt.commons.data.StringListWritingConverter;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
+import org.springframework.data.r2dbc.dialect.MySqlDialect;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EnableWebFluxSecurity
 @Configuration
@@ -51,6 +61,21 @@ public class ResourceServerConfiguration {
             .jwtAuthenticationConverter(new ReactiveKeycloakAuthenticationConverter())));
 
     return http.build();
+  }
+
+
+  @Bean
+  public R2dbcCustomConversions customConversions() {
+    List<Converter<?, ?>> converters = new ArrayList<>();
+
+
+    converters.add(new IntegerToBooleanConverter());
+    converters.add(new StringListReadingConverter());
+    converters.add(new StringListWritingConverter());
+
+
+    return R2dbcCustomConversions.of(MySqlDialect.INSTANCE, converters);
+    // deprecated: return new R2dbcCustomConversions(converters);
   }
 
 

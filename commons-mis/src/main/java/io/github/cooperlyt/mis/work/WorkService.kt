@@ -6,10 +6,10 @@ import io.github.cooperlyt.mis.work.data.WorkActionBasic
 import io.github.cooperlyt.mis.work.data.WorkActionType
 import io.github.cooperlyt.mis.work.data.WorkDefine
 import io.github.cooperlyt.mis.work.data.WorkInfo
-import io.github.cooperlyt.mis.work.data.WorkOperatorBasic
 import io.github.cooperlyt.mis.work.data.WorkOperatorSupplier
 import io.github.cooperlyt.mis.work.message.WorkStageChangedMessage
 import io.github.cooperlyt.mis.work.message.WorkStatus
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.time.LocalDateTime
 
@@ -49,4 +49,5 @@ interface WorkService {
     //--------------- remote
 
 
+  fun workActionBasic(workId: Long): Flux<WorkActionBasic>
 }

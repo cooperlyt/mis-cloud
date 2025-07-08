@@ -1,8 +1,8 @@
 package io.github.cooperlyt.mis.service.work.services;
 
 import io.github.cooperlyt.mis.service.work.Application;
-import io.github.cooperlyt.mis.service.work.model.WorkAttachmentModel;
-import io.github.cooperlyt.mis.service.work.model.WorkFileModel;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkAttachmentModel;
+import io.github.cooperlyt.mis.service.work.domain.model.WorkFileModel;
 import io.github.cooperlyt.cloud.uid.UidGenerator;
 import io.github.cooperlyt.mis.service.work.repositories.WorkAttachmentDefineRepository;
 import io.github.cooperlyt.mis.service.work.repositories.WorkAttachmentRepository;
@@ -53,38 +53,47 @@ public class WorkService {
 //        .switchIfEmpty(Mono.error(WORK_NOT_EXISTS.exception()));
 //  }
 
-  public Mono<WorkDefine> workDefine(String defineId){
+  public Mono<WorkDefine> workDefine(String defineId) {
     return workDefineRepository.findById(defineId).map(WorkDefine.class::cast);
   }
 
-  public Mono<WorkDefineForCreate> prepareCreate(String defineId){
-    log.info("prepare work:" + defineId);
+  public Mono<WorkDefineForCreate> prepareCreate(String defineId) {
+    log.info("prepare work:{}", defineId);
     return workDefineRepository.findById(defineId)
-        .map(WorkDefineForCreate::new)
-        .flatMap(workDefineForCreate -> defaultUidGenerator.getUID().map(workDefineForCreate::setPrepareWorkId));
+        .flatMap(define ->
+            defaultUidGenerator.getUID()
+                .map(workId -> WorkDefineForCreate.Companion.of(define, workId))
+        );
+
   }
 
-  public Mono<WorkDefineForProcess> prepareProcess(String defineId){
-    log.info("prepare work for process:" + defineId);
+  public Mono<WorkDefineForProcess> prepareProcess(String defineId) {
+    log.info("prepare work for process:{}", defineId);
     return defaultUidGenerator.getUID().flatMap(workId ->
-            workAttachmentDefineRepository.findAllByDefineId(defineId)
-                .flatMap(define -> defaultUidGenerator.getUID().map(uid -> new WorkAttachmentModel(uid,workId,define)))
-                .collectList()
-                .flatMap(attaches -> workAttachmentRepository.saveAll(attaches).cast(WorkAttachmentInfo.class).collectList())
-                .flatMap(attaches -> Mono.just(WorkDefineForProcess.builder().attachments(attaches).workId(workId))
-                    .flatMap(builder -> workDefineRepository.findById(defineId).map(builder::workDefine))
-                    .map(WorkDefineForProcess.WorkDefineForProcessBuilder::build)
-                )
-        );
+        workAttachmentDefineRepository.findAllByDefineId(defineId)
+            .flatMap(define ->
+                defaultUidGenerator.getUID().map(uid -> new WorkAttachmentModel(uid, workId, define))
+            )
+            .collectList()
+            .flatMap(attaches ->
+                workAttachmentRepository.saveAll(attaches).cast(WorkAttachmentInfo.class).collectList()
+            )
+            .flatMap(attaches ->
+                workDefineRepository.findById(defineId)
+                    .map(define ->
+                        WorkDefineForProcess.Companion.of(define, workId, attaches)
+                    )
+            )
+    );
   }
 
   //TODO 使用网关 上传文件信息
   // 所有文件只存fid
   @Transactional
-  public Mono<Void> addWorkFile(long attachId, WorkFileImpl file){
+  public Mono<Void> addWorkFile(long attachId, WorkFileImpl file) {
     return Mono.just(new WorkFileModel(file))
         .flatMap(workFileRepository::save)
-        .flatMap(workFile -> workAttachmentRepository.addAttachmentFile(attachId,workFile.getFid()))
+        .flatMap(workFile -> workAttachmentRepository.addAttachmentFile(attachId, workFile.getFid()))
         .then();
   }
 
@@ -104,35 +113,35 @@ public class WorkService {
 //  }
 
   @Transactional
-  public Mono<Void> removeWorkFile(long attachId,String fileId){
-    return workAttachmentRepository.removeAttachmentFile(attachId,fileId);
+  public Mono<Void> removeWorkFile(long attachId, String fileId) {
+    return workAttachmentRepository.removeAttachmentFile(attachId, fileId);
   }
 
-  public Mono<List<WorkFileInfo>> workFiles(long attachId){
+  public Mono<List<WorkFileInfo>> workFiles(long attachId) {
     return workAttachmentRepository.listAttachmentFile(attachId)
         .map(WorkFileInfo.class::cast)
         .collectList();
   }
 
-  public Mono<List<WorkAttachment>> workAttachments(long workId){
+  public Mono<List<WorkAttachment>> workAttachments(long workId) {
     return workAttachmentRepository.findWorkAttachment(workId)
         .collectList();
   }
 
   @Transactional
-  public Mono<Long> addWorkAttachment(long workId, String name){
+  public Mono<Long> addWorkAttachment(long workId, String name) {
     return defaultUidGenerator.getUID()
-        .flatMap(uid -> workAttachmentRepository.save(new WorkAttachmentModel(uid,workId,name)))
+        .flatMap(uid -> workAttachmentRepository.save(new WorkAttachmentModel(uid, workId, name)))
         .map(WorkAttachmentModel::getId);
   }
 
   @Transactional
-  public Mono<Void> removeWorkAttachment(long attachId){
+  public Mono<Void> removeWorkAttachment(long attachId) {
     return workAttachmentRepository.clearAttachmentFile(attachId)
         .then(workAttachmentRepository.deleteById(attachId));
   }
 
-  public Mono<Void> renameWorkAttachment(long attachId, String name){
+  public Mono<Void> renameWorkAttachment(long attachId, String name) {
     return workAttachmentRepository.findById(attachId)
         .filter(attachment -> !attachment.isMust())
         .switchIfEmpty(Mono.error(Application.ErrorDefine.MUST_ATTACH_CANT_MODIFY.exception()))
@@ -141,27 +150,27 @@ public class WorkService {
         .then();
   }
 
-  public Mono<List<WorkDefine>> defineByType(String type){
+  public Mono<List<WorkDefine>> defineByType(String type) {
     return workDefineRepository.findAllByType(type)
         .map(WorkDefine.class::cast)
         .collectList()
-        .doOnNext(list -> log.info("define list:{}",list));
+        .doOnNext(list -> log.info("define list:{}", list));
   }
 
 
-  public Mono<WorkDefineForCreate> recreateWork(String defineId, long originalWorkId){
+  public Mono<WorkDefineForCreate> recreateWork(String defineId, long originalWorkId) {
     return prepareCreate(defineId)
-        .flatMap(define -> cloneWorkFile(originalWorkId,define.getWorkId())
+        .flatMap(define -> cloneWorkFile(originalWorkId, define.getWorkId())
             .thenReturn(define));
   }
 
-  public Mono<Void> cloneWorkFile(long originalWorkId, long newWorkId){
+  public Mono<Void> cloneWorkFile(long originalWorkId, long newWorkId) {
     return workAttachmentRepository.findAllByWorkId(originalWorkId)
         .flatMap(originalAttachment -> defaultUidGenerator.getUID()
-            .map(uid -> new WorkAttachmentModel(uid,newWorkId,originalAttachment))
+            .map(uid -> new WorkAttachmentModel(uid, newWorkId, originalAttachment))
             .flatMap(workAttachmentRepository::save)
             .map(WorkAttachmentModel::getId)
-            .flatMap(newAttachId -> workAttachmentRepository.cloneAttachmentFile(originalAttachment.getId(),newAttachId))
+            .flatMap(newAttachId -> workAttachmentRepository.cloneAttachmentFile(originalAttachment.getId(), newAttachId))
             .then()
         ).then();
   }
